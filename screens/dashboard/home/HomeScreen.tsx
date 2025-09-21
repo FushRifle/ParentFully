@@ -255,14 +255,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                         bc={colors.primary}
                                         br={9999}
                                         size="$2"
-                                        width={25}
-                                        height={25}
+                                        width={20}
+                                        height={20}
                                         ai="center"
                                         jc="center"
                                     >
                                         <Plus size={14} color="white" />
                                     </Button>
-                                    <Text color={colors.primary} fontSize="$4">Add Child</Text>
+                                    <Text color={colors.primary} fontSize="$2">Add Child</Text>
                                 </XStack>
                             </XStack>
 

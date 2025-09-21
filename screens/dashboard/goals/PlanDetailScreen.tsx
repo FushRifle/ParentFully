@@ -13,7 +13,7 @@ import { Plus } from '@tamagui/lucide-icons'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Modal, useWindowDimensions } from 'react-native'
 import Toast from 'react-native-toast-message'
-import { Button, Card, H5, H6, ScrollView, Spinner, Text, useTheme as useTamaguiTheme, View, XStack, YStack } from 'tamagui'
+import { Button, Card, H5, ScrollView, Spinner, Text, useTheme as useTamaguiTheme, View, XStack, YStack } from 'tamagui'
 import { v4 as uuidv4 } from 'uuid'
 
 const IconMap: Record<string, any> = { Feather, FontAwesome, MaterialIcons, AntDesign }
@@ -160,7 +160,7 @@ const PlanDetailScreen = () => {
 
     const renderUserGoalsSection = () => (
         <YStack mb="$4">
-            <H5 fontWeight="700" color={colors.text} mb="$3" fontSize='$6'>My Goals ({goals.userGoals.length})</H5>
+            <H5 fontWeight="600" color={colors.text} mb="$3" fontSize='$3'>My Goals ({goals.userGoals.length})</H5>
             {goals.userGoals.length > 0 ? (
                 <YStack space="$2">
                     {goals.userGoals.map((item) => (
@@ -178,7 +178,7 @@ const PlanDetailScreen = () => {
 
     const renderPredefinedGoalsSection = () => (
         <YStack>
-            <H5 fontWeight="700" fontSize='$6' color={colors.text} mb="$3">Predefined Goals ({goals.predefinedGoals.length})</H5>
+            <H5 fontWeight="600" fontSize='$3' color={colors.text} mb="$3">Predefined Goals ({goals.predefinedGoals.length})</H5>
             {goals.predefinedGoals.length > 0 ? (
                 <YStack space="$2">
                     {goals.predefinedGoals.map((item) => (
@@ -223,16 +223,16 @@ const PlanDetailScreen = () => {
             <XStack ai="center" gap="$1.5">
                 <YStack flex={1} px='$2' gap="$1.5" mt='$2'>
                     <XStack jc='space-between'>
-                        <H6
+                        <Text
                             numberOfLines={1}
-                            fontSize='$5'
+                            fontSize='$2'
                             fontWeight="700"
                             color={colors.text}
                             flex={1}
                             mr="$2"
                         >
                             {item.area || 'Goal'}
-                        </H6>
+                        </Text>
                         <Button
                             unstyled
                             onPress={(e) => {
@@ -241,11 +241,11 @@ const PlanDetailScreen = () => {
                                 setShowOptions(true);
                             }}
                             hitSlop={12} p="$0.5" top='0'>
-                            <MaterialIcons name="delete" size={24} color={colors.text} />
+                            <MaterialIcons name="delete" size={20} color={colors.text} />
                         </Button>
                     </XStack>
                     <Text
-                        fontSize="$4"
+                        fontSize="$3"
                         color={colors.textSecondary}
                         flexWrap="wrap"
                         numberOfLines={2} // Allow 2 lines for better text display
@@ -255,12 +255,12 @@ const PlanDetailScreen = () => {
                     </Text>
                     {type === 'user' && (
                         <Button unstyled onPress={() => navigateToGoalDetails(item)}>
-                            <Text color={colors.secondaryContainer}>View Details</Text>
+                            <Text color={colors.secondaryContainer} fontSize='$1'>View Details</Text>
                         </Button>
                     )}
                     {type === 'predefined' && (
                         <Button unstyled onPress={() => navigateToGoalDetails(item)}>
-                            <Text color={colors.secondaryContainer}>Set Goals</Text>
+                            <Text color={colors.secondaryContainer} fontSize='$1'>Set Goals</Text>
                         </Button>
                     )}
                 </YStack>
@@ -311,11 +311,11 @@ const PlanDetailScreen = () => {
                         <XStack space='$2'>
                             <Button chromeless onPress={navigateToAddGoal}
                                 bc={colors.primaryDark} br={9999}
-                                size="$2" width={25} height={25}
+                                size="$1" width={20} height={20}
                                 ai="center" jc="center">
                                 <Plus size={14} color="white" />
                             </Button>
-                            <Text color={colors.primaryDark} fontSize="$4">Add Goal</Text>
+                            <Text color={colors.primaryDark} fontSize="$2">Add Goal</Text>
                         </XStack>
                     </XStack>
 
@@ -333,9 +333,9 @@ const PlanDetailScreen = () => {
                         {loading ? (
                             <YStack space="$4" width="100%" ai="center">
                                 <YStack mb="$4" width="100%" maxWidth={500}>
-                                    <H5 fontWeight="700" color={colors.text} mb="$3" fontSize="$4">
+                                    <Text fontWeight="500" color={colors.text} mb="$3" fontSize="$3">
                                         My Goals
-                                    </H5>
+                                    </Text>
                                     <YStack space="$2">
                                         {[1, 2, 3].map((i) => (
                                             <GoalCardSkeleton key={`skeleton-${i}`} />
@@ -343,9 +343,9 @@ const PlanDetailScreen = () => {
                                     </YStack>
                                 </YStack>
                                 <YStack width="100%" maxWidth={500}>
-                                    <H5 fontWeight="700" fontSize="$4" color={colors.text} mb="$3">
+                                    <Text fontWeight="500" fontSize="$3" color={colors.text} mb="$3">
                                         Predefined Goals
-                                    </H5>
+                                    </Text>
                                     <YStack space="$2">
                                         {[1, 2, 3].map((i) => (
                                             <GoalCardSkeleton key={`skeleton-predefined-${i}`} />

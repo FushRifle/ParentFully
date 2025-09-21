@@ -2,9 +2,9 @@ import { useTheme } from '@/styles/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
+import { Dimensions } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { Button, Card, ScrollView, Text, XStack, YStack } from 'tamagui';
-import { Dimensions } from 'react-native';
 
 type RootStackParamList = {
     ChildProfile: { child: ChildProfile };
@@ -93,7 +93,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
 
                             <YStack mt="$2" space="$1" ai="center" jc="center">
                                 <Text
-                                    fontSize="$3"
+                                    fontSize="$1"
                                     fontWeight="600"
                                     color={colors.text}
                                     numberOfLines={2}
@@ -103,7 +103,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     {child.name}
                                 </Text>
 
-                                <Text fontSize="$3" color={colors.textSecondary}>
+                                <Text fontSize="$1" color={colors.textSecondary}>
                                     Age: {child.age} y/o
                                 </Text>
 
@@ -113,7 +113,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     br={8}
                                     size="$2"
                                     bg={colors.secondaryContainer}
-                                    px="$3"
+                                    px="$2"
                                     mt="$2"
                                     mb='$2'
                                 >

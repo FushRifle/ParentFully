@@ -9,7 +9,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import {
     Button,
     Card,
-    H4,
     Spinner,
     Text,
     ScrollView as TScrollView,
@@ -114,14 +113,14 @@ const CorePlanScreen = () => {
                     h="100%"
                 >
                     <TScrollView contentContainerStyle={{ paddingBottom: 130 }}>
-                        <YStack space="$4" padding="$4" marginTop="$6">
+                        <YStack space="$4" padding="$3" marginTop="$7">
                             {/* Header */}
-                            <XStack alignItems="center" space="$2">
-                                <H4 color={colors.text}>Parenting Plans</H4>
+                            <XStack alignItems="center" space="$2" mb='$4'>
+                                <Text color={colors.text} fontSize='$5'>Parenting Plans</Text>
                             </XStack>
 
                             {/* Age Group Tabs */}
-                            <YStack space="$2">
+                            <YStack space="$1">
                                 <XStack
                                     space="$2.5"
                                     flexWrap="nowrap"
@@ -133,7 +132,7 @@ const CorePlanScreen = () => {
                                         return (
                                             <Button
                                                 key={group.id}
-                                                size="$3"
+                                                size="$2"
                                                 flex={1} // all buttons share equal width
                                                 flexShrink={1}
                                                 borderRadius="$9"
@@ -158,35 +157,37 @@ const CorePlanScreen = () => {
 
                             {/* Core Value Cards */}
                             {!loading && (
-                                <XStack flexWrap="wrap" gap="$3" justifyContent="space-between">
+                                <XStack mt='$4' flexWrap="wrap" gap="$3" justifyContent="space-between">
                                     {coreValues.map((value) => (
                                         <Card
                                             key={value.id}
                                             bordered
+                                            borderRadius='$8'
                                             elevate
                                             shadowColor="white"
                                             borderColor={colors.border as any}
-                                            size="$4"
+                                            size="$2"
                                             flexBasis="48%"   // 2 per row
                                             flexGrow={1}
                                             minWidth="45%"
-                                            padding="$3"
+                                            padding="$2"
                                             backgroundColor={value.color}
                                             onPress={() => handleCardPress(value)}
                                         >
                                             <YStack alignItems="center" space="$2">
                                                 <YStack
-                                                    width={48}
-                                                    height={48}
+                                                    width={45}
+                                                    height={45}
                                                     borderRadius={30}
                                                     backgroundColor={value.icon_color || colors.accent}
                                                     alignItems="center"
                                                     justifyContent="center"
                                                 >
-                                                    <MaterialIcons name={value.icon} size={28} color="white" />
+                                                    <MaterialIcons name={value.icon} size={25} color="white" />
                                                 </YStack>
                                                 <Text
                                                     textAlign="center"
+                                                    fontSize='$2'
                                                     fontWeight="700"
                                                     mt="$2"
                                                     color={colors.text}

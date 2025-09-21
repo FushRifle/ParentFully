@@ -18,7 +18,6 @@ type Child = {
     age: number;
 };
 
-
 const DisciplineScreen: React.FC = ({ navigation }: any) => {
     const { colors } = useTheme();
     const { user } = useAuth();

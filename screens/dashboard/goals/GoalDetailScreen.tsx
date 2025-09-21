@@ -348,7 +348,7 @@ const GoalDetailsScreen = () => {
 
     const renderEditableSection = (title: string, field: keyof Goal, multiline = false) => (
         <YStack mb="$4">
-            <Text color={colors.text} fontWeight="700" fontSize="$5" mb="$1">
+            <Text color={colors.text} fontWeight="700" fontSize="$2" mb="$2">
                 {title}
             </Text>
             {isEditing ? (
@@ -358,8 +358,8 @@ const GoalDetailsScreen = () => {
                     placeholder={`Enter ${title.toLowerCase()}`}
                     borderColor={colors.border as any}
                     backgroundColor='white'
-                    borderRadius="$3"
-                    fontSize="$4"
+                    borderRadius="$5"
+                    fontSize="$2"
                     padding="$3"
                     multiline={multiline}
                     numberOfLines={multiline ? 3 : 1}
@@ -368,11 +368,11 @@ const GoalDetailsScreen = () => {
             ) : (
                 <Paragraph
                     color={editedGoal && editedGoal[field] ? colors.text : colors.textSecondary}
-                    fontSize="$4"
+                    fontSize="$2"
                     backgroundColor='white'
                     padding="$3"
                     borderRadius="$3"
-                    minHeight={multiline ? 80 : undefined}
+                    minHeight={multiline ? 45 : undefined}
                 >
                     {(editedGoal && editedGoal[field] ? (editedGoal[field] as string) : '') || 'Not specified'}
                 </Paragraph>
@@ -399,9 +399,9 @@ const GoalDetailsScreen = () => {
                 {/* Header */}
                 <XStack alignItems="center" mb="$4" mt='$6'>
                     <Button unstyled onPress={() => navigation.goBack()} hitSlop={20} mr="$5">
-                        <MaterialIcons name="arrow-back" size={24} color={colors.text} />
+                        <MaterialIcons name="arrow-back" size={20} color={colors.text} />
                     </Button>
-                    <H4 color={colors.text} fontWeight="700" fontSize="$4">
+                    <H4 color={colors.text} fontWeight="700" fontSize="$3">
                         {isEditing ? "Edit Goal" : "Goal Details"}
                     </H4>
                 </XStack>
@@ -414,8 +414,8 @@ const GoalDetailsScreen = () => {
                 {renderEditableSection('Relevant', 'relevant', true)}
 
                 {/* Time Bound */}
-                <YStack mb="$3">
-                    <Text color={colors.text} fontWeight="600" fontSize="$4" mb="$1.5">
+                <YStack mb="$5">
+                    <Text color={colors.text} fontWeight="600" fontSize="$2" mb="$1.5">
                         Time Bound
                     </Text>
                     {isEditing ? (
@@ -429,7 +429,7 @@ const GoalDetailsScreen = () => {
                                     value={frequencyCount.toString()}
                                     onChangeText={(text) => setFrequencyCount(Number(text))}
                                 />
-                                <Text fontSize="$4" fontWeight="500" color={colors.text}>times in</Text>
+                                <Text fontSize="$2" fontWeight="500" color={colors.text}>times in</Text>
                                 <Input
                                     keyboardType="numeric"
                                     width={60}
@@ -438,27 +438,32 @@ const GoalDetailsScreen = () => {
                                     value={frequencyDuration.toString()}
                                     onChangeText={(text) => setFrequencyDuration(Number(text))}
                                 />
-                                <View borderWidth={1}
-                                    borderColor={colors.text as any}
-                                    backgroundColor='transparent'
-                                    borderRadius="$4" flex={1}>
-                                    <Picker selectedValue={frequencyUnit} onValueChange={(val: string) => setFrequencyUnit(val)}>
+                                <View
+                                    borderWidth={1}
+                                    borderColor={colors.textSecondary as any}
+                                    backgroundColor="transparent"
+                                    borderRadius="$8"
+                                    style={{ width: 125 }} // reduce width
+                                >
+                                    <Picker
+                                        selectedValue={frequencyUnit}
+                                        onValueChange={(val: string) => setFrequencyUnit(val)}
+                                        style={{ fontSize: 8, height: 50 }} // reduce font size
+                                    >
                                         <Picker.Item label="Days" value="days" />
                                         <Picker.Item label="Weeks" value="weeks" />
                                         <Picker.Item label="Months" value="months" />
                                         <Picker.Item label="Years" value="years" />
                                     </Picker>
                                 </View>
+
                             </XStack>
-                            <Text fontSize="$3" mb='$3' color={colors.textSecondary}>
-                                Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
-                            </Text>
-                            <Text fontSize="$3" mb='$3' color={colors.textSecondary}>
+                            <Text fontSize="$2" mb='$3' color={colors.textSecondary}>
                                 Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
                             </Text>
                         </YStack>
                     ) : (
-                        <Paragraph color={goal.time_bound ? colors.text : colors.textSecondary} fontSize="$4">
+                        <Paragraph color={goal.time_bound ? colors.text : colors.textSecondary} fontSize="$2">
                             {goal.time_bound || 'Not specified'}
                         </Paragraph>
                     )}
@@ -466,69 +471,72 @@ const GoalDetailsScreen = () => {
 
                 {/* Assign To */}
                 <YStack>
-                    <Text color={colors.text} fontWeight="700" fontSize="$4" mb="$1.5">
-                        Assign To:
-                    </Text>
                     {isEditing && (
-                        <XStack space="$4" px="$2" mb='$4'>
-                            {children.map((child) => {
-                                const isSelected = selectedChildren.includes(child.id);
+                        <YStack>
+                            <Text color={colors.text} fontWeight="700" fontSize="$2" mb="$1.5">
+                                Assign To:
+                            </Text>
+                            <XStack space="$4" px="$2" mb='$4'>
+                                {children.map((child) => {
+                                    const isSelected = selectedChildren.includes(child.id);
 
-                                const toggleChild = () => {
-                                    setSelectedChildren((prev) =>
-                                        isSelected
-                                            ? prev.filter((id) => id !== child.id)
-                                            : [...prev, child.id]
-                                    );
-                                };
+                                    const toggleChild = () => {
+                                        setSelectedChildren((prev) =>
+                                            isSelected
+                                                ? prev.filter((id) => id !== child.id)
+                                                : [...prev, child.id]
+                                        );
+                                    };
 
-                                return (
-                                    <YStack
-                                        key={child.id}
-                                        ai="center"
-                                        space="$1"
-                                        onPress={toggleChild}
-                                    >
-                                        <XStack
-                                            w={66}
-                                            h={66}
-                                            jc="center"
+                                    return (
+                                        <YStack
+                                            key={child.id}
                                             ai="center"
-                                            br={33}
-                                            borderWidth={3}
-                                            borderColor={isSelected ? colors.primary : "transparent"}
+                                            space="$1"
+                                            mt='$3'
+                                            onPress={toggleChild}
                                         >
-                                            <Image
-                                                source={
-                                                    child.photo
-                                                        ? { uri: child.photo }
-                                                        : require("@/assets/images/profile.jpg")
-                                                }
-                                                style={{ width: 60, height: 60, borderRadius: 30 }}
-                                            />
-                                        </XStack>
-                                        <Label
-                                            fontSize="$3"
-                                            textAlign="center"
-                                            color={isSelected ? colors.primary : colors.text}
-                                        >
-                                            {child.name}
-                                        </Label>
-                                    </YStack>
-                                );
-                            })}
-                        </XStack>
+                                            <XStack
+                                                w={50}
+                                                h={50}
+                                                jc="center"
+                                                ai="center"
+                                                br={33}
+                                                borderWidth={3}
+                                                borderColor={isSelected ? colors.primary : "transparent"}
+                                            >
+                                                <Image
+                                                    source={
+                                                        child.photo
+                                                            ? { uri: child.photo }
+                                                            : require("@/assets/images/profile.jpg")
+                                                    }
+                                                    style={{ width: 50, height: 50, borderRadius: 30 }}
+                                                />
+                                            </XStack>
+                                            <Label
+                                                fontSize="$1"
+                                                textAlign="center"
+                                                color={isSelected ? colors.primary : colors.text}
+                                            >
+                                                {child.name}
+                                            </Label>
+                                        </YStack>
+                                    );
+                                })}
+                            </XStack>
+                        </YStack>
                     )}
                 </YStack>
 
                 {/* Reward System */}
                 {isEditing && (
                     <YStack mb="$2">
-                        <H4 marginBottom="$1" fontSize='$5'>Reward System</H4>
+                        <H4 marginBottom="$4" fontSize='$2'>Reward System</H4>
 
-                        <YStack>
-                            <YStack>
-                                <Label color="$color" fontWeight="bold">Reward Name</Label>
+                        <YStack space='$2'>
+                            <YStack space='$2'>
+                                <Text color={colors.text} fontWeight="bold">Reward Name</Text>
                                 <Input
                                     value={reward.name}
                                     onChangeText={(text) => updateRewardField('name', text)}
@@ -538,8 +546,8 @@ const GoalDetailsScreen = () => {
                                 />
                             </YStack>
 
-                            <YStack space="$1">
-                                <Label color="$color" fontWeight="bold">Notes</Label>
+                            <YStack space="$2">
+                                <Text color={colors.text} fontWeight="bold">Notes</Text>
                                 <Input
                                     value={reward.notes}
                                     onChangeText={(text) => updateRewardField('notes', text)}
@@ -558,11 +566,11 @@ const GoalDetailsScreen = () => {
 
                 {/* Reminder */}
                 {isEditing && (
-                    <YStack space="$1" mt="$3">
-                        <H4 color={colors.text} fontSize="$5" fontWeight="900">
+                    <YStack space="$1" mt="$4">
+                        <H4 color={colors.text} fontSize="$2" fontWeight="900">
                             Reminder
                         </H4>
-                        <Text fontSize="$3">When should we remind you about your goal?</Text>
+                        <Text fontSize="$2">When should we remind you about your goal?</Text>
 
                         {reminders && reminders.length > 0 ? (
                             <XStack
@@ -661,7 +669,7 @@ const GoalDetailsScreen = () => {
                 */}
 
                 {/* Buttons */}
-                <XStack space="$3" jc='space-between' mt='$3' mb='$5'>
+                <XStack space="$3" jc='space-between' mt='$7' mb='$5'>
                     {isEditing ? (
                         <>
                             <Button

@@ -240,10 +240,10 @@ export default function FamilyContactScreen() {
               >
                 <Card.Content>
                   <YStack ai="center" space="$2">
-                    <Text fontSize='$3' fontWeight="600" textAlign="center">
+                    <Text fontSize='$2' fontWeight="600" textAlign="center">
                       Add People who support your Kids
                     </Text>
-                    <Text fontSize='$3' color="#666" textAlign="center">
+                    <Text fontSize='$1' color="#666" textAlign="center">
                       Easily manage all important contacts in one place. Assign
                       roles, control permissions and track activity
                     </Text>
@@ -282,7 +282,7 @@ export default function FamilyContactScreen() {
                     backgroundColor: colors.card,
                     borderRadius: 12,
                     padding: 9,
-                    height: 162,
+                    height: 150,
                     width: width * 0.9,
                     alignSelf: "center",
                     justifyContent: "space-between",
@@ -290,10 +290,10 @@ export default function FamilyContactScreen() {
                 >
                   <XStack space="$3" ai="center">
                     {item.photo ? (
-                      <Avatar.Image size={48} source={{ uri: item.photo }} />
+                      <Avatar.Image size={45} source={{ uri: item.photo }} />
                     ) : (
                       <Avatar.Text
-                        size={48}
+                        size={45}
                         label={
                           item.name
                             ?.split(" ")
@@ -308,7 +308,7 @@ export default function FamilyContactScreen() {
 
                     <YStack flex={1} space="$2">
                       <XStack jc="space-between" ai="center">
-                        <Text fontSize="$4" fontWeight="bold">
+                        <Text fontSize="$2" fontWeight="bold">
                           {item.name}
                         </Text>
 
@@ -335,20 +335,20 @@ export default function FamilyContactScreen() {
                       </XStack>
 
                       {item.title && (
-                        <Text fontSize="$2" color={colors.textSecondary}>
+                        <Text fontSize="$1" color={colors.textSecondary}>
                           {item.title}
                         </Text>
                       )}
 
                       {childNames.length > 0 && (
-                        <Text fontSize="$2" color={colors.text}>
+                        <Text fontSize="$1" color={colors.text}>
                           Connected to: {childNames.join(", ")}
                         </Text>
                       )}
                     </YStack>
                   </XStack>
 
-                  <YStack ai="center" mt="$4">
+                  <YStack ai="center" mt="$5">
                     <Button
                       size="$3"
                       w="100%"
