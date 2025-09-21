@@ -8,7 +8,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, Modal, ScrollView, TouchableOpacity } from "react-native";
+import { Alert, Dimensions, Modal, PixelRatio, ScrollView, TouchableOpacity } from "react-native";
 import { Button, Card, Spinner, Text, View, XStack, YStack } from "tamagui";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -42,6 +42,17 @@ const DisciplineScreen = () => {
     const { colors } = useTheme();
     const { user } = useAuth();
     const navigation = useNavigation<DisciplineDetailsScreenNavigationProp>();
+
+    // Screen scaling helpers
+    const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
+    const BASE_WIDTH = 390
+    const BASE_HEIGHT = 844
+
+    const scale = (size: number) => (SCREEN_WIDTH / BASE_WIDTH) * size
+    const verticalScale = (size: number) => (SCREEN_HEIGHT / BASE_HEIGHT) * size
+    const moderateScale = (size: number, factor = 0.5) =>
+        size + (scale(size) - size) * factor
+    const scaleFont = (size: number) => Math.round(PixelRatio.roundToNearestPixel(scale(size)))
 
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -185,15 +196,44 @@ const DisciplineScreen = () => {
     };
 
     const confirmDelete = async () => {
-        if (deleteId) {
-            console.log("Deleting plan with id:", deleteId);
+        if (!deleteId) return;
+
+        try {
+            // Check if it's a user plan (not preloaded)
+            const planToDelete = myPlans.find(plan => plan.id === deleteId);
+
+            if (planToDelete && !planToDelete.isPreloaded) {
+                // Delete from database
+                const { error } = await supabase
+                    .from('discipline_plans')
+                    .delete()
+                    .eq('id', deleteId);
+
+                if (error) throw error;
+
+                // Remove from local state
+                setMyPlans(prev => prev.filter(plan => plan.id !== deleteId));
+                setAllPlans(prev => prev.filter(plan => plan.id !== deleteId));
+
+                // Remove from selected IDs if it was selected
+                setSelectedIds(prev => prev.filter(id => id !== deleteId));
+
+                Alert.alert("Success", "Plan deleted successfully");
+            } else {
+                Alert.alert("Error", "Cannot delete predefined plans");
+            }
+        } catch (err) {
+            console.error("Error deleting plan:", err);
+            Alert.alert("Error", "Failed to delete plan");
+        } finally {
+            setDeleteId(null);
+            setShowOptions(false);
         }
-        setDeleteId(null);
-        setShowDeleteModal(false);
     };
 
     const renderDisciplineCard = (tpl: DisciplineTemplate, isUserPlan = false) => {
-        const isSelected = selectedIds.includes(tpl.id);
+        const isSelected = selectedIds.includes(tpl.id)
+        const isPredefined = tpl.isPreloaded
 
         return (
             <TouchableOpacity
@@ -203,9 +243,9 @@ const DisciplineScreen = () => {
             >
                 <Card
                     bordered
-                    padding="$3"
-                    borderRadius="$4"
-                    marginBottom="$3"
+                    padding={moderateScale(5)}
+                    borderRadius={moderateScale(10)}
+                    marginBottom={verticalScale(12)}
                     borderWidth={2}
                     backgroundColor={isSelected ? colors.card : "white"}
                     borderColor={isSelected ? colors.primary : (colors.border as any)}
@@ -213,68 +253,75 @@ const DisciplineScreen = () => {
                     {isSelected && (
                         <View
                             position="absolute"
-                            top={-8}
-                            right={-8}
+                            top={-moderateScale(6)}
+                            right={-moderateScale(6)}
                             zIndex={10}
-                            w={28}
-                            h={28}
-                            br={14}
+                            width={moderateScale(28)}
+                            height={moderateScale(28)}
+                            borderRadius={moderateScale(14)}
                             backgroundColor={colors.primary}
-                            ai="center"
-                            jc="center"
-                            elevationAndroid={10}
+                            alignItems="center"
+                            justifyContent="center"
                         >
-                            <MaterialCommunityIcons name="check" size={16} color="white" />
+                            <MaterialCommunityIcons name="check" size={moderateScale(16)} color="white" />
                         </View>
                     )}
 
-                    <XStack ai="center" jc="space-between" mb="$2" f={1}>
-                        <XStack ai="center" space="$4" f={1}>
-                            <View w={40} h={40} br={20} ai="center" jc="center">
+                    <XStack ai="center" jc="space-between" mb={verticalScale(8)} flex={1}>
+                        <XStack ai="center" space={moderateScale(12)} flex={1}>
+                            <View
+                                width={moderateScale(40)}
+                                height={moderateScale(40)}
+                                borderRadius={moderateScale(20)}
+                                alignItems="center"
+                                justifyContent="center"
+                            >
                                 <MaterialCommunityIcons
                                     name={(tpl.icon as any) || "calendar-check"}
-                                    size={22}
+                                    size={moderateScale(20)}
                                     color={colors.primary}
                                 />
                             </View>
 
-                            <YStack f={1} space="$2">
-                                <XStack ai="center" jc="space-between" space="$2">
-                                    <Text fontSize="$6" fontWeight="700" color="#333">
+                            <YStack flex={1} space={moderateScale(6)}>
+                                <XStack ai="center" jc="space-between" space={moderateScale(6)}>
+                                    <Text fontSize={scaleFont(12)} fontWeight="700" color="#333">
                                         {tpl.name}
                                     </Text>
-                                    <Text fontSize="$4" fontWeight="600" color={colors.primary}>
+                                    <Text fontSize={scaleFont(12)} fontWeight="600" color={colors.primary}>
                                         {tpl.rules?.length || 0} rule(s)
                                     </Text>
                                 </XStack>
 
                                 <Text
-                                    fontSize="$4"
+                                    fontSize={scaleFont(12)}
                                     color="#555"
-                                    lineHeight={20}
+                                    lineHeight={verticalScale(18)}
                                     numberOfLines={2}
                                     ellipsizeMode="tail"
                                 >
                                     {tpl.description || "No description available"}
                                 </Text>
 
-                                <XStack space="$4" mr="$2" jc="flex-end">
-                                    <XStack space="$4">
+                                <XStack space={moderateScale(12)} mr={moderateScale(8)} jc="flex-end">
+                                    <XStack space={moderateScale(12)}>
                                         <TouchableOpacity onPress={() => handlePlanPress(tpl, isUserPlan)}>
                                             <MaterialCommunityIcons
                                                 name="pencil"
-                                                size={23}
+                                                size={moderateScale(20)}
                                                 color={colors.primary}
                                             />
                                         </TouchableOpacity>
 
-                                        <TouchableOpacity onPress={() => handleDelete(tpl.id)}>
-                                            <MaterialCommunityIcons
-                                                name="trash-can"
-                                                size={23}
-                                                color="red"
-                                            />
-                                        </TouchableOpacity>
+                                        {!isPredefined && (
+                                            <TouchableOpacity onPress={() => handleDelete(tpl.id)}>
+                                                <MaterialCommunityIcons
+                                                    name="trash-can"
+                                                    size={moderateScale(20)}
+                                                    color="red"
+                                                />
+                                            </TouchableOpacity>
+                                        )}
                                     </XStack>
                                 </XStack>
                             </YStack>
@@ -282,37 +329,37 @@ const DisciplineScreen = () => {
                     </XStack>
                 </Card>
             </TouchableOpacity>
-        );
-    };
+        )
+    }
 
     return (
         <GoalBackground>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 60 }}>
-                <YStack space="$4" mt="$7">
-                    <XStack space="$4" ai="center">
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: moderateScale(16), paddingBottom: verticalScale(60) }}>
+                <YStack space={moderateScale(12)} mt={verticalScale(28)}>
+                    <XStack space={moderateScale(12)} ai="center">
                         <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
+                            <MaterialCommunityIcons name="arrow-left" size={moderateScale(24)} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize="$7" fontWeight="700" color={colors.text}>
+                        <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
                             Choose Template
                         </Text>
                     </XStack>
-                    <Text fontSize="$5" color="#555">
+                    <Text fontSize={scaleFont(14)} color="#555">
                         Long press to select one or more plans for download or print
                     </Text>
                 </YStack>
 
-                <XStack ai="center" jc="flex-start" space="$5" mt="$4">
+                <XStack ai="center" jc="flex-start" space={moderateScale(12)} mt={verticalScale(16)}>
                     <Button
                         unstyled
-                        br='$6'
+                        borderRadius={moderateScale(12)}
                         backgroundColor="#FFF0DE"
-                        px="$3"
+                        paddingHorizontal={moderateScale(12)}
                         onPress={() => navigation.navigate('Print', { printAll: true })}
                     >
-                        <XStack ai="center" space="$3" py="$3">
-                            <Feather name="download" size={20} color={colors.primary} />
-                            <Text color={colors.primary} fontSize="$4">
+                        <XStack ai="center" space={moderateScale(12)} paddingVertical={moderateScale(8)}>
+                            <Feather name="download" size={moderateScale(18)} color={colors.primary} />
+                            <Text color={colors.primary} fontSize={scaleFont(12)}>
                                 Download All
                             </Text>
                         </XStack>
@@ -321,13 +368,13 @@ const DisciplineScreen = () => {
                     <Button
                         unstyled
                         backgroundColor="#E3FFF2"
-                        px="$3"
-                        br='$6'
+                        paddingHorizontal={moderateScale(12)}
+                        borderRadius={moderateScale(12)}
                         onPress={() => handlePrintAllPlans(allPlans, childName)}
                     >
-                        <XStack ai="center" space="$3" py="$3">
-                            <Feather name="printer" size={20} color={colors.secondary} />
-                            <Text color={colors.secondary} fontSize="$4">
+                        <XStack ai="center" space={moderateScale(12)} paddingVertical={moderateScale(8)}>
+                            <Feather name="printer" size={moderateScale(18)} color={colors.secondary} />
+                            <Text color={colors.secondary} fontSize={scaleFont(12)}>
                                 Print All
                             </Text>
                         </XStack>
@@ -335,43 +382,43 @@ const DisciplineScreen = () => {
                 </XStack>
 
                 {loading && (
-                    <View ai="center" mt="$6">
+                    <View alignItems="center" mt={verticalScale(24)}>
                         <Spinner size="large" color={colors.primary as any} />
                     </View>
                 )}
 
-                {error && <Text color="red" fontSize="$4" mt="$4">{error}</Text>}
+                {error && <Text color="red" fontSize={scaleFont(12)} mt={verticalScale(16)}>{error}</Text>}
 
                 {!loading && !error && (
-                    <YStack space="$5">
-                        <YStack jc="flex-start" mt="$6" space="$6">
-                            <YStack space="$3">
-                                <Text fontSize="$7" fontWeight="700" color={colors.text}>
+                    <YStack space={moderateScale(12)}>
+                        <YStack jc="flex-start" mt={verticalScale(24)} space={moderateScale(12)}>
+                            <YStack space={moderateScale(8)}>
+                                <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
                                     My Plans:
                                 </Text>
                                 {myPlans.length > 0 ? (
                                     myPlans.map((tpl) => renderDisciplineCard(tpl, true))
                                 ) : (
-                                    <Text color={colors.textSecondary} fontSize="$4">
+                                    <Text color={colors.textSecondary} fontSize={scaleFont(12)}>
                                         You have no personal plans yet.
                                     </Text>
                                 )}
                             </YStack>
 
                             {selectedIds.length > 0 ? (
-                                <YStack space="$4" jc="center" mt="$4">
-                                    <Button size="$5" bg={colors.primary} onPress={handleDownloadPlan}>
-                                        <XStack ai="center" jc="center" space="$2">
-                                            <Feather name="download" size={18} color="white" />
+                                <YStack space={moderateScale(12)} jc="center" mt={verticalScale(16)}>
+                                    <Button size={moderateScale(40)} bg={colors.primary} onPress={handleDownloadPlan}>
+                                        <XStack ai="center" jc="center" space={moderateScale(8)}>
+                                            <Feather name="download" size={moderateScale(16)} color="white" />
                                             <Text color="white">
                                                 Download ({selectedIds.length})
                                             </Text>
                                         </XStack>
                                     </Button>
 
-                                    <Button size="$5" bg='#9FCC16' onPress={handlePrintSelectedPlans}>
-                                        <XStack ai="center" jc="center" space="$2">
-                                            <Feather name="printer" size={18} color="white" />
+                                    <Button size={moderateScale(40)} bg='#9FCC16' onPress={handlePrintSelectedPlans}>
+                                        <XStack ai="center" jc="center" space={moderateScale(8)}>
+                                            <Feather name="printer" size={moderateScale(16)} color="white" />
                                             <Text color="white">
                                                 Print ({selectedIds.length})
                                             </Text>
@@ -380,20 +427,20 @@ const DisciplineScreen = () => {
                                 </YStack>
                             ) : (
                                 <YStack>
-                                    <XStack ai="center" my="$1" mb='$3'>
+                                    <XStack ai="center" my={moderateScale(4)} mb={moderateScale(12)}>
                                         <View flex={1} height={1} bg="gray" />
-                                        <Text mx="$3" fontSize="$5" color={colors.text}>
+                                        <Text mx={moderateScale(8)} fontSize={scaleFont(14)} color={colors.text}>
                                             OR
                                         </Text>
                                         <View flex={1} height={1} bg="gray" />
                                     </XStack>
                                     <Button
-                                        mt='$2'
-                                        mb='$3'
+                                        mt={moderateScale(8)}
+                                        mb={moderateScale(12)}
                                         bg={colors.primary}
-                                        size='$5'
+                                        size={moderateScale(40)}
                                         color="white"
-                                        borderRadius="$4"
+                                        borderRadius={moderateScale(8)}
                                         onPress={() => navigation.navigate("AddDiscipline" as never)}
                                     >
                                         Create Custom
@@ -401,8 +448,8 @@ const DisciplineScreen = () => {
                                 </YStack>
                             )}
 
-                            <YStack space="$3">
-                                <Text fontSize="$7" fontWeight="700" color={colors.text}>
+                            <YStack space={moderateScale(8)}>
+                                <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
                                     Predefined Plans:
                                 </Text>
                                 {templates.filter((t) => t.isPreloaded).map((tpl) =>
@@ -412,33 +459,41 @@ const DisciplineScreen = () => {
                         </YStack>
                     </YStack>
                 )}
+
             </ScrollView>
 
             <Modal visible={showOptions} transparent animationType="slide" onRequestClose={() => setShowOptions(false)}>
-                <YStack f={1} jc="flex-end" bg="rgba(0,0,0,0.4)">
-                    <YStack bg={colors.card} p="$4" br="$6" space="$6" elevation={6} borderTopLeftRadius={20} borderTopRightRadius={20}>
-                        <YStack space='$3'>
-                            <Text fontSize="$7" fontWeight="600" jc='center' ai='center' color={colors.text}>
-                                Are you sure you want to Delete this Task ?
+                <YStack flex={1} jc="flex-end" bg="rgba(0,0,0,0.4)">
+                    <YStack bg={colors.card} p={moderateScale(16)} borderRadius={moderateScale(16)} space={moderateScale(16)} elevation={6}>
+                        <YStack space={moderateScale(8)}>
+                            <Text fontSize={scaleFont(18)} fontWeight="600" jc='center' ai='center' color={colors.text}>
+                                Are you sure you want to delete this plan?
                             </Text>
-                            <Text fontSize="$5" fontWeight="600">
-                                Once this Task is deleted it cannot be retrieved.
+                            <Text fontSize={scaleFont(14)} fontWeight="600">
+                                Once this plan is deleted it cannot be retrieved.
                             </Text>
                         </YStack>
-                        <XStack jc='center' ai='center' space='$6' mt='$5' mb='$7'>
-                            <Button size="$5" w='40%' variant="outlined"
+                        <XStack jc='center' ai='center' space={moderateScale(12)} mt={moderateScale(16)} mb={moderateScale(28)}>
+                            <Button
+                                size={moderateScale(40)}
+                                width='40%'
+                                variant="outlined"
                                 borderColor={colors.border as any}
-                                onPress={() => setShowOptions(false)}>
+                                onPress={() => {
+                                    setDeleteId(null)
+                                    setShowOptions(false)
+                                }}
+                            >
                                 Cancel
                             </Button>
                             <Button
-                                size="$5"
+                                size={moderateScale(40)}
                                 width='40%'
                                 backgroundColor="red"
-                                px="$4"
+                                px={moderateScale(12)}
                                 onPress={confirmDelete}
                             >
-                                <Text color="white" fontSize="$4" fontWeight="bold">
+                                <Text color="white" fontSize={scaleFont(14)} fontWeight="bold">
                                     Delete
                                 </Text>
                             </Button>
@@ -447,7 +502,7 @@ const DisciplineScreen = () => {
                 </YStack>
             </Modal>
         </GoalBackground>
-    );
+    )
 };
 
 export default DisciplineScreen;

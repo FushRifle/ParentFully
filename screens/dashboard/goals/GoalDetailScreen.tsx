@@ -453,6 +453,9 @@ const GoalDetailsScreen = () => {
                             <Text fontSize="$3" mb='$3' color={colors.textSecondary}>
                                 Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
                             </Text>
+                            <Text fontSize="$3" mb='$3' color={colors.textSecondary}>
+                                Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
+                            </Text>
                         </YStack>
                     ) : (
                         <Paragraph color={goal.time_bound ? colors.text : colors.textSecondary} fontSize="$4">
