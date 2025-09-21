@@ -1,0 +1,55 @@
+# === Dependencies ===
+node_modules/
+
+# === Expo ===
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# === Tamagui ===
+.tamagui/
+tamagui/
+
+# === Native (Android/iOS) ===
+android/
+ios/
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.plist
+*.key
+*.mobileprovision
+*.idea/
+*.tamagui/
+*.vscode/
+
+# === Metro ===
+.metro-health-check*
+
+# === Debug and Logs ===
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+logs/
+*.log
+
+# === macOS ===
+.DS_Store
+*.pem
+
+# === Local environment files ===
+.env.local*
+*.env
+
+# === Coverage ===
+coverage/
+
+# === Build Artifacts ===
+*.tsbuildinfo
+
+# === Misc ===
+app-example
+.txt*

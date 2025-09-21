@@ -1,0 +1,33 @@
+workflows:
+  ios-unsigned-build:
+    name: iOS unsigned archive
+    max_build_duration: 60
+    environment:
+      node: 20
+      ruby: 3.2.2
+      cocoapods: 1.15.2
+      xcode: 15.4  # Ventura-compatible
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+          cd ios
+          pod install --repo-update
+          cd ..
+      - name: Clean build
+        script: |
+          cd ios
+          xcodebuild clean -workspace ParentFully.xcworkspace -scheme ParentFully -configuration Release
+          cd ..
+      - name: Build unsigned archive
+        script: |
+          cd ios
+          xcodebuild archive \
+            -workspace ParentFully.xcworkspace \
+            -scheme ParentFully \
+            -configuration Release \
+            -archivePath $PWD/build/ParentFully.xcarchive \
+            CODE_SIGNING_ALLOWED=NO
+          cd ..
+    artifacts:
+      - build/ios/ParentFully.xcarchive

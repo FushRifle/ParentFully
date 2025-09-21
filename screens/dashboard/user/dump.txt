@@ -1,0 +1,245 @@
+    const handleAddCoParent = useCallback(async (newCoParent: CoParentData) => {
+        try {
+            if (!user) return;
+
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('id, full_name, email, avatar_url')
+                .eq('email', newCoParent.email)
+                .single();
+
+            if (userError || !userData) {
+                console.error('User not found:', userError);
+                setError('User not found');
+                return;
+            }
+
+            const { error: relationshipError } = await supabase
+                .from('family_relationships')
+                .insert([{
+                    parent_id: user.id,
+                    member_id: userData.id,
+                    relationship: newCoParent.relation
+                }]);
+
+            if (relationshipError) throw relationshipError;
+
+            setCoParents(prev => [
+                ...prev,
+                {
+                    id: userData.id,
+                    name: userData.full_name || newCoParent.name,
+                    email: userData.email || '',
+                    relationship: newCoParent.relation,
+                    avatar: userData.avatar_url ? { uri: userData.avatar_url } : AVATAR_DEFAULT
+                }
+            ]);
+        } catch (error) {
+            console.error('Error adding co-parent:', error);
+            setError('Failed to add family member');
+        }
+    }, [user]);
+
+    const removeCoParent = useCallback(async (id: string) => {
+        try {
+            if (!user) return;
+
+            const { error } = await supabase
+                .from('family_relationships')
+                .delete()
+                .or(`and(parent_id.eq.${user.id},member_id.eq.${id}),and(parent_id.eq.${id},member_id.eq.${user.id})`);
+
+            if (error) throw error;
+
+            setCoParents(prev => prev.filter(parent => parent.id !== id));
+        } catch (error) {
+            console.error('Error removing co-parent:', error);
+            setError('Failed to remove family member');
+        }
+    }, [user]);
+
+    const updateProfile = useCallback(async (updatedData: {
+        name: string;
+        email: string;
+        avatar?: string | { uri: string } | null;
+    }) => {
+        try {
+            if (!user) throw new Error('No user to update');
+            setLoading(true);
+
+            // Prepare update payload
+            const updateData: Partial<SupabaseUser> = {
+                full_name: updatedData.name,
+                email: updatedData.email,
+            };
+
+            if (updatedData.avatar && typeof updatedData.avatar === 'object' && 'uri' in updatedData.avatar) {
+                updateData.avatar_url = updatedData.avatar.uri;
+            } else if (updatedData.avatar === null) {
+                updateData.avatar_url = null;
+            }
+
+            // Update users table only
+            const { error: dbError } = await supabase
+                .from('users')
+                .update(updateData)
+                .eq('id', user.id);
+
+            if (dbError) throw dbError;
+
+            // Update local state
+            setUser(prev => prev ? {
+                ...prev,
+                name: updatedData.name,
+                email: updatedData.email,
+                avatar: updatedData.avatar ?? prev.avatar,
+            } : null);
+
+        } catch (error) {
+            console.error('Update failed:', error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    }, [user]);
+
+    const handleToggleNotifications = useCallback(async (value: boolean) => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            const { error } = await supabase
+                .from('user_settings')
+                .upsert({ user_id: user.id, notifications_enabled: value }, { onConflict: 'user_id' });
+
+            if (error) throw error;
+
+            Alert.alert(t('notifications'), value ? t('enabled') : t('disabled'));
+        } catch (error) {
+            console.error('Error updating notification settings:', error);
+            Alert.alert(t('error'), t('notification_update_failed'));
+        }
+    }, [t]);
+
+
+
+        const handleAddCoParent = useCallback(async (newCoParent: CoParentData) => {
+        try {
+            if (!user) return;
+
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('id, full_name, email, avatar_url')
+                .eq('email', newCoParent.email)
+                .single();
+
+            if (userError || !userData) {
+                console.error('User not found:', userError);
+                setError('User not found');
+                return;
+            }
+
+            const { error: relationshipError } = await supabase
+                .from('family_relationships')
+                .insert([{
+                    parent_id: user.id,
+                    member_id: userData.id,
+                    relationship: newCoParent.relation
+                }]);
+
+            if (relationshipError) throw relationshipError;
+
+            setCoParents(prev => [
+                ...prev,
+                {
+                    id: userData.id,
+                    name: userData.full_name || newCoParent.name,
+                    email: userData.email || '',
+                    relationship: newCoParent.relation,
+                    avatar: userData.avatar_url ? { uri: userData.avatar_url } : AVATAR_DEFAULT
+                }
+            ]);
+        } catch (error) {
+            console.error('Error adding co-parent:', error);
+            setError('Failed to add family member');
+        }
+    }, [user]);
+
+    const removeCoParent = useCallback(async (id: string) => {
+        try {
+            if (!user) return;
+
+            const { error } = await supabase
+                .from('family_relationships')
+                .delete()
+                .or(`and(parent_id.eq.${user.id},member_id.eq.${id}),and(parent_id.eq.${id},member_id.eq.${user.id})`);
+
+            if (error) throw error;
+
+            setCoParents(prev => prev.filter(parent => parent.id !== id));
+        } catch (error) {
+            console.error('Error removing co-parent:', error);
+            setError('Failed to remove family member');
+        }
+    }, [user]);
+
+    const updateProfile = useCallback(async (updatedData: {
+        name: string;
+        email: string;
+        avatar?: string | { uri: string } | null;
+    }) => {
+        try {
+            if (!user) throw new Error('No user to update');
+            setLoading(true);
+
+            const updateData: Partial<SupabaseUser> = {
+                full_name: updatedData.name,
+                email: updatedData.email,
+            };
+
+            if (updatedData.avatar && typeof updatedData.avatar === 'object' && 'uri' in updatedData.avatar) {
+                updateData.avatar_url = updatedData.avatar.uri;
+            } else if (updatedData.avatar === null) {
+                updateData.avatar_url = null;
+            }
+
+            const { error: dbError } = await supabase
+                .from('users')
+                .update(updateData)
+                .eq('id', user.id);
+
+            if (dbError) throw dbError;
+
+            setUser(prev => prev ? {
+                ...prev,
+                name: updatedData.name,
+                email: updatedData.email,
+                avatar: updatedData.avatar ?? prev.avatar,
+            } : null);
+
+        } catch (error) {
+            console.error('Update failed:', error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    }, [user]);
+
+    const handleToggleNotifications = useCallback(async (value: boolean) => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            const { error } = await supabase
+                .from('user_settings')
+                .upsert({ user_id: user.id, notifications_enabled: value }, { onConflict: 'user_id' });
+
+            if (error) throw error;
+
+            Alert.alert(t('notifications'), value ? t('enabled') : t('disabled'));
+        } catch (error) {
+            console.error('Error updating notification settings:', error);
+            Alert.alert(t('error'), t('notification_update_failed'));
+        }
+    }, [t]);
+

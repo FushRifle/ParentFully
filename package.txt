@@ -1,0 +1,39 @@
+-Create a Dynamic Child Screen page (Goals, Routine and Discipline)
+-Use the same Child Add Onboarding flow for Add Child
+-Discipline plan in tabular form, and editable
+-Goal Cards need to be smaller
+-Goal tracking should sync with time, add plus and minus for %, add an extra status, try again.
+-Routine Checks should only reset, routine should eb editable, and deleteable
+-Morning, Afternoon, Night and NO schhool (Headers)
+-MessageScreen content should be editable, and a document viewer.
+
+
+points instead of percentage, with real-time tracking of the target time
+Routine fix
+goal should have a celebratory modal
+try again, mastered button
+
+
+module.exports = {
+  presets: ['babel-preset-expo'],
+  plugins: [
+    [
+      '@tamagui/babel-plugin',
+      {
+        components: ['tamagui'],
+        config: './tamagui.config.ts',
+        logTimings: true,
+      },
+    ],
+    'react-native-worklets/plugin', // updated plugin
+  ],
+};
+
+
+  expo@54.0.8 - expected version: 54.0.8
+  expo-audio@1.0.12 - expected version: ~1.0.12
+  expo-constants@18.0.9 - expected version: ~18.0.9
+  expo-media-library@18.2.0 - expected version: ~18.2.0
+  expo-router@6.0.6 - expected version: ~6.0.6
+
+  npm install expo@54.0.8 expo-router@6.0.6 expo-audio@1.0.12 expo-constants@18.0.9 expo-media-library@18.2.1 expo-router@6.0.6  --legacy-peer-deps
