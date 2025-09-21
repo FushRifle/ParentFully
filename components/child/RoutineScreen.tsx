@@ -388,9 +388,21 @@ export const RoutineScreen = ({ childId: initialChildId }: { childId: string }) 
             >
                 <YStack space="$3">
                     {groupedRoutines.length === 0 ? (
-                        <Text color={colors.textSecondary} textAlign="center">
-                            No routine tasks for today
-                        </Text>
+                        <YStack ai="center" mt='$3' jc="center" p="$6" br="$4" bg={colors.surface} gap="$3">
+                            <Text color={colors.textSecondary} fontSize='$4'>
+                                No routine tasks for today
+                                Add some to get started!</Text>
+                            <Button
+                                size='$5'
+                                onPress={() =>
+                                    navigation.navigate('Routine')}
+                                backgroundColor={colors.secondary}
+                                color={colors.onPrimary}
+                                marginTop="$4"
+                            >
+                                Add New Routine
+                            </Button>
+                        </YStack>
                     ) : (
                         groupedRoutines.map(group => {
                             const isExpanded = expandedGroupKey === group.key;

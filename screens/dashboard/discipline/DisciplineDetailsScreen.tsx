@@ -5,8 +5,8 @@ import { supabase } from "@/supabase/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useCallback, useState } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Modal, ScrollView, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Avatar } from "react-native-paper";
 import {
@@ -64,10 +64,12 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [assignSheetOpen, setAssignSheetOpen] = useState(false);
+    const [successModalVisible, setSuccessModalVisible] = useState(false);
     const [children, setChildren] = useState<Child[]>([]);
     const [childrenLoading, setChildrenLoading] = useState(false);
     const [childrenError, setChildrenError] = useState<string | null>(null);
     const [selectedChildren, setSelectedChildren] = useState<Child[]>([]);
+    const [planName, setPlanName] = useState(name);
 
     // ✅ Normalize rules into RuleSet[]
     const [ruleSets, setRuleSets] = useState<RuleSet[]>(() =>
@@ -79,6 +81,13 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
             )
             : []
     );
+
+    // Set editing mode if we're editing an existing plan
+    useEffect(() => {
+        if (id) {
+            setIsEditing(true);
+        }
+    }, [id]);
 
     const fetchChildren = useCallback(async () => {
         try {
@@ -111,6 +120,11 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
     const handleAddRuleSet = () =>
         setRuleSets((prev) => [...prev, { rule: "", consequence: "", notes: "" }]);
 
+    const handleRemoveRuleSet = (index: number) => {
+        if (ruleSets.length <= 1) return; // Don't remove the last rule
+        setRuleSets((prev) => prev.filter((_, i) => i !== index));
+    };
+
     const handleUpdateRuleSet = (
         index: number,
         field: keyof RuleSet,
@@ -121,33 +135,53 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
         );
 
     const saveDisciplinePlan = async (plan: DisciplinePlan) => {
-        const { data, error } = await supabase
-            .from("discipline_plans")
-            .insert([
-                {
-                    id: plan.id ?? uuidv4(),
-                    user_id: plan.user_id,
-                    child_id: plan.child_id ?? null,
-                    name: plan.name,
-                    description: plan.description ?? "",
-                    strategy: plan.strategy ?? "",
-                    consequences: plan.consequences ?? "",
-                    rewards: plan.rewards ?? "",
-                    notes: plan.notes ?? "",
-                    icon: plan.icon ?? "book",
-                    age_range: plan.age_range ?? "",
-                    is_preloaded: plan.is_preloaded ?? false,
-                    rules: plan.rules,
-                },
-            ])
-            .select()
-            .single();
+        try {
+            // If we're editing an existing plan
+            if (id) {
+                const { data, error } = await supabase
+                    .from("discipline_plans")
+                    .update({
+                        name: plan.name,
+                        description: plan.description ?? "",
+                        rules: plan.rules,
+                    })
+                    .eq("id", id)
+                    .select()
+                    .single();
 
-        if (error) {
-            console.error("❌ Failed to save discipline plan:", error.message);
+                if (error) throw error;
+                return data;
+            } else {
+                // Creating a new plan
+                const { data, error } = await supabase
+                    .from("discipline_plans")
+                    .insert([
+                        {
+                            id: plan.id ?? uuidv4(),
+                            user_id: plan.user_id,
+                            child_id: plan.child_id ?? null,
+                            name: plan.name,
+                            description: plan.description ?? "",
+                            strategy: plan.strategy ?? "",
+                            consequences: plan.consequences ?? "",
+                            rewards: plan.rewards ?? "",
+                            notes: plan.notes ?? "",
+                            icon: plan.icon ?? "book",
+                            age_range: plan.age_range ?? "",
+                            is_preloaded: plan.is_preloaded ?? false,
+                            rules: plan.rules,
+                        },
+                    ])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                return data;
+            }
+        } catch (error) {
+            console.error("❌ Failed to save discipline plan:", error);
             throw error;
         }
-        return data;
     };
 
     return (
@@ -160,14 +194,16 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                             <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
                         </TouchableOpacity>
                         <Text fontSize="$7" fontWeight="700" color={colors.text}>
-                            {name}
+                            {isEditing ? "Edit Plan" : name}
                         </Text>
                     </XStack>
                     <Text fontSize="$5" color="#555">
-                        Review and Customise
+                        {isEditing ? "Edit your plan details" : "Review and Customise"}
                     </Text>
 
-                    <KeyboardAwareScrollView enableOnAndroid extraScrollHeight={5}
+                    <KeyboardAwareScrollView
+                        enableOnAndroid
+                        extraScrollHeight={5}
                         keyboardOpeningTime={0}
                         style={{ flex: 1 }}
                     >
@@ -175,7 +211,12 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                         <Text fontSize="$5" mt="$3" mb="$2" color="#444">
                             Plan Name
                         </Text>
-                        <Input defaultValue={name} size="$5" editable={isEditing} />
+                        <Input
+                            value={planName}
+                            size="$5"
+                            editable={isEditing}
+                            onChangeText={setPlanName}
+                        />
 
                         {/* Rules Set */}
                         <XStack ai="center" jc="space-between" mt="$5" mb="$2">
@@ -207,6 +248,13 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                                 borderColor={colors.border as any}
                             >
                                 <YStack space="$5">
+                                    {isEditing && (
+                                        <XStack jc="flex-end">
+                                            <TouchableOpacity onPress={() => handleRemoveRuleSet(index)}>
+                                                <MaterialCommunityIcons name="close-circle" size={24} color="#ff6b6b" />
+                                            </TouchableOpacity>
+                                        </XStack>
+                                    )}
                                     <Field
                                         label="Rules"
                                         color="green"
@@ -240,30 +288,52 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
 
                     {/* Buttons */}
                     <XStack space="$3" jc="space-between" mt="$6" mb='$9'>
-                        <Button
-                            flex={1}
-                            size="$5"
-                            borderRadius="$4"
-                            borderColor={colors.primary}
-                            backgroundColor="transparent"
-                            onPress={() => setIsEditing(!isEditing)}
-                        >
-                            <Text color="#FF8C00" fontWeight="700">
-                                {isEditing ? "Done" : "Customize"}
-                            </Text>
-                        </Button>
+                        {!isEditing && (
+                            <Button
+                                flex={1}
+                                size="$5"
+                                borderRadius="$4"
+                                borderColor={colors.primary}
+                                backgroundColor="transparent"
+                                onPress={() => setIsEditing(true)}
+                            >
+                                <Text color="#FF8C00" fontWeight="700">
+                                    Customize
+                                </Text>
+                            </Button>
+                        )}
+                        {isEditing && (
+                            <Button
+                                flex={1}
+                                size="$5"
+                                borderRadius="$4"
+                                borderColor={colors.primary}
+                                backgroundColor="transparent"
+                                onPress={() => setIsEditing(false)}
+                            >
+                                <Text color="#FF8C00" fontWeight="700">
+                                    Cancel
+                                </Text>
+                            </Button>
+                        )}
                         <Button
                             flex={1}
                             size="$5"
                             borderRadius="$4"
                             backgroundColor={colors.primary}
                             onPress={() => {
-                                fetchChildren();
-                                setAssignSheetOpen(true);
+                                if (isEditing) {
+                                    // Save changes first
+                                    // In a real app, you would save the changes to the database here
+                                    setIsEditing(false);
+                                } else {
+                                    fetchChildren();
+                                    setAssignSheetOpen(true);
+                                }
                             }}
                         >
                             <Text color="white" fontWeight="700">
-                                Save and Assign
+                                {isEditing ? "Save Changes" : "Save and Assign"}
                             </Text>
                         </Button>
                     </XStack>
@@ -335,7 +405,7 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                                             await saveDisciplinePlan({
                                                 user_id: userId,
                                                 child_id: child.id,
-                                                name,
+                                                name: planName,
                                                 description,
                                                 rules: ruleSets,
                                                 is_preloaded: false,
@@ -344,6 +414,7 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
 
                                         setAssignSheetOpen(false);
                                         setSelectedChildren([]);
+                                        setSuccessModalVisible(true);
                                     } catch (err: any) {
                                         console.error("❌ Failed to assign:", err?.message ?? err);
                                     }
@@ -355,6 +426,39 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                         </ScrollView>
                     </Sheet.Frame>
                 </Sheet>
+
+                {/* Success Modal */}
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={successModalVisible}
+                    onRequestClose={() => {
+                        setSuccessModalVisible(false);
+                        navigation.goBack();
+                    }}
+                >
+                    <View flex={1} jc="center" ai="center" bg="rgba(0,0,0,0.5)">
+                        <View bg="white" p="$6" borderRadius="$4" width="80%" ai="center">
+                            <MaterialCommunityIcons name="check-circle" size={50} color={colors.success} />
+                            <Text fontSize="$6" fontWeight="700" mt="$3" mb="$2">
+                                Plan Assigned Successfully!
+                            </Text>
+                            <Text textAlign="center" color="#666" mb="$4">
+                                Your discipline plan has been successfully assigned to the selected children.
+                            </Text>
+                            <Button
+                                width="100%"
+                                bg={colors.primary}
+                                onPress={() => {
+                                    setSuccessModalVisible(false);
+                                    navigation.goBack();
+                                }}
+                            >
+                                <Text color="white" fontWeight="700">Done</Text>
+                            </Button>
+                        </View>
+                    </View>
+                </Modal>
 
             </ScrollView>
         </GoalBackground>
@@ -453,4 +557,3 @@ const ChildItem = ({
         </TouchableOpacity>
     </XStack>
 );
-

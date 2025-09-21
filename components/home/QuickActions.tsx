@@ -181,10 +181,10 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                 </Text>
             </XStack>
 
+            {/* 2x2 Grid Full Width */}
             <XStack flexWrap="wrap" justifyContent="space-between" rowGap="$4">
                 {displayedActions.map(({ key, label, description, icon, screen, light, dark, badge }) => {
                     const IconComponent = (Icons as any)[icon]
-
                     return (
                         <Card
                             key={key}

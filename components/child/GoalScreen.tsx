@@ -327,7 +327,11 @@ const GoalsScreen = ({ childId }: { childId: string }) => {
                         <YStack ai="center" mt='$3' jc="center" p="$6" br="$4" bg={colors.surface} gap="$3">
                             <Text color={colors.textSecondary}>No goals found. Add some to get started!</Text>
                             <Button
+                                size='$5'
                                 onPress={() => navigation.navigate('CorePlan')}
+                                backgroundColor={colors.secondary}
+                                color={colors.onPrimary}
+                                marginTop="$4"
                             >
                                 Add New Goal
                             </Button>

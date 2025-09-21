@@ -241,18 +241,20 @@ const DisciplineScreen = ({ childId }: { childId: string }) => {
                         </YStack>
                     ))
                 ) : (
-                    <Text style={{ textAlign: 'center', marginVertical: 16 }}>No discipline plans found</Text>
-                )}
-
-                <Button
-                    size='$5'
-                    onPress={() => navigation.navigate('Discipline', { childId } as never)}
-                    backgroundColor={colors.secondary}
-                    color={colors.onPrimary}
-                    marginTop="$4"
-                >
-                    Add New Plan
-                </Button>
+                    <YStack ai="center" mt='$3' jc="center" p="$6" br="$4" bg={colors.surface} gap="$3">
+                        <Text color={colors.textSecondary} fontSize='$4'>
+                            No Discipline Plan Yet
+                            Add some to get started!</Text>
+                        <Button
+                            size='$5'
+                            onPress={() => navigation.navigate('Discipline', { childId } as never)}
+                            backgroundColor={colors.secondary}
+                            color={colors.onPrimary}
+                            marginTop="$4"
+                        >
+                            Add New Plan
+                        </Button>
+                    </YStack>)}
             </ScrollView>
         </GoalBackground>
     );

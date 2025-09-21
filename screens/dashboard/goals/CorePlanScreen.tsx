@@ -124,8 +124,9 @@ const CorePlanScreen = () => {
                             <YStack space="$2">
                                 <XStack
                                     space="$2.5"
-                                    flexWrap="wrap"
+                                    flexWrap="nowrap"
                                     justifyContent="space-between"
+                                    overflow="scroll" // allows horizontal scroll on small screens
                                 >
                                     {ageGroups.map((group) => {
                                         const isActive = activeTab === group.id;
@@ -133,9 +134,8 @@ const CorePlanScreen = () => {
                                             <Button
                                                 key={group.id}
                                                 size="$3"
-                                                flexBasis="23%"
-                                                flexGrow={1}
-                                                minWidth="22%"
+                                                flex={1} // all buttons share equal width
+                                                flexShrink={1}
                                                 borderRadius="$9"
                                                 borderColor={colors.border as any}
                                                 backgroundColor={isActive ? colors.primary : "white"}
