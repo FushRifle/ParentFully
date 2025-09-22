@@ -401,7 +401,7 @@ const GoalDetailsScreen = () => {
                     <Button unstyled onPress={() => navigation.goBack()} hitSlop={20} mr="$5">
                         <MaterialIcons name="arrow-back" size={24} color={colors.text} />
                     </Button>
-                    <H4 color={colors.text} fontWeight="700" fontSize="$7">
+                    <H4 color={colors.text} fontWeight="700" fontSize="$4">
                         {isEditing ? "Edit Goal" : "Goal Details"}
                     </H4>
                 </XStack>
@@ -449,10 +449,10 @@ const GoalDetailsScreen = () => {
                                         <Picker.Item label="Years" value="years" />
                                     </Picker>
                                 </View>
-                                <Text fontSize="$3" color={colors.textSecondary}>
-                                    Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
-                                </Text>
                             </XStack>
+                            <Text fontSize="$3" mb='$3' color={colors.textSecondary}>
+                                Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
+                            </Text>
                         </YStack>
                     ) : (
                         <Paragraph color={goal.time_bound ? colors.text : colors.textSecondary} fontSize="$4">
@@ -463,11 +463,11 @@ const GoalDetailsScreen = () => {
 
                 {/* Assign To */}
                 <YStack>
+                    <Text color={colors.text} fontWeight="700" fontSize="$4" mb="$1.5">
+                        Assign To:
+                    </Text>
                     {isEditing && (
-                        <XStack space="$4" px="$2">
-                            <Text color={colors.text} fontWeight="700" fontSize="$4" mb="$1.5">
-                                Assign To:
-                            </Text>
+                        <XStack space="$4" px="$2" mb='$4'>
                             {children.map((child) => {
                                 const isSelected = selectedChildren.includes(child.id);
 

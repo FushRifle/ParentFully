@@ -37,7 +37,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
             },
             {
                 key: 'Family',
-                label: 'Family Contact',
+                label: 'Family Contacts',
                 description: 'Invite family members, third parties and mediators.',
                 icon: 'Users',
                 screen: 'WelcomeFamily',
@@ -148,7 +148,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
             <XStack ai="center" jc="space-between" w="100%" px="$2" py="$1">
                 <YStack>
                     <Text
-                        fontSize="$6"
+                        fontSize="$4"
                         fontWeight="700"
                         style={{
                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
@@ -173,7 +173,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                 </YStack>
                 <Text
                     color={colors.primaryDark}
-                    fontSize="$5"
+                    fontSize="$4"
                     textDecorationLine="underline"
                     onPress={() => setShowAll(!showAll)}
                 >
@@ -181,10 +181,10 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                 </Text>
             </XStack>
 
-            <XStack flexWrap="wrap" justifyContent="space-between" rowGap="$4">
+            {/* 2x2 Grid Full Width */}
+            <XStack flexWrap="wrap" justifyContent="space-between" rowGap="$3">
                 {displayedActions.map(({ key, label, description, icon, screen, light, dark, badge }) => {
                     const IconComponent = (Icons as any)[icon]
-
                     return (
                         <Card
                             key={key}
@@ -197,13 +197,13 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                             pressStyle={{ opacity: 0.9 }}
                             onPress={() => handlePress(screen)}
                             backgroundColor={isDark ? colors.card : '#fff'}
-                            borderRadius="$2"
+                            borderRadius="$8"
                             style={cardShadowStyle}
                         >
                             <YStack jc="flex-start">
                                 <View
-                                    width={50}
-                                    height={50}
+                                    width={45}
+                                    height={45}
                                     borderRadius="$6"
                                     mt="$3"
                                     backgroundColor={isDark ? dark : light}
@@ -235,10 +235,10 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                 </View>
 
                                 <Text
-                                    fontSize="$6"
+                                    fontSize="$3"
                                     fontWeight="600"
                                     color={colors.text}
-                                    marginTop="$3"
+                                    marginTop="$2"
                                     textAlign="left"
                                 >
                                     {label}

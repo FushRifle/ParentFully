@@ -188,10 +188,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
                                     {/* Greeting */}
                                     <YStack flex={1} ml="$2">
-                                        <Text fontSize="$8" fontWeight="700" color="white">
+                                        <Text fontSize="$5" fontWeight="700" color="white">
                                             Hi {profile?.username}
                                         </Text>
-                                        <Text color="white" fontSize="$4">
+                                        <Text color="white" fontSize="$3">
                                             Ready to make today amazing?
                                         </Text>
                                     </YStack>
@@ -223,7 +223,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                             <XStack ai="center" jc="space-between" w="100%" py="$5">
                                 <YStack>
                                     <Text
-                                        fontSize="$6"
+                                        fontSize="$4"
                                         fontWeight="700"
                                         style={{
                                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
@@ -255,8 +255,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                         bc={colors.primary}
                                         br={9999}
                                         size="$2"
-                                        width={28}
-                                        height={28}
+                                        width={25}
+                                        height={25}
                                         ai="center"
                                         jc="center"
                                     >
@@ -286,7 +286,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                             <YStack space="$3" mt="$6">
                                 <YStack>
                                     <Text
-                                        fontSize="$6"
+                                        fontSize="$4"
                                         fontWeight="700"
                                         style={{
                                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
@@ -306,7 +306,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                             height: 4,
                                             borderRadius: 2,
                                             marginTop: 2,
-                                            width: '35%',
+                                            width: '26%',
                                         }}
                                     />
                                 </YStack>

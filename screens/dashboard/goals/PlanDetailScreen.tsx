@@ -13,7 +13,7 @@ import { Plus } from '@tamagui/lucide-icons'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Modal, useWindowDimensions } from 'react-native'
 import Toast from 'react-native-toast-message'
-import { Button, Card, H3, H5, H6, ScrollView, Spinner, Text, useTheme as useTamaguiTheme, View, XStack, YStack } from 'tamagui'
+import { Button, Card, H5, H6, ScrollView, Spinner, Text, useTheme as useTamaguiTheme, View, XStack, YStack } from 'tamagui'
 import { v4 as uuidv4 } from 'uuid'
 
 const IconMap: Record<string, any> = { Feather, FontAwesome, MaterialIcons, AntDesign }
@@ -210,8 +210,8 @@ const PlanDetailScreen = () => {
         <Card
             bg={colors.card}
             elevate
-            width={screenWidth - 32} // Use screen width minus padding
-            maxWidth={500} // Set a max width for larger screens
+            width={screenWidth - 32}
+            maxWidth={500}
             minHeight={102}
             shadowColor="white"
             pressStyle={{ scale: 0.975 }}
@@ -302,12 +302,12 @@ const PlanDetailScreen = () => {
                             <Button unstyled onPress={() => navigation.goBack()} hitSlop={20} mr="$5">
                                 <MaterialIcons name="arrow-back" size={24} color={tamaguiTheme.primary?.val} />
                             </Button>
-                            <H3 ta="left" flex={1} color="$primary">{coreValue.title}</H3>
+                            <Text fontSize='$4' ta="left" flex={1} color="$primary">{coreValue.title}</Text>
                         </XStack>
-                        <Text ta="left" fontSize="$5" px="$3" color={isDark ? colors.primary : colors.text}>{ageDescription}</Text>
+                        <Text ta="left" fontSize="$4" px="$3" color={isDark ? colors.primary : colors.text}>{ageDescription}</Text>
                     </YStack>
 
-                    <XStack jc="flex-end" ai="flex-end" mb="$2" mr='$5' width="100%">
+                    <XStack jc="flex-end" ai="flex-end" mt="$4" mb="$2" mr='$5' width="100%">
                         <XStack space='$2'>
                             <Button chromeless onPress={navigateToAddGoal}
                                 bc={colors.primaryDark} br={9999}
@@ -333,7 +333,7 @@ const PlanDetailScreen = () => {
                         {loading ? (
                             <YStack space="$4" width="100%" ai="center">
                                 <YStack mb="$4" width="100%" maxWidth={500}>
-                                    <H5 fontWeight="700" color={colors.text} mb="$3" fontSize="$6">
+                                    <H5 fontWeight="700" color={colors.text} mb="$3" fontSize="$4">
                                         My Goals
                                     </H5>
                                     <YStack space="$2">
@@ -343,7 +343,7 @@ const PlanDetailScreen = () => {
                                     </YStack>
                                 </YStack>
                                 <YStack width="100%" maxWidth={500}>
-                                    <H5 fontWeight="700" fontSize="$6" color={colors.text} mb="$3">
+                                    <H5 fontWeight="700" fontSize="$4" color={colors.text} mb="$3">
                                         Predefined Goals
                                     </H5>
                                     <YStack space="$2">
@@ -405,8 +405,8 @@ const PlanDetailScreen = () => {
                     <YStack f={1} jc="flex-end" bg="rgba(0,0,0,0.4)">
                         <YStack bg={colors.card} p="$4" br="$6" space="$6" elevation={6} borderTopLeftRadius={20} borderTopRightRadius={20}>
                             <YStack space='$3'>
-                                <Text fontSize="$7" fontWeight="600" jc='center' ai='center' color={colors.text}>Are you sure you want to Delete this goal?</Text>
-                                <Text fontSize="$5" fontWeight="600">Once this goal is deleted it cannot be retrieved and all progress will be lost</Text>
+                                <Text fontSize="$4" fontWeight="600" jc='center' ai='center' color={colors.text}>Are you sure you want to Delete this goal?</Text>
+                                <Text fontSize="$4" fontWeight="600">Once this goal is deleted it cannot be retrieved and all progress will be lost</Text>
                             </YStack>
                             <XStack jc='center' ai='center' space='$6' mt='$5' mb='$7'>
                                 <Button size="$5" w='40%' variant="outlined" borderColor={colors.border as any} onPress={() => setShowOptions(false)}>Cancel</Button>
