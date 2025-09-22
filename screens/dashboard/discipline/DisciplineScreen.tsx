@@ -7,8 +7,10 @@ import { DisciplinePlan, DisciplineTemplate } from "@/types/discipline";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useState } from "react";
-import { Image, ScrollView } from "react-native";
+import { Dimensions, Image, PixelRatio, ScrollView } from "react-native";
 import { Card, Text, View, XStack, YStack } from "tamagui";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
 type Child = {
     id: string;
@@ -21,6 +23,17 @@ const DisciplineScreen: React.FC = ({ navigation }: any) => {
     const { colors } = useTheme();
     const { user } = useAuth();
     const [error, setError] = useState<string | null>(null);
+
+    // Guideline based on iPhone 12
+    const BASE_WIDTH = 390
+    const BASE_HEIGHT = 844
+
+    const scale = (size: number) => (SCREEN_WIDTH / BASE_WIDTH) * size
+    const verticalScale = (size: number) => (SCREEN_HEIGHT / BASE_HEIGHT) * size
+    const moderateScale = (size: number, factor = 0.5) =>
+        size + (scale(size) - size) * factor
+
+    const scaleFont = (size: number) => Math.round(PixelRatio.roundToNearestPixel(scale(size)))
 
     const [children, setChildren] = useState<Child[]>([]);
     const [selectedChild, setSelectedChild] = useState<Child | null>(null);
@@ -110,104 +123,116 @@ const DisciplineScreen: React.FC = ({ navigation }: any) => {
 
     return (
         <GoalBackground>
-            <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ paddingBottom: 60 }}
-            >
-                <YStack ai="center" mt="$4" mb="$5">
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: verticalScale(60) }}>
+                <YStack ai="center" mt={verticalScale(16)} mb={verticalScale(20)}>
                     <Image
                         source={require("@/assets/onboarding/bro.png")}
-                        style={{ width: 368, top: 35, height: 348, resizeMode: "contain" }}
+                        style={{
+                            width: SCREEN_WIDTH * 0.9,
+                            height: SCREEN_HEIGHT * 0.4,
+                            top: verticalScale(20),
+                            resizeMode: "contain"
+                        }}
                     />
                 </YStack>
 
-                <YStack px="$4" mb="$5" mt='$5'>
-                    <Text fontSize="$8" fontWeight="700" color={colors.text}>
+                <YStack px={moderateScale(16)} mb={verticalScale(20)} mt={verticalScale(20)}>
+                    <Text fontSize={scaleFont(16)} fontWeight="700" color={colors.text}>
                         Discipline Plans
                     </Text>
-                    <Text fontSize="$4" color="#555">
+                    <Text fontSize={scaleFont(12)} color={colors.textSecondary}>
                         Create structured Disciplines that support positive behavior and growth
                     </Text>
                 </YStack>
 
-                <XStack px="$4" space="$3" mb="$5">
-                    <Card flex={1} elevate padding="$4" borderRadius="$6" backgroundColor="white" jc='flex-start'>
-                        <Text fontSize="$9" textAlign='left' color="#FF8C01" fontWeight="700">
+                <XStack px={moderateScale(24)} space={moderateScale(12)}
+                    mb={verticalScale(20)}>
+                    <Card flex={1} elevate padding={moderateScale(12)} borderRadius={moderateScale(12)} backgroundColor="white" jc='flex-start'>
+                        <Text fontSize={scaleFont(18)} textAlign='left' color="#FF8C01" fontWeight="700">
                             {activeCount}
                         </Text>
-                        <Text fontSize="$4" color="#555">Active Plans</Text>
+                        <Text fontSize={scaleFont(12)} color="#555">Active Plans</Text>
                     </Card>
 
-                    <Card flex={1} elevate padding="$4" borderRadius="$6" backgroundColor="white" jc='flex-start'>
-                        <Text fontSize="$8" color="#4CAF50" fontWeight="700">
+                    <Card flex={1} elevate padding={moderateScale(12)} borderRadius={moderateScale(12)} backgroundColor="white" jc='flex-start'>
+                        <Text fontSize={scaleFont(18)} color="#4CAF50" fontWeight="700">
                             {templateCount}
                         </Text>
-                        <Text fontSize="$4" color="#555">Templates</Text>
+                        <Text fontSize={scaleFont(12)} color="#555">Templates</Text>
                     </Card>
                 </XStack>
 
-                <YStack px="$4" space="$3">
+                <YStack px={moderateScale(16)} space={moderateScale(19)}>
                     <Card
                         elevate
-                        padding="$4"
-                        borderRadius="$6"
+                        padding={moderateScale(12)}
+                        borderRadius={moderateScale(10)}
                         backgroundColor="white"
                         pressStyle={{ opacity: 0.8 }}
-                        onPress={() => {
-                            navigation.navigate("ActiveDiscipline");
-                        }}
+                        onPress={() => navigation.navigate("ActiveDiscipline")}
                     >
                         <XStack ai="center" jc="space-between">
-                            <XStack ai="center" space="$3">
-                                <MaterialCommunityIcons name="star" size={24} color={colors.secondary} />
+                            <XStack ai="center" space={moderateScale(12)}>
+                                <MaterialCommunityIcons name="star" size={moderateScale(20)} color={colors.secondary} />
                                 <YStack>
                                     <Text fontWeight="700" color={colors.text}>Active Discipline Plans</Text>
                                     <Text color="#666">Your kid’s current discipline plans at a glance</Text>
                                 </YStack>
                             </XStack>
-                            <MaterialCommunityIcons name="chevron-right" size={24} color="#999" />
+                            <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="#999" />
                         </XStack>
                     </Card>
 
                     <Card
                         elevate
-                        padding="$4"
-                        borderRadius="$6"
+                        padding={moderateScale(12)}
+                        borderRadius={moderateScale(10)}
                         backgroundColor={colors.secondary}
                         pressStyle={{ opacity: 0.9 }}
                         onPress={() => navigation.navigate("Discipline")}
                     >
                         <XStack ai="center" jc="space-between">
-                            <XStack ai="center" space="$3">
-                                <MaterialCommunityIcons name="file-document-outline" size={24} color="white" />
+                            <XStack ai="center" space={moderateScale(12)}>
+                                <MaterialCommunityIcons name="file-document-outline" size={moderateScale(20)} color="white" />
                                 <YStack>
                                     <Text fontWeight="700" color="white">Use Template</Text>
                                     <Text color="#EEE">Start with recommendations from experts</Text>
                                 </YStack>
                             </XStack>
-                            <MaterialCommunityIcons name="chevron-right" size={24} color="white" />
+                            <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="white" />
                         </XStack>
                     </Card>
 
                     <Card
                         elevate
-                        padding="$4"
-                        borderRadius="$6"
+                        padding={moderateScale(12)}
+                        borderRadius={moderateScale(10)}
                         backgroundColor="white"
                         pressStyle={{ opacity: 0.8 }}
                         onPress={() => navigation.navigate("AddDiscipline")}
                     >
                         <XStack ai="center" jc="space-between">
-                            <XStack ai="center" space="$3">
-                                <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: '#FFEAD3', justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 }}>
-                                    <MaterialCommunityIcons name="plus-circle-outline" size={24} color={colors.primary} />
+                            <XStack ai="center" space={moderateScale(12)}>
+                                <View style={{
+                                    width: moderateScale(40),
+                                    height: moderateScale(40),
+                                    borderRadius: moderateScale(20),
+                                    backgroundColor: '#FFEAD3',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    shadowColor: '#000',
+                                    shadowOpacity: 0.1,
+                                    shadowRadius: 4,
+                                    elevation: 3
+                                }}>
+                                    <MaterialCommunityIcons name="plus-circle-outline" size={moderateScale(20)} color={colors.primary} />
                                 </View>
                                 <YStack>
                                     <Text fontWeight="700" color={colors.text}>Create custom Discipline Plan</Text>
                                     <Text color="#666">Build from scratch</Text>
                                 </YStack>
                             </XStack>
-                            <MaterialCommunityIcons name="chevron-right" size={24} color="#999" />
+                            <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="#999" />
                         </XStack>
                     </Card>
                 </YStack>

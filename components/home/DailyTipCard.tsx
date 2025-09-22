@@ -49,14 +49,13 @@ const DailyTipCard: React.FC = () => {
                 >
                     <MaterialCommunityIcons
                         name="lightbulb-on-outline"
-                        size={28}
+                        size={25}
                         color={colors.onPrimary as any}
                     />
                 </View>
 
                 <Text
-                    fontSize="$4"
-                    fontWeight="700"
+                    fontSize="$3"
                     textAlign="left"
                     lineHeight={20}
                     color={colors.onPrimary}
