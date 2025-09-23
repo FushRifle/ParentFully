@@ -14,6 +14,7 @@ import { Modal, TouchableOpacity } from 'react-native';
 import uuid from 'react-native-uuid';
 import {
     Button, Card,
+    H6,
     ScrollView,
     View,
     XStack,
@@ -174,7 +175,6 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
         fetchTotals(); fetchRequests();
     }, [fetchTotals, fetchRequests]);
 
-
     const { totalAmount, yourShare } = useMemo(() => {
         const total = expenses.reduce((sum, e) => sum + e.amount, 0);
         const share = expenses.reduce((sum, e) => sum + (e.amount * e.split_percentage) / 100, 0);
@@ -221,26 +221,21 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
             <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
                 <YStack flex={1}>
                     {/* Header */}
-                    <XStack padding="$2" paddingTop="$7" justifyContent="space-between" alignItems="center">
-                        <Button
-                            unstyled
-                            circular
-                            pressStyle={{ opacity: 0.6 }}
-                            onPress={navigation.goBack}
-                            icon={<Feather name="chevron-left" size={24} color={colors.text} />}
-                        />
-
-                        <Text color={colors.text} fontWeight="700"
+                    <XStack padding="$2" paddingTop="$7"
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                        <H6 color={colors.text} fontWeight="600"
                             textAlign="center"
                             flex={1} marginHorizontal="$2">
                             Budget Overview
-                        </Text>
+                        </H6>
                     </XStack>
 
                     <XStack ai="center" jc="space-between"
-                        space="$5" px='$5' mt="$5">
+                        space="$5" px='$5' mt="$5" mb='$3'>
                         <Button
-                            size='$3'
+                            size='$4'
                             variant='outlined'
                             br='$4'
                             backgroundColor="transparent"
@@ -256,7 +251,7 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                         </Button>
 
                         <Button
-                            size='$3'
+                            size='$4'
                             variant='outlined'
                             backgroundColor="transparent"
                             borderColor={colors.primary as any}
@@ -336,7 +331,7 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                             backgroundColor={colors.primary}
                             onPress={() => setShowModal(true)}
                         >
-                            <XStack ai="center" space="$3">
+                            <XStack ai="center" space="$2">
                                 <Feather name="plus" size={20} color={colors.onPrimary} />
                                 <Text color={colors.onPrimary} >
                                     Add
@@ -346,24 +341,24 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                     </YStack>
 
                     <YStack jc="flex-start" space="$1" mt="$5">
-                        <Text
+                        <H6
                             fontWeight="700"
                             color={colors.text}
                             px="$3"
                         >
                             Expense by Category
-                        </Text>
+                        </H6>
                         <ExpensesByCategory />
                     </YStack>
 
                     <YStack jc="flex-start" space="$1" mt="$5">
-                        <Text
+                        <H6
                             fontWeight="700"
                             color={colors.text}
                             px="$3"
                         >
                             Pending Actions
-                        </Text>
+                        </H6>
                         <PaymentRequestCard />
                     </YStack>
 

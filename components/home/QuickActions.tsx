@@ -5,7 +5,12 @@ import { useTheme } from '@/styles/ThemeContext'
 import * as Icons from '@tamagui/lucide-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useMemo, useState } from 'react'
+import { Dimensions } from 'react-native'
 import { Card, View, XStack, YStack } from 'tamagui'
+
+const screenWidth = Dimensions.get('window').width
+const spacing = 16
+const cardWidth = (screenWidth - spacing * 3) / 2
 
 
 const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: string) => void }) => {
@@ -146,7 +151,8 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
     }
 
     return (
-        <YStack space="$4" marginTop="$4">
+        <YStack space="$4" marginTop="$4" mb='$1'>
+
             <XStack ai="center" jc="space-between" w="100%" px="$2" py="$1">
                 <YStack>
                     <Text
@@ -188,9 +194,9 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                         <Card
                             key={key}
                             padding="$3"
-                            width="48%"
-                            maxWidth={180}
-                            maxHeight={160}
+                            width={cardWidth}
+                            minHeight={140}
+                            maxHeight={180}
                             alignItems="center"
                             justifyContent="center"
                             pressStyle={{ opacity: 0.9 }}
@@ -199,7 +205,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                             borderRadius="$8"
                             style={cardShadowStyle}
                         >
-                            <YStack jc="flex-start">
+                            <YStack jc="flex-start" width="100%">
                                 <View
                                     width={45}
                                     height={45}
@@ -233,20 +239,12 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                     )}
                                 </View>
 
-                                <Text
-                                    fontWeight="600"
-                                    color={colors.text}
-                                    marginTop="$2"
-                                    textAlign="left"
-                                >
+                                <Text fontWeight="600" color={colors.text} marginTop="$2" textAlign="left">
                                     {label}
                                 </Text>
-                                <Text
-                                    color={colors.textSecondary}
-                                    textAlign="left"
-                                    marginTop="$2"
-                                    mb="$5"
-                                    flexShrink={0}
+                                <Text color={colors.textSecondary}
+                                    textAlign="left" marginTop="$2"
+                                    mb="$5" flexShrink={0}
                                 >
                                     {description}
                                 </Text>
@@ -254,7 +252,6 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                         </Card>
                     )
                 })}
-
             </XStack>
         </YStack>
     )

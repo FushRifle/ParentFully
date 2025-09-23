@@ -80,7 +80,12 @@ export const ExpensesByCategory = () => {
         fetchExpenses();
     }, [fetchExpenses]);
 
-    if (loading) return <Text>Loading...</Text>;
+    if (loading) return
+
+    <XStack ai='center' jc='center' mt='$6'>
+        <Text>Loading...</Text>
+    </XStack>
+        ;
 
     if (expenses.length === 0) {
         return (

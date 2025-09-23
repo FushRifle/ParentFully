@@ -63,7 +63,6 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                         borderColor="#C9C9C9"
                         backgroundColor={colors.card}
                         pressStyle={{ opacity: 0.9 }}
-                        padding="$1"
                         onPress={() => handleSelectChild(child)}
                         alignItems="center"
                         justifyContent="center"
@@ -104,7 +103,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     {child.name}
                                 </Text>
 
-                                <Text color={colors.textSecondary}>
+                                <Text color={colors.textSecondary} fontSize='$4'>
                                     Age: {child.age} y/o
                                 </Text>
 
@@ -118,7 +117,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     mt="$2"
                                     mb='$2'
                                 >
-                                    <Text color="white" fontWeight="500">
+                                    <Text color="white" fontSize='$3'>
                                         View Profile
                                     </Text>
                                 </Button>

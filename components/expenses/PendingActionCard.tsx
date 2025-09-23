@@ -83,7 +83,9 @@ export const PaymentRequestCard = () => {
         load();
     }, [fetchRequests]);
 
-    if (loading) return <Text>Loading...</Text>;
+    if (loading) return <XStack ai='center' jc='center' mt='$6'>
+        <Text>Loading...</Text>
+    </XStack>;
 
     return (
         <ScrollView contentContainerStyle={{ padding: 16, marginBottom: 100 }}>
@@ -101,16 +103,17 @@ export const PaymentRequestCard = () => {
                             <XStack justifyContent="space-between" alignItems="center">
                                 <View
                                     style={{
-                                        alignSelf: "flex-start",
+                                        alignSelf: 'flex-start',
                                         backgroundColor: colors.primary,
-                                        paddingHorizontal: 6,
-                                        paddingVertical: 6,
+                                        paddingHorizontal: 4,
+                                        paddingVertical: 4,
                                         borderRadius: 18,
                                     }}
                                 >
                                     <Text
                                         color="white"
-                                        style={{ textTransform: "uppercase" }}
+                                        fontSize={10}
+                                        style={{ textTransform: 'uppercase' }}
                                     >
                                         {req.status} Request
                                     </Text>
