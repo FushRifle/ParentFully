@@ -4,13 +4,15 @@ import RequestCard from "@/components/expenses/RequestCard";
 
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
+import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Plus } from "@tamagui/lucide-icons";
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, ScrollView, Text, XStack, YStack } from "tamagui";
+import { Button, H6, ScrollView, XStack, YStack } from "tamagui";
+
 
 type ExpenseStatus = "Pending Approval" | "Approved" | "Rejected" | "Reimburser" | "Pending";
 
@@ -367,7 +369,7 @@ const ExpenseRecordsScreen = () => {
                                     space="$4"
                                     width="100%"
                                 >
-                                    <Text fontSize='$8' fontWeight="700" color={colors.text} textAlign="center">
+                                    <Text fontWeight="600" color={colors.text} textAlign="center">
                                         No Expense Found
                                     </Text>
                                     <Text>
@@ -422,7 +424,7 @@ const ExpenseRecordsScreen = () => {
                                     space="$4"
                                     width="100%"
                                 >
-                                    <Text fontSize='$8' fontWeight="700" color={colors.text} textAlign="center">
+                                    <Text fontWeight="600" color={colors.text} textAlign="center">
                                         No Payments Found
                                     </Text>
                                     <Text>
@@ -464,7 +466,7 @@ const ExpenseRecordsScreen = () => {
                                     space="$4"
                                     width="100%"
                                 >
-                                    <Text fontSize='$8' fontWeight="700" color={colors.text} textAlign="center">
+                                    <Text fontWeight="600" color={colors.text} textAlign="center">
                                         No Request Found
                                     </Text>
                                     <Text>
@@ -493,7 +495,7 @@ const ExpenseRecordsScreen = () => {
 
     return (
         <GoalBackground>
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
                 <YStack f={1} bg="transparent" p="$4" space="$5">
                     <XStack space="$4" padding="$2" paddingTop="$7" justifyContent="flex-start" alignItems="flex-start">
                         <Button
@@ -503,13 +505,15 @@ const ExpenseRecordsScreen = () => {
                             onPress={() => (navigation as any).goBack?.()}
                             icon={<Feather name="chevron-left" size={24} color={colors.text} />}
                         />
-                        <Text color={colors.text} fontWeight="700" fontSize="$6" flex={1} marginHorizontal="$2">
+                        <H6 color={colors.text} fontWeight="600" flex={1} marginHorizontal="$2">
                             Records
-                        </Text>
+                        </H6>
 
+                        {/* 
                         <Button onPress={refresh} size="$3" br="$3" disabled={refreshing}>
                             {refreshing ? "Refreshing..." : "Refresh"}
                         </Button>
+                        */}
                     </XStack>
 
                     {/* Tab Selector */}
@@ -517,7 +521,7 @@ const ExpenseRecordsScreen = () => {
                         {tabs.map((tab) => (
                             <Button
                                 key={tab}
-                                size="$4"
+                                size="$3"
                                 flex={1}
                                 bc={activeTab === tab ? colors.secondary : "white"}
                                 onPress={() => setActiveTab(tab)}

@@ -1,4 +1,5 @@
 import { GoalBackground } from '@/constants/GoalBackground'
+import { Text } from '@/context/GlobalText'
 import { ageGroupDescriptions, type AgeGroupKey } from '@/hooks/goals/useAgeGroupComment'
 import { useCoreValueAgeDescription } from '@/hooks/goals/useCoreValueAgeDescription'
 import { useTheme } from '@/styles/ThemeContext'
@@ -9,8 +10,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import {
     Button,
     Card,
+    H6,
     Spinner,
-    Text,
     ScrollView as TScrollView,
     XStack,
     YStack
@@ -116,7 +117,7 @@ const CorePlanScreen = () => {
                         <YStack space="$4" padding="$3" marginTop="$7">
                             {/* Header */}
                             <XStack alignItems="center" space="$2" mb='$4'>
-                                <Text color={colors.text} fontSize='$5'>Parenting Plans</Text>
+                                <H6 fontWeight='600' color={colors.text} >Parenting Plans</H6>
                             </XStack>
 
                             {/* Age Group Tabs */}
@@ -187,7 +188,6 @@ const CorePlanScreen = () => {
                                                 </YStack>
                                                 <Text
                                                     textAlign="center"
-                                                    fontSize='$2'
                                                     fontWeight="700"
                                                     mt="$2"
                                                     color={colors.text}

@@ -1,10 +1,12 @@
 import { useAuth } from '@/context/AuthContext'
+import { Text } from '@/context/GlobalText'
 import { useMessageCount } from '@/hooks/chat/useMessageCount'
 import { useTheme } from '@/styles/ThemeContext'
 import * as Icons from '@tamagui/lucide-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useMemo, useState } from 'react'
-import { Card, Text, View, XStack, YStack } from 'tamagui'
+import { Card, View, XStack, YStack } from 'tamagui'
+
 
 const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: string) => void }) => {
     const { colors, isDark } = useTheme()
@@ -148,7 +150,6 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
             <XStack ai="center" jc="space-between" w="100%" px="$2" py="$1">
                 <YStack>
                     <Text
-                        fontSize="$4"
                         fontWeight="700"
                         style={{
                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
@@ -173,7 +174,6 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                 </YStack>
                 <Text
                     color={colors.primaryDark}
-                    fontSize="$4"
                     textDecorationLine="underline"
                     onPress={() => setShowAll(!showAll)}
                 >
@@ -226,7 +226,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                                 alignItems: 'center',
                                             }}
                                         >
-                                            <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>
                                                 {badge}
                                             </Text>
                                         </View>
@@ -234,7 +234,6 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                 </View>
 
                                 <Text
-                                    fontSize="$3"
                                     fontWeight="600"
                                     color={colors.text}
                                     marginTop="$2"
@@ -243,10 +242,9 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                     {label}
                                 </Text>
                                 <Text
-                                    fontSize="$2"
                                     color={colors.textSecondary}
                                     textAlign="left"
-                                    marginTop="$1"
+                                    marginTop="$2"
                                     mb="$5"
                                     flexShrink={0}
                                 >

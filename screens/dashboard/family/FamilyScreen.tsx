@@ -1,5 +1,6 @@
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -9,7 +10,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, Pressable, ScrollView } from "react-native";
 import { Avatar, Card, FAB, Searchbar } from "react-native-paper";
-import { Button, Text, XStack, YStack } from "tamagui";
+import { Button, H6, XStack, YStack } from "tamagui";
+
 
 type FamilyContact = {
   id: string;
@@ -165,9 +167,9 @@ export default function FamilyContactScreen() {
       <YStack f={1} mb="$9">
         {/* Search + Tabs */}
         <YStack p="$4" mt="$6" mb="$4" jc="center" ai="center">
-          <Text fontSize='$4' fontWeight="600" mt="$2">
+          <H6 fontWeight="600" mt="$2">
             Family Contacts
-          </Text>
+          </H6>
 
           <Searchbar
             placeholder="Search"
@@ -205,7 +207,7 @@ export default function FamilyContactScreen() {
                   style={{
                     color: activeTab === tab ? "white" : colors.text,
                     fontWeight: "600",
-                    fontSize: 10,
+                    fontSize: 14,
                     textAlign: "center",
                   }}
                 >
@@ -240,10 +242,10 @@ export default function FamilyContactScreen() {
               >
                 <Card.Content>
                   <YStack ai="center" space="$2">
-                    <Text fontSize='$2' fontWeight="600" textAlign="center">
+                    <Text fontWeight="600" textAlign="center">
                       Add People who support your Kids
                     </Text>
-                    <Text fontSize='$1' color="#666" textAlign="center">
+                    <Text color={colors.textSecondary} textAlign="center">
                       Easily manage all important contacts in one place. Assign
                       roles, control permissions and track activity
                     </Text>
@@ -293,7 +295,7 @@ export default function FamilyContactScreen() {
                       <Avatar.Image size={45} source={{ uri: item.photo }} />
                     ) : (
                       <Avatar.Text
-                        size={45}
+                        size={50}
                         label={
                           item.name
                             ?.split(" ")
@@ -308,7 +310,7 @@ export default function FamilyContactScreen() {
 
                     <YStack flex={1} space="$2">
                       <XStack jc="space-between" ai="center">
-                        <Text fontSize="$2" fontWeight="bold">
+                        <Text fontWeight="600">
                           {item.name}
                         </Text>
 
@@ -322,7 +324,6 @@ export default function FamilyContactScreen() {
                           }
                         >
                           <Text
-                            fontSize='$1'
                             fontWeight="500"
                             color={
                               permission.find((p) => p.label === item.category)
@@ -335,20 +336,20 @@ export default function FamilyContactScreen() {
                       </XStack>
 
                       {item.title && (
-                        <Text fontSize="$1" color={colors.textSecondary}>
+                        <Text color={colors.textSecondary}>
                           {item.title}
                         </Text>
                       )}
 
                       {childNames.length > 0 && (
-                        <Text fontSize="$1" color={colors.text}>
+                        <Text color={colors.text}>
                           Connected to: {childNames.join(", ")}
                         </Text>
                       )}
                     </YStack>
                   </XStack>
 
-                  <YStack ai="center" mt="$5">
+                  <YStack ai="center" mt="$3">
                     <Button
                       size="$3"
                       w="100%"
@@ -377,7 +378,7 @@ export default function FamilyContactScreen() {
             style={{
               position: "absolute",
               right: 30,
-              bottom: 60,
+              bottom: 40,
               zIndex: 60,
               borderRadius: 9999,
               backgroundColor: colors.secondary,

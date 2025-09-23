@@ -1,7 +1,9 @@
+import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import React from 'react';
-import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, View } from 'react-native';
 import { Button, XStack, YStack } from 'tamagui';
+
 
 interface ConfirmModalProps {
     visible: boolean;
@@ -75,12 +77,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
     title: {
-        fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 8,
     },
     message: {
-        fontSize: 16,
         marginBottom: 16,
     },
 });

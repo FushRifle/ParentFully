@@ -1,5 +1,6 @@
 import { GoalBackground } from '@/constants/GoalBackground'
 import { useAuth } from '@/context/AuthContext'
+import { Text } from '@/context/GlobalText'
 import { useTheme } from '@/styles/ThemeContext'
 import { supabase } from '@/supabase/client'
 import { RootStackParamList } from '@/types'
@@ -17,12 +18,12 @@ import Toast from 'react-native-toast-message'
 import {
     Button,
     H4,
+    H6,
     Image,
     Input,
     Label,
     Paragraph,
     Spinner,
-    Text,
     View,
     XStack,
     YStack
@@ -348,7 +349,7 @@ const GoalDetailsScreen = () => {
 
     const renderEditableSection = (title: string, field: keyof Goal, multiline = false) => (
         <YStack mb="$4">
-            <Text color={colors.text} fontWeight="700" fontSize="$2" mb="$2">
+            <Text color={colors.text} fontWeight="600" mb="$2">
                 {title}
             </Text>
             {isEditing ? (
@@ -359,7 +360,6 @@ const GoalDetailsScreen = () => {
                     borderColor={colors.border as any}
                     backgroundColor='white'
                     borderRadius="$5"
-                    fontSize="$2"
                     padding="$3"
                     multiline={multiline}
                     numberOfLines={multiline ? 3 : 1}
@@ -368,7 +368,6 @@ const GoalDetailsScreen = () => {
             ) : (
                 <Paragraph
                     color={editedGoal && editedGoal[field] ? colors.text : colors.textSecondary}
-                    fontSize="$2"
                     backgroundColor='white'
                     padding="$3"
                     borderRadius="$3"
@@ -401,9 +400,9 @@ const GoalDetailsScreen = () => {
                     <Button unstyled onPress={() => navigation.goBack()} hitSlop={20} mr="$5">
                         <MaterialIcons name="arrow-back" size={20} color={colors.text} />
                     </Button>
-                    <H4 color={colors.text} fontWeight="700" fontSize="$3">
+                    <H6 color={colors.text} fontWeight="600">
                         {isEditing ? "Edit Goal" : "Goal Details"}
-                    </H4>
+                    </H6>
                 </XStack>
 
                 {/* Editable fields */}
@@ -415,7 +414,7 @@ const GoalDetailsScreen = () => {
 
                 {/* Time Bound */}
                 <YStack mb="$5">
-                    <Text color={colors.text} fontWeight="600" fontSize="$2" mb="$1.5">
+                    <Text color={colors.text} fontWeight="600" mb="$1.5">
                         Time Bound
                     </Text>
                     {isEditing ? (
@@ -429,7 +428,7 @@ const GoalDetailsScreen = () => {
                                     value={frequencyCount.toString()}
                                     onChangeText={(text) => setFrequencyCount(Number(text))}
                                 />
-                                <Text fontSize="$2" fontWeight="500" color={colors.text}>times in</Text>
+                                <Text fontWeight="500" color={colors.text}>times in</Text>
                                 <Input
                                     keyboardType="numeric"
                                     width={60}
@@ -442,13 +441,13 @@ const GoalDetailsScreen = () => {
                                     borderWidth={1}
                                     borderColor={colors.textSecondary as any}
                                     backgroundColor="transparent"
-                                    borderRadius="$8"
+                                    borderRadius="$3"
                                     style={{ width: 125 }} // reduce width
                                 >
                                     <Picker
                                         selectedValue={frequencyUnit}
                                         onValueChange={(val: string) => setFrequencyUnit(val)}
-                                        style={{ fontSize: 8, height: 50 }} // reduce font size
+                                        style={{ height: 50 }} // reduce font size
                                     >
                                         <Picker.Item label="Days" value="days" />
                                         <Picker.Item label="Weeks" value="weeks" />
@@ -458,12 +457,12 @@ const GoalDetailsScreen = () => {
                                 </View>
 
                             </XStack>
-                            <Text fontSize="$2" mb='$3' color={colors.textSecondary}>
+                            <Text mb='$3' color={colors.textSecondary}>
                                 Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
                             </Text>
                         </YStack>
                     ) : (
-                        <Paragraph color={goal.time_bound ? colors.text : colors.textSecondary} fontSize="$2">
+                        <Paragraph color={goal.time_bound ? colors.text : colors.textSecondary}>
                             {goal.time_bound || 'Not specified'}
                         </Paragraph>
                     )}
@@ -473,9 +472,9 @@ const GoalDetailsScreen = () => {
                 <YStack>
                     {isEditing && (
                         <YStack>
-                            <Text color={colors.text} fontWeight="700" fontSize="$2" mb="$1.5">
+                            <H6 color={colors.text} fontWeight="600" mb="$1.5">
                                 Assign To:
-                            </Text>
+                            </H6>
                             <XStack space="$4" px="$2" mb='$4'>
                                 {children.map((child) => {
                                     const isSelected = selectedChildren.includes(child.id);
@@ -515,7 +514,6 @@ const GoalDetailsScreen = () => {
                                                 />
                                             </XStack>
                                             <Label
-                                                fontSize="$1"
                                                 textAlign="center"
                                                 color={isSelected ? colors.primary : colors.text}
                                             >
@@ -532,7 +530,7 @@ const GoalDetailsScreen = () => {
                 {/* Reward System */}
                 {isEditing && (
                     <YStack mb="$2">
-                        <H4 marginBottom="$4" fontSize='$2'>Reward System</H4>
+                        <H6 mb="$4" fontWeight='600'>Reward System</H6>
 
                         <YStack space='$2'>
                             <YStack space='$2'>
@@ -567,10 +565,10 @@ const GoalDetailsScreen = () => {
                 {/* Reminder */}
                 {isEditing && (
                     <YStack space="$1" mt="$4">
-                        <H4 color={colors.text} fontSize="$2" fontWeight="900">
+                        <H6 color={colors.text} fontWeight="600">
                             Reminder
-                        </H4>
-                        <Text fontSize="$2">When should we remind you about your goal?</Text>
+                        </H6>
+                        <Text>When should we remind you about your goal?</Text>
 
                         {reminders && reminders.length > 0 ? (
                             <XStack
@@ -591,7 +589,7 @@ const GoalDetailsScreen = () => {
                                 }
                             >
                                 <YStack>
-                                    <H4 color={colors.text} fontSize="$5">
+                                    <H4 color={colors.text}>
                                         {formatTime(reminders[0].time)}
                                     </H4>
                                     <Text>{reminders[0].repeat}</Text>

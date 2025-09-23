@@ -1,8 +1,9 @@
+import { Text } from '@/context/GlobalText';
 import { supabase } from "@/supabase/client";
 import { Activity, Baby, BookOpen, Shirt, StepForward, Stethoscope, Utensils, Wallet2 } from "@tamagui/lucide-icons";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
-import { Card, Text, XStack, YStack } from "tamagui";
+import { Card, XStack, YStack } from "tamagui";
 
 type ExpenseType = {
     expenseId: string;
@@ -96,11 +97,11 @@ export const ExpensesByCategory = () => {
                     borderWidth={1}
                     borderColor="#FFD54F"
                 >
-                    <Wallet2 size={48} color="#FFA726" />
-                    <Text fontSize={18} color="#FFA726" fontWeight="700">
+                    <Wallet2 size={30} color="#FFA726" />
+                    <Text color="#FFA726" fontWeight="700">
                         No Expenses Created
                     </Text>
-                    <Text fontSize={14} color="#888" textAlign="center">
+                    <Text color="#888" textAlign="center">
                         Start adding your expenses to see them by category.
                     </Text>
                 </Card>
@@ -150,15 +151,15 @@ export const ExpensesByCategory = () => {
                                     >
                                         <c.icon size={20} color="#fff" />
                                     </YStack>
-                                    <Text fontSize={16} fontWeight="600">
+                                    <Text fontWeight="600">
                                         {c.name}
                                     </Text>
                                 </XStack>
                                 <YStack ai="flex-end">
-                                    <Text fontSize={16} fontWeight="700">
+                                    <Text fontWeight="700">
                                         {c.currency} {c.total.toFixed(2)}
                                     </Text>
-                                    <Text fontSize={12} color="#888">
+                                    <Text color="#888">
                                         {percent.toFixed(0)}%
                                     </Text>
                                 </YStack>

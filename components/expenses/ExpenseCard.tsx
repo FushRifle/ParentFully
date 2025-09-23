@@ -1,8 +1,11 @@
+import { Text } from '@/context/GlobalText';
+import { useTheme } from "@/styles/ThemeContext";
 import { ExpenseCardBaseProps, NavigationProp } from "@/types/Budget";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
-import { Card, Text, XStack, YStack } from "tamagui";
+import { Card, XStack, YStack } from "tamagui";
+
 const ExpenseCard = ({
     expenseId,
     title,
@@ -18,6 +21,7 @@ const ExpenseCard = ({
 }:
     ExpenseCardBaseProps) => {
     const navigation = useNavigation<NavigationProp>();
+    const { colors } = useTheme();
 
     const statusColors: Record<string, string> = {
         "Pending Approval": "#FFF0D5",
@@ -35,25 +39,25 @@ const ExpenseCard = ({
         >
             <Card
                 br="$4"
-                p="$4"
-                bw={1}
-                height={176}
-                borderColor="$gray5"
+                p="$3"
+                w='100%'
+                height={160}
+                mb='$3'
                 borderTopColor="#f97316"
                 borderTopWidth={8}
                 bg="white"
             >
-                <YStack space="$3" f={1}>
+                <YStack space="$2" f={1}>
                     <XStack jc="space-between" ai="center">
                         <YStack>
-                            <Text fow="700" fos="$5" color="$gray12">
+                            <Text fow="500" color={colors.text}>
                                 {title}
                             </Text>
-                            <Text color="$gray10" fos="$3">
+                            <Text fos='$1' color={colors.text}>
                                 For {childName}
                             </Text>
                         </YStack>
-                        <Text fow="700" fos="$6" color="$gray12">
+                        <Text fow="600" color={colors.text}>
                             {currency}
                             {amount.toLocaleString()}.00
                         </Text>
@@ -63,10 +67,10 @@ const ExpenseCard = ({
                     <XStack space="$2" ai="center" jc="space-between" flexWrap="wrap">
                         <XStack ai="center" space="$1">
                             <Feather name="calendar" size={14} color="#6b7280" />
-                            <Text color="$gray10" fos="$2">{date}</Text>
+                            <Text color={colors.text} fos="$1">{date}</Text>
                         </XStack>
 
-                        <Text bg={categoryColor} color="white" px="$2" py={2} br="$2" fos="$2" fow="600">
+                        <Text bg={categoryColor} color="white" px="$2" fos='$1' br="$2" fow="400">
                             {category}
                         </Text>
 
@@ -76,7 +80,7 @@ const ExpenseCard = ({
                             px="$2"
                             py={2}
                             br="$2"
-                            fos="$2"
+                            fos="$1"
                             fow="600"
                         >
                             {status}
@@ -86,14 +90,13 @@ const ExpenseCard = ({
                     {/* Bottom Row */}
                     <XStack jc="space-between" ai="center" mt="$2">
                         <YStack>
-                            <Text color="$gray10" fos="$2">{splitInfo}</Text>
+                            <Text color={colors.text} fos="$1">{splitInfo}</Text>
                             {reimbursedBy && (
-                                <Text color="$gray10" fos="$2">Reimbursed By: {reimbursedBy}</Text>
+                                <Text color={colors.text} fos="$1">Reimbursed By: {reimbursedBy}</Text>
                             )}
                         </YStack>
                         <XStack ai="center" space="$1">
-                            <Text color="#059669" fow="600" fos="$2">View Details</Text>
-                            <Feather name="dollar-sign" size={14} color="#059669" />
+                            <Text color="#059669" fow="600" fos="$1">View Details</Text>
                         </XStack>
                     </XStack>
                 </YStack>

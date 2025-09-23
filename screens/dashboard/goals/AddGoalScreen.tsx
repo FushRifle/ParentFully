@@ -1,5 +1,6 @@
 import { GoalBackground } from '@/constants/GoalBackground';
 import { useAuth } from '@/context/AuthContext';
+import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
 import { RootStackParamList } from '@/types';
@@ -16,17 +17,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {
     Button,
     H4,
+    H6,
     Image,
     Input,
-    Label,
     Paragraph,
     RadioGroup,
     ScrollView,
     Spinner,
-    Text,
     View,
     XStack,
-    YStack,
+    YStack
 } from 'tamagui';
 
 type AddGoalScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddGoal'>;
@@ -132,14 +132,13 @@ const ChildSelectorItem = React.memo(({
             />
         </XStack>
 
-        <Label
+        <Text
             htmlFor={child.id}
-            fontSize="$3"
             textAlign="center"
             color={isSelected ? colors.primary : colors.text}
         >
             {child.name}
-        </Label>
+        </Text>
     </YStack>
 ));
 
@@ -186,9 +185,9 @@ const AddGoalScreen = () => {
 
     // Memoized values
     const smartFieldsConfig = useMemo(() => [
-        { key: "measurable", label: "Measurable", placeholder: "How will you measure success?" },
-        { key: "achievable", label: "Achievable", placeholder: "Is the goal realistic?" },
-        { key: "relevant", label: "Relevant", placeholder: "Why is this goal important?" },
+        { key: "measurable", Text: "Measurable", placeholder: "How will you measure success?" },
+        { key: "achievable", Text: "Achievable", placeholder: "Is the goal realistic?" },
+        { key: "relevant", Text: "Relevant", placeholder: "Why is this goal important?" },
     ], []);
 
     // format time to 12-hour clock with AM/PM
@@ -365,7 +364,6 @@ const AddGoalScreen = () => {
         onSaveCallback,
     ]);
 
-
     const updateFormState = useCallback((field: keyof typeof formState, value: any) => {
         setFormState(prev => ({ ...prev, [field]: value }));
     }, []);
@@ -404,17 +402,6 @@ const AddGoalScreen = () => {
         });
     }, [initialGoal, navigation]);
 
-    // Early return for loading state
-    if (childrenLoading) {
-        return (
-            <GoalBackground>
-                <View flex={1} justifyContent="center" alignItems="center">
-                    <Spinner size="large" />
-                </View>
-            </GoalBackground>
-        );
-    }
-
     return (
         <GoalBackground>
             <KeyboardAwareScrollView
@@ -429,17 +416,16 @@ const AddGoalScreen = () => {
                     <Button unstyled onPress={() => navigation.goBack()} hitSlop={20} mr="$5">
                         <MaterialIcons name="arrow-back" size={24} color={colors.text} />
                     </Button>
-                    <H4 color={colors.text} fontWeight="700" fontSize="$7">
+                    <H6 color={colors.text} fontWeight='600'>
                         Add New Goal
-                    </H4>
+                    </H6>
                 </XStack>
 
-                <YStack space="$1">
+                <YStack space="$3" mb='$5'>
                     <Paragraph color={colors.textSecondary}>Category: {category}</Paragraph>
-
                     {/* Area */}
                     <YStack mt='$2'>
-                        <Label color={colors.text} fontSize='$5' fontWeight="bold">Goal Area</Label>
+                        <Text color={colors.text} fontWeight="500">Goal Area</Text>
                         <Input
                             value={formState.area}
                             onChangeText={(text) => updateFormState('area', text)}
@@ -451,7 +437,7 @@ const AddGoalScreen = () => {
 
                     {/* Goal */}
                     <YStack space="$1">
-                        <Label color={colors.text} fontSize='$5' fontWeight="bold">Goal Description</Label>
+                        <Text color={colors.text} fontWeight="bold">Goal Description</Text>
                         <Input
                             value={formState.goalText}
                             onChangeText={(text) => updateFormState('goalText', text)}
@@ -466,12 +452,11 @@ const AddGoalScreen = () => {
                     </YStack>
 
                     {/* SMART Fields */}
-                    <YStack space="$1" mt="$4">
-                        <H4 color={colors.text} fontSize='$5' fontWeight="bold">SMART Criteria</H4>
-
+                    <YStack space="$3" mt="$4">
+                        <H6 color={colors.text} fontWeight="600">SMART Criteria</H6>
                         {smartFieldsConfig.map((field) => (
                             <YStack key={field.key}>
-                                <Label color={colors.text} fontSize='$5'>{field.label}</Label>
+                                <Text fontWeight="500" color={colors.text} mb="$1.5">{field.Text}</Text>
                                 <SmartFieldInput
                                     value={smart[field.key as keyof SmartFields]}
                                     onChange={(text) => updateSmartField(field.key as keyof SmartFields, text)}
@@ -484,7 +469,7 @@ const AddGoalScreen = () => {
 
                     {/* Time Bound */}
                     <YStack mb="$4">
-                        <Text color={colors.text} fontWeight="600" fontSize="$4" mb="$1.5">
+                        <Text color={colors.text} fontWeight="500" mb="$1.5">
                             Time Bound
                         </Text>
                         <YStack space="$3">
@@ -497,7 +482,7 @@ const AddGoalScreen = () => {
                                     value={formState.frequencyCount.toString()}
                                     onChangeText={(text) => updateFormState('frequencyCount', Number(text))}
                                 />
-                                <Text fontSize="$4" fontWeight="500" color={colors.text}>times in</Text>
+                                <Text fontWeight="500" color={colors.text}>times in</Text>
                                 <Input
                                     keyboardType="numeric"
                                     width={60}
@@ -521,15 +506,16 @@ const AddGoalScreen = () => {
                                     </Picker>
                                 </View>
                             </XStack>
-                            <Text fontSize="$3" color={colors.textSecondary}>
+
+                            <Text color={colors.textSecondary}>
                                 Target date: {targetDate}
                             </Text>
                         </YStack>
                     </YStack>
 
                     {/* Assign To */}
-                    <YStack space="$2" p='$2' mb="$2">
-                        <H4 color={colors.text} fontSize='$5' fontWeight="bold">Assign To: </H4>
+                    <YStack space="$2" mb="$2">
+                        <H6 color={colors.text} fontWeight="600">Assign To: </H6>
                         {children.length > 0 ? (
                             <RadioGroup
                                 value={formState.selectedChild}
@@ -555,12 +541,11 @@ const AddGoalScreen = () => {
                     </YStack>
 
                     {/* Reward System */}
-                    <YStack mb="$2">
-                        <H4 marginBottom="$1" fontSize='$5'>Reward System</H4>
-
-                        <YStack>
-                            <YStack>
-                                <Label color="$color" fontWeight="bold">Reward Name</Label>
+                    <YStack mb="$2" space='$3'>
+                        <H6 mb="$1" fontWeight='600'>Reward System</H6>
+                        <YStack space='$2'>
+                            <YStack space='$1'>
+                                <Text mb='$1.5' color={colors.text} fontWeight="500">Reward Name</Text>
                                 <Input
                                     value={reward.name}
                                     onChangeText={(text) => updateRewardField('name', text)}
@@ -571,7 +556,7 @@ const AddGoalScreen = () => {
                             </YStack>
 
                             <YStack space="$1">
-                                <Label color="$color" fontWeight="bold">Notes</Label>
+                                <Text mb='$1.5' color={colors.text} fontWeight="500">Notes</Text>
                                 <Input
                                     value={reward.notes}
                                     onChangeText={(text) => updateRewardField('notes', text)}
@@ -588,11 +573,11 @@ const AddGoalScreen = () => {
                     </YStack>
 
                     {/* Reminder */}
-                    <YStack space="$1" mt="$3">
-                        <H4 color={colors.text} fontSize="$5" fontWeight="900">
+                    <YStack space="$1" mt="$1">
+                        <H6 color={colors.text} fontWeight="600">
                             Reminder
-                        </H4>
-                        <Text fontSize="$3">When should we remind you about your goal?</Text>
+                        </H6>
+                        <Text>When should we remind you about your goal?</Text>
 
                         {reminders && reminders.length > 0 ? (
                             <XStack
@@ -613,7 +598,7 @@ const AddGoalScreen = () => {
                                 }
                             >
                                 <YStack>
-                                    <H4 color={colors.text} fontSize="$5">
+                                    <H4 color={colors.text}>
                                         {formatTime(reminders[0].time)}
                                     </H4>
                                     <Text>{reminders[0].repeat}</Text>
@@ -636,7 +621,7 @@ const AddGoalScreen = () => {
                         )}
                     </YStack>
 
-                    {/* Save to CorePlan Radio Button */}
+                    {/* Save to CorePlan Radio Button 
                     <YStack space="$2" mt="$2">
                         <XStack alignItems="center" space="$2">
                             <RadioGroup value={formState.saveToCorePlan ? "yes" : "no"}
@@ -665,11 +650,12 @@ const AddGoalScreen = () => {
                                 </RadioGroup.Item>
                             </RadioGroup>
 
-                            <Label htmlFor="yes" color={colors.text}>
+                            <Text htmlFor="yes" color={colors.text}>
                                 {formState.saveToCorePlan ? "Saved to CorePlan" : "Save Goal to CorePlan"}
-                            </Label>
+                            </Text>
                         </XStack>
                     </YStack>
+                    */}
 
                     {/* Buttons */}
                     <XStack space="$2" justifyContent="space-between" marginTop="$4">

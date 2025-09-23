@@ -2,12 +2,14 @@ import { CustomRepeatModal } from '@/components/Time/CustomModal';
 import TimePicker, { TimePickerHandle } from '@/components/ui/TimePicker';
 import { GoalBackground } from '@/constants/GoalBackground';
 import { useAuth } from '@/context/AuthContext';
+import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
 import { RootStackParamList } from '@/types';
+import { MaterialIcons } from '@expo/vector-icons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ArrowLeft, Bell } from '@tamagui/lucide-icons';
+import { Bell } from '@tamagui/lucide-icons';
 import { format } from 'date-fns';
 import { MotiView } from 'moti';
 import React, { useMemo, useRef, useState } from "react";
@@ -15,9 +17,8 @@ import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 import {
     Button,
-    H4,
+    H6,
     Spinner,
-    Text,
     XStack,
     YStack
 } from 'tamagui';
@@ -161,17 +162,15 @@ const ReminderScreen = () => {
     return (
         <GoalBackground>
             <YStack flex={1} opacity={0.95}>
+
                 {/* Header */}
-                <XStack alignItems="center" padding="$4" mt='$5'>
-                    <Button
-                        icon={ArrowLeft}
-                        onPress={handleCancel}
-                        chromeless
-                        circular
-                    />
-                    <H4 marginLeft="$4" flex={1}>
+                <XStack px='$3' alignItems="center" mt='$7'>
+                    <Button unstyled onPress={handleCancel} hitSlop={20} mr="$5">
+                        <MaterialIcons name="arrow-back" size={20} color={colors.text} />
+                    </Button>
+                    <H6 fontWeight='600'>
                         Set Reminder
-                    </H4>
+                    </H6>
                 </XStack>
 
                 <YStack f={1} jc="flex-start" p="$4" space="$5">
@@ -199,7 +198,7 @@ const ReminderScreen = () => {
                         transition={{ type: 'timing', duration: 600, delay: 200 }}
                     >
                         <XStack space="$4">
-                            <Text style={{ fontSize: 16, fontWeight: "bold" }}>Repeat</Text>
+                            <H6 fontWeight='600'>Repeat</H6>
                         </XStack>
 
                         <YStack space="$3" p="$4">
@@ -217,7 +216,6 @@ const ReminderScreen = () => {
                                 >
                                     <Text
                                         style={{
-                                            fontSize: 16,
                                             fontWeight: repeat === item ? "bold" : "normal",
                                             color: repeat === item ? "black" : "#000",
                                         }}
@@ -245,7 +243,7 @@ const ReminderScreen = () => {
                                 borderRadius="$4"
                                 onPress={handleCancel}
                                 disabled={saving}
-                                height="$5"
+                                height="$4"
                             >
                                 Cancel
                             </Button>
@@ -256,7 +254,7 @@ const ReminderScreen = () => {
                                 borderRadius="$4"
                                 onPress={handleConfirm}
                                 disabled={saving}
-                                height="$5"
+                                height="$4"
                                 icon={saving ? undefined : <Bell size={16} />}
                             >
                                 {saving ? (

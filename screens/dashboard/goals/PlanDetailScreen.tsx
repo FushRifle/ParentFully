@@ -1,5 +1,6 @@
 import { GoalBackground } from '@/constants/GoalBackground'
 import { useAuth } from '@/context/AuthContext'
+import { Text } from '@/context/GlobalText'
 import { createGoal as createGoalService } from '@/hooks/goals/useGoal'
 import { useTheme } from '@/styles/ThemeContext'
 import { supabase } from '@/supabase/client'
@@ -11,9 +12,9 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Plus } from '@tamagui/lucide-icons'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Modal, useWindowDimensions } from 'react-native'
+import { Modal, TouchableOpacity, useWindowDimensions } from 'react-native'
 import Toast from 'react-native-toast-message'
-import { Button, Card, H5, ScrollView, Spinner, Text, useTheme as useTamaguiTheme, View, XStack, YStack } from 'tamagui'
+import { Button, Card, H5, H6, ScrollView, Spinner, useTheme as useTamaguiTheme, View, XStack, YStack } from 'tamagui'
 import { v4 as uuidv4 } from 'uuid'
 
 const IconMap: Record<string, any> = { Feather, FontAwesome, MaterialIcons, AntDesign }
@@ -160,7 +161,7 @@ const PlanDetailScreen = () => {
 
     const renderUserGoalsSection = () => (
         <YStack mb="$4">
-            <H5 fontWeight="600" color={colors.text} mb="$3" fontSize='$3'>My Goals ({goals.userGoals.length})</H5>
+            <H6 fontWeight="600" color={colors.text} mb="$3">My Goals ({goals.userGoals.length})</H6>
             {goals.userGoals.length > 0 ? (
                 <YStack space="$2">
                     {goals.userGoals.map((item) => (
@@ -178,7 +179,7 @@ const PlanDetailScreen = () => {
 
     const renderPredefinedGoalsSection = () => (
         <YStack>
-            <H5 fontWeight="600" fontSize='$3' color={colors.text} mb="$3">Predefined Goals ({goals.predefinedGoals.length})</H5>
+            <H6 fontWeight="600" color={colors.text} mb="$3">Predefined Goals ({goals.predefinedGoals.length})</H6>
             {goals.predefinedGoals.length > 0 ? (
                 <YStack space="$2">
                     {goals.predefinedGoals.map((item) => (
@@ -225,7 +226,6 @@ const PlanDetailScreen = () => {
                     <XStack jc='space-between'>
                         <Text
                             numberOfLines={1}
-                            fontSize='$2'
                             fontWeight="700"
                             color={colors.text}
                             flex={1}
@@ -245,7 +245,6 @@ const PlanDetailScreen = () => {
                         </Button>
                     </XStack>
                     <Text
-                        fontSize="$3"
                         color={colors.textSecondary}
                         flexWrap="wrap"
                         numberOfLines={2} // Allow 2 lines for better text display
@@ -255,12 +254,12 @@ const PlanDetailScreen = () => {
                     </Text>
                     {type === 'user' && (
                         <Button unstyled onPress={() => navigateToGoalDetails(item)}>
-                            <Text color={colors.secondaryContainer} fontSize='$1'>View Details</Text>
+                            <Text color={colors.secondaryContainer}>View Details</Text>
                         </Button>
                     )}
                     {type === 'predefined' && (
                         <Button unstyled onPress={() => navigateToGoalDetails(item)}>
-                            <Text color={colors.secondaryContainer} fontSize='$1'>Set Goals</Text>
+                            <Text color={colors.secondaryContainer}>Set Goals</Text>
                         </Button>
                     )}
                 </YStack>
@@ -299,24 +298,35 @@ const PlanDetailScreen = () => {
                 <YStack position="absolute" f={1} jc="center" ai="center" w="100%" h="100%">
                     <YStack p="$4" pb="$4" borderBottomLeftRadius="$4" borderBottomRightRadius="$4" width="100%">
                         <XStack ai="center" jc="flex-start" mb="$2" mt="$5">
-                            <Button unstyled onPress={() => navigation.goBack()} hitSlop={20} mr="$5">
+                            <Button unstyled
+                                onPress={() => navigation.goBack()}
+                                hitSlop={20} mr="$5">
                                 <MaterialIcons name="arrow-back" size={24} color={tamaguiTheme.primary?.val} />
                             </Button>
-                            <Text fontSize='$4' ta="left" flex={1} color="$primary">{coreValue.title}</Text>
+
+                            <H6 fontWeight='600' ta="left" color={colors.text}> {coreValue.title}</H6>
                         </XStack>
-                        <Text ta="left" fontSize="$4" px="$3" color={isDark ? colors.primary : colors.text}>{ageDescription}</Text>
+                        <Text ta="left" px="$3" color={isDark ? colors.primary : colors.text}>{ageDescription}</Text>
                     </YStack>
 
-                    <XStack jc="flex-end" ai="flex-end" mt="$4" mb="$2" mr='$5' width="100%">
-                        <XStack space='$2'>
-                            <Button chromeless onPress={navigateToAddGoal}
-                                bc={colors.primaryDark} br={9999}
-                                size="$1" width={20} height={20}
-                                ai="center" jc="center">
-                                <Plus size={14} color="white" />
-                            </Button>
-                            <Text color={colors.primaryDark} fontSize="$2">Add Goal</Text>
-                        </XStack>
+                    <XStack jc="flex-end" ai="center" mt="$4" mb="$2" mr="$5" width="100%" space="$2">
+                        <TouchableOpacity onPress={navigateToAddGoal}>
+                            <XStack ai="center" space="$2">
+                                <Button
+                                    chromeless
+                                    bc={colors.primaryDark}
+                                    br={9999}
+                                    size="$1"
+                                    width={20}
+                                    height={20}
+                                    ai="center"
+                                    jc="center"
+                                >
+                                    <Plus size={14} color="white" />
+                                </Button>
+                                <Text color={colors.primaryDark}>Add Goal</Text>
+                            </XStack>
+                        </TouchableOpacity>
                     </XStack>
 
                     <ScrollView
@@ -333,9 +343,9 @@ const PlanDetailScreen = () => {
                         {loading ? (
                             <YStack space="$4" width="100%" ai="center">
                                 <YStack mb="$4" width="100%" maxWidth={500}>
-                                    <Text fontWeight="500" color={colors.text} mb="$3" fontSize="$3">
+                                    <H6 fontWeight="600" color={colors.text} mb="$3">
                                         My Goals
-                                    </Text>
+                                    </H6>
                                     <YStack space="$2">
                                         {[1, 2, 3].map((i) => (
                                             <GoalCardSkeleton key={`skeleton-${i}`} />
@@ -343,9 +353,9 @@ const PlanDetailScreen = () => {
                                     </YStack>
                                 </YStack>
                                 <YStack width="100%" maxWidth={500}>
-                                    <Text fontWeight="500" fontSize="$3" color={colors.text} mb="$3">
+                                    <H6 fontWeight="600" color={colors.text} mb="$3">
                                         Predefined Goals
-                                    </Text>
+                                    </H6>
                                     <YStack space="$2">
                                         {[1, 2, 3].map((i) => (
                                             <GoalCardSkeleton key={`skeleton-predefined-${i}`} />
@@ -366,7 +376,7 @@ const PlanDetailScreen = () => {
                             <YStack flex={1} ai="center" jc="center" px="$4" space="$3" width="100%">
                                 <MaterialIcons name="inbox" size={40} color={tamaguiTheme.colorSecondary?.val} />
                                 <H5 ta="center" color="$colorSecondary" fontWeight="600">No goals yet</H5>
-                                <Text ta="center" color="$colorSecondary" fontSize="$2">Get started by adding your first goal</Text>
+                                <Text ta="center" color="$colorSecondary">Get started by adding your first goal</Text>
                                 <Button onPress={() => setAddModalVisible(true)} mt="$3" size="$2" borderWidth={1} borderColor="$primary" backgroundColor="transparent">
                                     <Text color="$primary" fontWeight="500">Create Goal</Text>
                                 </Button>
@@ -405,8 +415,8 @@ const PlanDetailScreen = () => {
                     <YStack f={1} jc="flex-end" bg="rgba(0,0,0,0.4)">
                         <YStack bg={colors.card} p="$4" br="$6" space="$6" elevation={6} borderTopLeftRadius={20} borderTopRightRadius={20}>
                             <YStack space='$3'>
-                                <Text fontSize="$4" fontWeight="600" jc='center' ai='center' color={colors.text}>Are you sure you want to Delete this goal?</Text>
-                                <Text fontSize="$4" fontWeight="600">Once this goal is deleted it cannot be retrieved and all progress will be lost</Text>
+                                <Text fontWeight="600" jc='center' ai='center' color={colors.text}>Are you sure you want to Delete this goal?</Text>
+                                <Text fontWeight="600">Once this goal is deleted it cannot be retrieved and all progress will be lost</Text>
                             </YStack>
                             <XStack jc='center' ai='center' space='$6' mt='$5' mb='$7'>
                                 <Button size="$5" w='40%' variant="outlined" borderColor={colors.border as any} onPress={() => setShowOptions(false)}>Cancel</Button>

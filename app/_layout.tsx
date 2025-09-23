@@ -12,6 +12,8 @@ import OnboardingScreen from "@/screens/auth/OnboardingScreen";
 import SuccessScreen from "@/screens/auth/SuccessScreen";
 // import PhoneVerification from "@/screens/auth/VerifyScreen";
 import { GoalProvider } from "@/context/GoalContext";
+import { ResponsiveTextProvider } from "@/context/ResponsiveTextContext";
+import { ScreenProvider } from "@/context/ScreenContext";
 import { supabase } from "@/supabase/client";
 import config from "@/tamagui.config";
 import { Stack } from "expo-router";
@@ -26,9 +28,13 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <AuthProvider>
           <GoalProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <RootLayoutNav />
-            </GestureHandlerRootView>
+            <ResponsiveTextProvider>
+              <ScreenProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <RootLayoutNav />
+                </GestureHandlerRootView>
+              </ScreenProvider>
+            </ResponsiveTextProvider>
           </GoalProvider>
         </AuthProvider>
       </SafeAreaProvider>

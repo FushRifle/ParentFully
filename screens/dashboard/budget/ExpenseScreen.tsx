@@ -2,6 +2,7 @@ import { AddExpenseModal } from '@/components/expenses/AddExpenseModal';
 import { ExpensesByCategory } from '@/components/expenses/ExpenseActionCard';
 import { PaymentRequestCard } from '@/components/expenses/PendingActionCard';
 import { GoalBackground } from '@/constants/GoalBackground';
+import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from "@/supabase/client";
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,7 +13,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Modal, TouchableOpacity } from 'react-native';
 import uuid from 'react-native-uuid';
 import {
-    Button, Card, ScrollView, Text,
+    Button, Card,
+    ScrollView,
     View,
     XStack,
     YStack
@@ -191,7 +193,7 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
             backgroundColor={STATUS_COLORS[status]}
             alignSelf="flex-start"
         >
-            <Text color="white" fontSize={12} fontWeight="600">
+            <Text color="white" fontWeight="600">
                 {status.charAt(0).toUpperCase() + status.slice(1)}
             </Text>
         </YStack>
@@ -229,7 +231,6 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                         />
 
                         <Text color={colors.text} fontWeight="700"
-                            fontSize="$6"
                             textAlign="center"
                             flex={1} marginHorizontal="$2">
                             Budget Overview
@@ -239,23 +240,23 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                     <XStack ai="center" jc="space-between"
                         space="$5" px='$5' mt="$5">
                         <Button
-                            size='$5'
+                            size='$3'
                             variant='outlined'
                             br='$4'
                             backgroundColor="transparent"
                             borderColor={colors.border as any}
                             px="$3"
                         >
-                            <XStack ai="center" space="$3" py="$3">
+                            <XStack ai="center" space="$3">
                                 <Feather name="download" size={20} color={colors.text} />
-                                <Text color={colors.text} fontSize="$4">
+                                <Text color={colors.text}>
                                     Export
                                 </Text>
                             </XStack>
                         </Button>
 
                         <Button
-                            size='$5'
+                            size='$3'
                             variant='outlined'
                             backgroundColor="transparent"
                             borderColor={colors.primary as any}
@@ -263,19 +264,19 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                             px="$3"
                             br='$4'
                         >
-                            <XStack ai="center" space="$3" py="$3">
+                            <XStack ai="center" space="$3">
                                 <Feather name="printer" size={20} color={colors.primary} />
-                                <Text color={colors.primary} fontSize="$4">
+                                <Text color={colors.primary}>
                                     View Records
                                 </Text>
                             </XStack>
                         </Button>
                     </XStack>
 
-                    <Card bc="transparent" br={12} p="$2" px='$4' space="$3" mt='$2'>
+                    <Card bc="transparent" br='$9' p="$2" px='$5' space="$3" mt='$2'>
                         <YStack space="$3">
                             {/* Category Dropdown */}
-                            <YStack space="$2">
+                            <YStack space="$1">
                                 <Picker
                                     style={{ backgroundColor: "white" }}
                                 >
@@ -326,18 +327,18 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                         </XStack>
                     </YStack>
 
-                    <YStack ai='center' jc='center' mt='$5'>
+                    <YStack ai='center' jc='center' mt='$6'>
                         <Button
-                            size='$5'
-                            width='95%'
+                            size='$4'
+                            width='58%'
                             br='$5'
                             px="$3"
                             backgroundColor={colors.primary}
                             onPress={() => setShowModal(true)}
                         >
-                            <XStack ai="center" space="$3" py="$3">
+                            <XStack ai="center" space="$3">
                                 <Feather name="plus" size={20} color={colors.onPrimary} />
-                                <Text color={colors.onPrimary} fontSize="$4">
+                                <Text color={colors.onPrimary} >
                                     Add
                                 </Text>
                             </XStack>
@@ -346,7 +347,6 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
 
                     <YStack jc="flex-start" space="$1" mt="$5">
                         <Text
-                            fontSize={20}
                             fontWeight="700"
                             color={colors.text}
                             px="$3"
@@ -358,7 +358,6 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
 
                     <YStack jc="flex-start" space="$1" mt="$5">
                         <Text
-                            fontSize={20}
                             fontWeight="700"
                             color={colors.text}
                             px="$3"
@@ -407,17 +406,17 @@ const SummaryCard = ({ label, value, colors, icon, iconBg, IconColor }: SummaryC
                 style={{
                     backgroundColor: iconBg,
                     borderRadius: 9999,
-                    padding: 8,
+                    padding: 5,
                 }}
             >
                 <MaterialCommunityIcons name={icon as any} size={20} color={IconColor} />
             </View>
 
             <YStack ai='flex-start' jc='flex-start'>
-                <Text fontSize={14} color={colors.text}>
+                <Text color={colors.text}>
                     {label}
                 </Text>
-                <Text fontSize={18} fontWeight="bold" marginTop={4}>
+                <Text fontWeight="bold" marginTop={4}>
                     ${value.toFixed(2)}
                 </Text>
             </YStack>
@@ -522,10 +521,10 @@ export const ActionModal = ({
                                 </View>
 
                                 <YStack>
-                                    <Text fontSize={16} fontWeight="600">
+                                    <Text fontWeight="600">
                                         {opt.title}
                                     </Text>
-                                    <Text fontSize={13} color="gray">
+                                    <Text color='gray'>
                                         {opt.description}
                                     </Text>
                                 </YStack>
@@ -537,7 +536,6 @@ export const ActionModal = ({
                     <Button
                         size="$4"
                         onPress={onClose}
-                        fontSize={16}
                         fontWeight="600"
                         variant="outlined"
                         color="red"

@@ -1,5 +1,6 @@
 import { COUNTRY_CODES } from "@/constants/Country";
 import { GoalBackground } from "@/constants/GoalBackground";
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -10,7 +11,7 @@ import { ChevronDown } from "@tamagui/lucide-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator, Alert,
+    Alert,
     Modal,
     ScrollView,
     TouchableOpacity,
@@ -19,7 +20,7 @@ import {
 } from "react-native";
 import { Avatar, Divider, TextInput } from "react-native-paper";
 import SwitchToggle from "react-native-switch-toggle";
-import { Button, Card, Text, XStack, YStack } from "tamagui";
+import { Button, Card, H6, XStack, YStack } from "tamagui";
 
 type Contact = {
     id: string;
@@ -238,16 +239,6 @@ export default function FamilyDetailsScreen() {
         }
     };
 
-    if (loading) {
-        return (
-            <GoalBackground>
-                <YStack f={1} ai="center" jc="center">
-                    <ActivityIndicator size="large" color={colors.primary} />
-                </YStack>
-            </GoalBackground>
-        );
-    }
-
     if (!contact) {
         return (
             <GoalBackground>
@@ -261,24 +252,25 @@ export default function FamilyDetailsScreen() {
     return (
         <GoalBackground>
             <ScrollView style={{ flex: 1 }}>
-                <YStack f={1} p="$3" space="$3" mb="$5">
+                <YStack f={1} p="$3" space="$3" mb="$8">
+
                     {/* Header */}
                     <XStack space="$4" ai="center" mt='$7' mb='$3'>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
+                            <MaterialCommunityIcons name="arrow-left" size={24} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize="$7" fontWeight="700" color={colors.text as any}>
+                        <H6 fontWeight="600" color={colors.text as any}>
                             {isEditing ? "Edit Contact" : "Contact Details"}
-                        </Text>
+                        </H6>
                     </XStack>
 
                     {/* Editable Fields */}
                     {isEditing ? (
                         <YStack space="$4" mt="$1">
                             <YStack space="$3">
-                                <Card bc='transparent' br={12} p="$2" space="$3">
+                                <Card bc='transparent' p='$1' br={12} space="$3">
                                     {/* Profile Section */}
-                                    <Card p="$2" ai="center" bc="transparent">
+                                    <Card ai="center" bc="transparent">
                                         <XStack ai="center" jc="center" mb="$2" style={{ position: "relative" }}>
                                             {contact.photo ? (
                                                 <Avatar.Image
@@ -321,7 +313,7 @@ export default function FamilyDetailsScreen() {
                                     </Card>
 
                                     <XStack>
-                                        <Text fontSize='$4' fontWeight='bold'>BASIC INFORMATION</Text>
+                                        <Text fontWeight='600'>BASIC INFORMATION</Text>
                                     </XStack>
 
                                     {/* Contact Name */}
@@ -496,7 +488,7 @@ export default function FamilyDetailsScreen() {
                                 {/* Role/Category */}
                                 <YStack>
                                     <XStack mb='$3'>
-                                        <Text fontSize="$4" fontWeight="bold">
+                                        <Text fontWeight="600">
                                             CONTACT CATEGORY AND ROLE ACCESS
                                         </Text>
                                     </XStack>
@@ -550,18 +542,16 @@ export default function FamilyDetailsScreen() {
                                                     >
                                                         <YStack space="$4" f={1} jc="center" ai="center">
                                                             {/* Title */}
-                                                            <Text
-                                                                fontSize="$9"
+                                                            <H6
                                                                 fontWeight="bold"
                                                                 color={colors.text}
                                                                 textAlign="center"
                                                             >
                                                                 Are you sure?
-                                                            </Text>
+                                                            </H6>
 
                                                             {/* Body */}
                                                             <Text
-                                                                fontSize="$5"
                                                                 lineHeight={22}
                                                                 textAlign="center"
                                                                 color={colors.textSecondary}
@@ -610,14 +600,14 @@ export default function FamilyDetailsScreen() {
                             {/* Notifications */}
                             <YStack>
                                 <XStack mb='$2'>
-                                    <Text fontSize='$4' fontWeight='bold'>NOTIFICATION</Text>
+                                    <Text fontWeight='600'>NOTIFICATION</Text>
                                 </XStack>
 
                                 <YStack space="$4">
                                     <Card bc={colors.card} br={12} p="$3" space="$2">
                                         <YStack space="$3" mt='$5'>
                                             <XStack ai="center" jc="space-between" mb="$2">
-                                                <Text fontSize="$3" color={colors.text} flexShrink={1} flexWrap="wrap" mr="$3">
+                                                <Text color={colors.text} flexShrink={1} flexWrap="wrap" mr="$3">
                                                     Notify me on all actions carried out by the contact
                                                 </Text>
                                                 <SwitchToggle
@@ -634,7 +624,7 @@ export default function FamilyDetailsScreen() {
                                             </XStack>
 
                                             <XStack ai="center" jc="space-between" space='$3'>
-                                                <Text fontSize="$3" color={colors.text} flexShrink={1} flexWrap="wrap" mr="$3">
+                                                <Text color={colors.text} flexShrink={1} flexWrap="wrap" mr="$3">
                                                     Notify this contact about updates that concern them or the child linked to them
                                                 </Text>
                                                 <SwitchToggle
@@ -657,7 +647,7 @@ export default function FamilyDetailsScreen() {
                     ) : (
                         <>
                             {/* View Only Section */}
-                            <Card p="$2" ai="center" bc="transparent">
+                            <Card ai="center" bc="transparent">
                                 {contact.photo ? (
                                     <Avatar.Image
                                         size={90}
@@ -680,7 +670,7 @@ export default function FamilyDetailsScreen() {
                                 )}
 
                                 <YStack space="$1" mb="$2" ai='center' jc='center'>
-                                    <Text fontSize="$7" fontWeight="900" mb="$2">
+                                    <Text fontWeight="500" mb="$2">
                                         {contact.name}
                                     </Text>
                                     <XStack space='$3'>
@@ -693,21 +683,20 @@ export default function FamilyDetailsScreen() {
                                                 alignSelf: "flex-start",
                                             }}
                                         >
-                                            <Text fontSize="$2" fontWeight="600" color={colors.textSecondary}>
+                                            <Text fontWeight="500" color={colors.textSecondary}>
                                                 {contact.category}
                                             </Text>
                                         </View>
 
 
-                                        <Text fontSize="$3" fontWeight="600" color={colors.textSecondary}>
+                                        <Text fontWeight="500" color={colors.textSecondary}>
                                             {contact.title}
                                         </Text>
                                     </XStack>
 
                                     {children.length > 0 && (
                                         <Text
-                                            fontSize="$3"
-                                            fontWeight="600"
+                                            fontWeight="500"
                                             color={colors.textSecondary}
                                             mb="$3"
                                         >
@@ -716,13 +705,13 @@ export default function FamilyDetailsScreen() {
                                     )}
 
                                     <Button
-                                        w="48%"
+                                        w="38%"
                                         bg={colors.secondary}
                                         color="white"
                                         borderRadius={8}
                                         onPress={() => navigation.navigate("FamilyInvite" as never)}
                                     >
-                                        <Text color="white" ai='center' fontWeight="700">
+                                        <Text color="white" ai='center' fontWeight="500">
                                             Invite to App
                                         </Text>
                                     </Button>
@@ -763,10 +752,10 @@ export default function FamilyDetailsScreen() {
                                                 </YStack>
 
                                                 <YStack flex={1}>
-                                                    <Text fontSize="$5" fontWeight="600">
+                                                    <Text fontWeight="500">
                                                         {fieldValue}
                                                     </Text>
-                                                    <Text fontSize="$3" color={colors.textSecondary}>
+                                                    <Text color={colors.textSecondary}>
                                                         {label}
                                                     </Text>
                                                 </YStack>
@@ -780,7 +769,7 @@ export default function FamilyDetailsScreen() {
                     )}
 
                     {/* Action Buttons */}
-                    <XStack jc="space-between" mt="$4">
+                    <XStack jc="space-between" mt="$5" mb='$5'>
                         {isEditing ? (
                             <>
                                 <Button
@@ -855,7 +844,7 @@ export default function FamilyDetailsScreen() {
             <Modal visible={confirmModalOpen} transparent animationType="fade">
                 <View style={{ flex: 1, justifyContent: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
                     <Card m="$4" p="$4" br={12} bg={colors.background}>
-                        <Text fontSize="$6" mb="$3" fontWeight="bold">
+                        <Text mb="$3" fontWeight="bold">
                             Confirm Change
                         </Text>
                         <Text mb="$4">

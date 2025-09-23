@@ -1,7 +1,9 @@
+import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { Card, Text, View, YStack } from 'tamagui';
+import { Card, View, YStack } from 'tamagui';
+
 
 const tipsList = [
     'Encourage your child to read for 15 minutes daily.',
@@ -55,7 +57,6 @@ const DailyTipCard: React.FC = () => {
                 </View>
 
                 <Text
-                    fontSize="$3"
                     textAlign="left"
                     lineHeight={20}
                     color={colors.onPrimary}

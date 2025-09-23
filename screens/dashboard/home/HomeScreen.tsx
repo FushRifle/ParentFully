@@ -4,6 +4,7 @@ import QuickActions from '@/components/home/QuickActions'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import HorizontalProfileCard from '@/components/profile/HorizontalProfileCard'
 import { GoalBackground } from '@/constants/GoalBackground'
+import { Text } from '@/context/GlobalText'
 import useImageUpload from '@/hooks/image/cloudinary/cloudinary'
 import { useTheme } from '@/styles/ThemeContext'
 import { supabase } from '@/supabase/client'
@@ -16,7 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import React, { useCallback, useEffect, useState } from 'react'
 import { RefreshControl, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Avatar, Button, ScrollView, Text, XStack, YStack } from 'tamagui'
+import { Avatar, Button, H2, ScrollView, XStack, YStack } from 'tamagui'
 
 interface HomeScreenProps {
     navigation: any
@@ -168,9 +169,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                 <Avatar.Image source={{ uri: profile.avatar_url, cache: 'force-cache' }} />
                                             ) : null}
                                             <Avatar.Fallback bc=" rgba(255, 255, 255, 0.3)" jc="center" ai="center">
-                                                <Text
-                                                    fontSize="$8"
-                                                    fontWeight="700"
+                                                <H2
                                                     color="white"
                                                     textAlign="center"
                                                 >
@@ -181,17 +180,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                             .join("")
                                                             .toUpperCase()
                                                         : "U"}
-                                                </Text>
+                                                </H2>
                                             </Avatar.Fallback>
                                         </Avatar>
                                     </Button>
 
                                     {/* Greeting */}
                                     <YStack flex={1} ml="$2">
-                                        <Text fontSize="$5" fontWeight="700" color="white">
+                                        <Text fontWeight="700" color="white">
                                             Hi {profile?.username}
                                         </Text>
-                                        <Text color="white" fontSize="$3">
+                                        <Text color="white">
                                             Ready to make today amazing?
                                         </Text>
                                     </YStack>
@@ -223,7 +222,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                             <XStack ai="center" jc="space-between" w="100%" py="$5">
                                 <YStack>
                                     <Text
-                                        fontSize="$4"
                                         fontWeight="700"
                                         style={{
                                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
@@ -262,7 +260,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                     >
                                         <Plus size={14} color="white" />
                                     </Button>
-                                    <Text color={colors.primary} fontSize="$2">Add Child</Text>
+                                    <Text color={colors.primary}>Add Child</Text>
                                 </XStack>
                             </XStack>
 
@@ -286,7 +284,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                             <YStack space="$3" mt="$6">
                                 <YStack>
                                     <Text
-                                        fontSize="$4"
                                         fontWeight="700"
                                         style={{
                                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',

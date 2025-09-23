@@ -1,10 +1,12 @@
+import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import { Button, Card, ScrollView, Text, XStack, YStack } from 'tamagui';
+import { Button, Card, ScrollView, XStack, YStack } from 'tamagui';
+
 
 type RootStackParamList = {
     ChildProfile: { child: ChildProfile };
@@ -85,7 +87,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     alignItems="center"
                                     justifyContent="center"
                                 >
-                                    <Text color="white" fontSize="$8" fontWeight="600">
+                                    <Text color="white" fontWeight="600">
                                         {getInitials(child.name)}
                                     </Text>
                                 </YStack>
@@ -93,7 +95,6 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
 
                             <YStack mt="$2" space="$1" ai="center" jc="center">
                                 <Text
-                                    fontSize="$1"
                                     fontWeight="600"
                                     color={colors.text}
                                     numberOfLines={2}
@@ -103,7 +104,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     {child.name}
                                 </Text>
 
-                                <Text fontSize="$1" color={colors.textSecondary}>
+                                <Text color={colors.textSecondary}>
                                     Age: {child.age} y/o
                                 </Text>
 
@@ -117,7 +118,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     mt="$2"
                                     mb='$2'
                                 >
-                                    <Text color="white" fontSize="$1" fontWeight="500">
+                                    <Text color="white" fontWeight="500">
                                         View Profile
                                     </Text>
                                 </Button>

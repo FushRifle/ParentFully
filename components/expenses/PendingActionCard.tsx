@@ -1,9 +1,10 @@
+import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { Calendar, Wallet2 } from "@tamagui/lucide-icons";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import { Button, Card, Text, View, XStack, YStack } from "tamagui";
+import { Button, Card, View, XStack, YStack } from "tamagui";
 
 export type RequestType = {
     id: string;
@@ -102,33 +103,31 @@ export const PaymentRequestCard = () => {
                                     style={{
                                         alignSelf: "flex-start",
                                         backgroundColor: colors.primary,
-                                        paddingHorizontal: 12,
+                                        paddingHorizontal: 6,
                                         paddingVertical: 6,
                                         borderRadius: 18,
                                     }}
                                 >
                                     <Text
                                         color="white"
-                                        fontSize={14}
-                                        fontWeight="600"
                                         style={{ textTransform: "uppercase" }}
                                     >
                                         {req.status} Request
                                     </Text>
                                 </View>
 
-                                <Text fontSize='$7' fontWeight="600">
+                                <Text fontWeight="600">
                                     {req.currency}{req.amount}.00
                                 </Text>
                             </XStack>
 
                             <YStack space='$2'>
-                                <Text fontSize='$5' fontWeight="700">{req.title}</Text>
+                                <Text fontWeight="700">{req.title}</Text>
                                 <Text>Requested From: {req.requestedFromName}</Text>
                             </YStack>
 
                             <XStack justifyContent="space-between" alignItems="center">
-                                <Text fontSize={13} color="#555">
+                                <Text color="#555">
                                     <Calendar size={12} />  {req.due_date}
                                 </Text>
                                 <View
@@ -142,7 +141,6 @@ export const PaymentRequestCard = () => {
                                 >
                                     <Text
                                         color="#B35D00"
-                                        fontSize='$3'
                                         fontWeight="600"
                                     >
                                         Needs Approval
@@ -177,7 +175,7 @@ export const PaymentRequestCard = () => {
                         space="$3"
                     >
                         <Wallet2 size={36} color="#FFA726" />
-                        <Text fontSize={16} color="#888" fontWeight="600">
+                        <Text color="#888" fontWeight="600">
                             No Request has been Created
                         </Text>
                     </Card>

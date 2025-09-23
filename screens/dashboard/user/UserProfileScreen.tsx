@@ -1,5 +1,6 @@
 import ConfirmModal from '@/components/settings/ConfirmModal';
 import { GoalBackground } from '@/constants/GoalBackground';
+import { Text } from '@/context/GlobalText';
 import { handleDeleteAccount } from '@/hooks/auth/useDeleteAccount';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
@@ -23,13 +24,13 @@ import {
     Button,
     Card,
     H4,
+    H6,
     Image,
     ScrollView,
     Select,
     Sheet,
     Spinner,
     Stack,
-    Text,
     View,
     XStack,
     YStack
@@ -39,6 +40,8 @@ import {
 const AVATAR_DEFAULT = require('@/assets/images/profile.jpg');
 const GRADIENT_COLORS = ['rgba(255,255,255,0.25)', 'rgba(255,255,255,0.05)'] as const;
 const REFRESH_CONTROL_TINT = 'primary' as const;
+const AVATAR_SIZE = 80;
+const BgMain = require('@/assets/backgrounds/Bg-Main.png');
 
 export type RootStackParamList = {
     Login: undefined;
@@ -70,8 +73,6 @@ interface SettingItemProps {
     onPress?: () => void;
 }
 
-const AVATAR_SIZE = 80;
-
 const SettingItem: React.FC<SettingItemProps> = memo(
     ({ icon, name, colors, textColor, iconColor, IconBg, rightComponent, onPress }) => (
         <XStack
@@ -79,7 +80,6 @@ const SettingItem: React.FC<SettingItemProps> = memo(
             alignItems="center"
             paddingVertical="$2.5"
             onPress={onPress}
-            pressStyle={onPress ? { opacity: 0.8 } : {}}
         >
             <XStack alignItems="center" space="$4">
                 <View
@@ -96,11 +96,11 @@ const SettingItem: React.FC<SettingItemProps> = memo(
                 >
                     <Icon
                         name={icon}
-                        size={16}
+                        size={14}
                         color={iconColor || colors.primary}
                     />
                 </View>
-                <Text fontSize="$4" color={textColor || colors.text}>
+                <Text color={textColor || colors.text}>
                     {name}
                 </Text>
             </XStack>
@@ -128,12 +128,10 @@ const UserProfileCard = memo(
         onEditProfile: () => void;
     }) => (
         <YStack
+            borderRadius="$9"
             backgroundColor={colors.secondary}
-            borderRadius="$7"
             padding="$4"
             space="$4"
-            elevation="$1"
-            overflow="hidden"
             ai="center"
             jc="center"
         >
@@ -141,15 +139,19 @@ const UserProfileCard = memo(
                 <Avatar circular size={AVATAR_SIZE}>
                     {user.avatar_url ? (
                         <Avatar.Image
-                            source={typeof user.avatar_url === 'string' ? { uri: user.avatar_url } : user.avatar_url}
+                            source={
+                                typeof user.avatar_url === 'string'
+                                    ? { uri: user.avatar_url }
+                                    : user.avatar_url
+                            }
                         />
                     ) : (
                         <Avatar.Fallback
-                            backgroundColor={colors.primaryLight || '#FFEEDA33'}
+                            backgroundColor="#AAFFAA33"
                             justifyContent="center"
                             alignItems="center"
                         >
-                            <Text fontWeight="700" fontSize={32} color={colors.onPrimary || 'white'} textAlign="center">
+                            <Text fontWeight="700" color="white" textAlign="center">
                                 {getInitials(user.name)}
                             </Text>
                         </Avatar.Fallback>
@@ -163,29 +165,26 @@ const UserProfileCard = memo(
                     circular
                     size="$2.5"
                     backgroundColor="$primary"
-                    icon={<MaterialCommunityIcons name="pen" size={14} color={colors.text} />}
+                    icon={<MaterialCommunityIcons name="pen" size={14} color="white" />}
                     onPress={onEditProfile}
                     pressStyle={{ opacity: 0.9 }}
                 />
             </Stack>
 
             <YStack ai="center" space="$1">
-                <H4 color={colors.onPrimary} fontWeight="700">
+                <Text color="white" fontWeight="700">
                     {user.name}
-                </H4>
-                <Text color={colors.onPrimary} fontWeight="500">
+                </Text>
+                <Text color="white" fontWeight="500">
                     @{user.username}
                 </Text>
             </YStack>
 
             <Button
-                w="40%"
-                size="$4"
-                backgroundColor="#FFEEDA33"
+                backgroundColor="#AAFFAA33"
                 color="$background"
-                icon={<MaterialIcons name="edit" size={16} color={colors.onPrimary} />}
+                icon={<MaterialIcons name="edit" size={12} color="white" />}
                 onPress={onEditProfile}
-                pressStyle={{ backgroundColor: '$background', opacity: 0.2 }}
             >
                 Edit Profile
             </Button>
@@ -488,9 +487,9 @@ export function UserProfileScreen() {
                                                     </Avatar.Fallback>
                                                 </Avatar>
 
-                                                <H4 fontSize='$3' color={colors.text} flex={1}>
+                                                <Text color={colors.text} flex={1}>
                                                     {child.name}
-                                                </H4>
+                                                </Text>
 
                                                 <XStack flex={1} jc="flex-end" ai="center">
                                                     <ChevronRight color={colors.textSecondary} />
@@ -561,10 +560,10 @@ export function UserProfileScreen() {
                                                 borderWidth={1}
                                             />
                                             <YStack flex={1} space='$1'>
-                                                <H4 fontSize='$3' color={colors.text} flex={1}>
+                                                <Text color={colors.text} flex={1}>
                                                     {parent.name}
-                                                </H4>
-                                                <Text color={colors.text} fontSize="$2">
+                                                </Text>
+                                                <Text color={colors.text}>
                                                     Co-Parent
                                                 </Text>
                                             </YStack>
@@ -626,11 +625,10 @@ export function UserProfileScreen() {
                     />
                 }
                 contentContainerStyle={{
-                    paddingTop: insets.top + 10,
                     paddingBottom: insets.bottom + 10,
                 }}
             >
-                <YStack space="$5" paddingHorizontal="$3">
+                <YStack space="$5" paddingHorizontal="$3" mt='$7'>
                     <XStack justifyContent="flex-start" mt="$4" space='$4'>
                         <Button
                             unstyled
@@ -651,7 +649,7 @@ export function UserProfileScreen() {
 
                     <YStack space="$3" marginTop="$1" marginBottom="$2">
                         <TouchableOpacity onPress={() => navigation.navigate('GiftRefer' as never)}>
-                            <Card padding="$3" borderRadius="$4"
+                            <Card padding="$3" borderRadius="$6"
                                 backgroundColor={colors.card}
                             >
                                 <YStack space='$3'>
@@ -659,7 +657,7 @@ export function UserProfileScreen() {
                                 </YStack>
 
                                 <XStack jc='space-between' mt='$4' mb='$2'>
-                                    <Text fontSize='$5' color={colors.text}>
+                                    <Text color={colors.text}>
                                         Refer Friends
                                     </Text>
                                     <ChevronRight />
@@ -671,13 +669,13 @@ export function UserProfileScreen() {
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => navigation.navigate('Premium' as never)}>
-                            <Card padding="$3" borderRadius="$4" backgroundColor={colors.card}>
+                            <Card padding="$3" borderRadius="$6" backgroundColor={colors.card}>
                                 <YStack space="$3">
                                     <Star color="#F4B400" />
                                 </YStack>
 
                                 <XStack jc="space-between" mt="$4" mb="$2">
-                                    <Text fontSize="$5" color={colors.text}>
+                                    <Text color={colors.text}>
                                         Premium Subscription
                                     </Text>
                                     <ChevronRight />
@@ -692,19 +690,18 @@ export function UserProfileScreen() {
 
                     <YStack space="$3" px='$2' mt='$2'>
                         <XStack jc="space-between" ai="center">
-                            <H4 fontWeight="600" color={colors.text}>Children</H4>
+                            <H6 fontWeight="600" color={colors.text}>Children</H6>
                             <Pressable
                                 onPress={() => { }}
                                 style={{
-                                    width: 29,
-                                    height: 26,
+
                                     borderRadius: 20,
                                     backgroundColor: colors.primary,
                                     justifyContent: "center",
                                     alignItems: "center",
                                 }}
                             >
-                                <Feather name="plus" size={20} color={colors.onPrimary} />
+                                <Feather name="plus" size={19} color={colors.onPrimary} />
                             </Pressable>
                         </XStack>
 
@@ -713,26 +710,24 @@ export function UserProfileScreen() {
 
                     <YStack space="$3" px='$2'>
                         <XStack jc="space-between" ai="center">
-                            <H4 fontWeight="600" color={colors.text}>Co-Parents</H4>
+                            <H6 fontWeight="600" color={colors.text}>Co-Parents</H6>
                             <Pressable
                                 onPress={() => { }}
                                 style={{
-                                    width: 29,
-                                    height: 26,
                                     borderRadius: 20,
                                     backgroundColor: colors.primary,
                                     justifyContent: "center",
                                     alignItems: "center",
                                 }}
                             >
-                                <Feather name="plus" size={20} color={colors.onPrimary} />
+                                <Feather name="plus" size={19} color={colors.onPrimary} />
                             </Pressable>
                         </XStack>
                         {renderFamilySection()}
                     </YStack>
 
                     <YStack px='$2' mt="$2" space='$2'>
-                        <H4 fontWeight="600" color={colors.text}>Account Settings</H4>
+                        <H6 fontWeight="600" color={colors.text}>Account Settings</H6>
                         <Card padding="$3" borderRadius="$4" backgroundColor={colors.card} space='$2'>
                             <SettingItem
                                 icon="mail-outline"
@@ -829,7 +824,7 @@ export function UserProfileScreen() {
                     </YStack>
 
                     <YStack space="$3" px='$2'>
-                        <H4 fontWeight="600" color={colors.text}>Support and Legal</H4>
+                        <H6 fontWeight="600" color={colors.text}>Support and Legal</H6>
                         <Card padding="$3" borderRadius="$4" backgroundColor={colors.card} space='$2'>
                             <SettingItem icon="help-circle-outline" name={t('help_center')}
                                 colors={colors}
@@ -857,7 +852,7 @@ export function UserProfileScreen() {
                                 textColor="black"
                                 iconColor="blue"
                                 IconBg='#FFECEC'
-                                rightComponent={<Text fontSize="$3" color={colors.textSecondary}>v1.0.0</Text>}
+                                rightComponent={<Text color={colors.textSecondary}>v1.0.0</Text>}
                             />
                         </Card>
                     </YStack>
@@ -869,8 +864,8 @@ export function UserProfileScreen() {
                             borderWidth={1}
                         >
                             <YStack space='$3'>
-                                <H4 fontWeight="600" color={colors.text}>Danger Zone</H4>
-                                <Text fontSize='$4' color={colors.textSecondary}>
+                                <H6 fontWeight="600" color={colors.text}>Danger Zone</H6>
+                                <Text color={colors.textSecondary}>
                                     Permanently delete your account. This action cannot be undone. All your data will be permanently deleted.
                                 </Text>
                             </YStack>
