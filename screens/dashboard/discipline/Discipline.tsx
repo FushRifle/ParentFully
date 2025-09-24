@@ -5,13 +5,12 @@ import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
-import { Text } from '@/context/GlobalText'
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Dimensions, Modal, PixelRatio, ScrollView, TouchableOpacity } from "react-native";
-import { Button, Card, Spinner, Text, View, XStack, YStack } from "tamagui";
+import { Button, Card, H4, H6, Spinner, View, XStack, YStack } from "tamagui";
 import { v4 as uuidv4 } from 'uuid';
 
 type DisciplineDetailsScreenNavigationProp = NativeStackNavigationProp<
@@ -345,7 +344,7 @@ const DisciplineScreen = () => {
                             Choose Template
                         </H4>
                     </XStack>
-                    <Text fontSize={scaleFont(14)} color="#555">
+                    <H4 fontSize={scaleFont(14)} color="#555">
                         Long press to select one or more plans for download or print
                     </H4>
                 </YStack>
@@ -394,7 +393,7 @@ const DisciplineScreen = () => {
                     <YStack space={moderateScale(12)}>
                         <YStack jc="flex-start" mt={verticalScale(24)} space={moderateScale(12)}>
                             <YStack space={moderateScale(8)}>
-                                <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
+                                <H6 fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
                                     My Plans:
                                 </H6>
                                 {myPlans.length > 0 ? (
