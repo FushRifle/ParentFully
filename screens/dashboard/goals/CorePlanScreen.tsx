@@ -126,7 +126,7 @@ const CorePlanScreen = () => {
                                     space="$2.5"
                                     flexWrap="nowrap"
                                     justifyContent="space-between"
-                                    overflow="scroll" // allows horizontal scroll on small screens
+                                    overflow="scroll" 
                                 >
                                     {ageGroups.map((group) => {
                                         const isActive = activeTab === group.id;
@@ -134,7 +134,7 @@ const CorePlanScreen = () => {
                                             <Button
                                                 key={group.id}
                                                 size="$2"
-                                                flex={1} // all buttons share equal width
+                                                flex={1}
                                                 flexShrink={1}
                                                 borderRadius="$9"
                                                 borderColor={colors.border as any}
@@ -168,7 +168,7 @@ const CorePlanScreen = () => {
                                             shadowColor="white"
                                             borderColor={colors.border as any}
                                             size="$2"
-                                            flexBasis="48%"   // 2 per row
+                                            flexBasis="48%"
                                             flexGrow={1}
                                             minWidth="45%"
                                             padding="$2"
@@ -186,14 +186,15 @@ const CorePlanScreen = () => {
                                                 >
                                                     <MaterialIcons name={value.icon} size={25} color="white" />
                                                 </YStack>
-                                                <Text
+                                                <H6
+                                                    fontSize={13}
                                                     textAlign="center"
-                                                    fontWeight="700"
+                                                    fontWeight="600"
                                                     mt="$2"
                                                     color={colors.text}
                                                 >
                                                     {value.title}
-                                                </Text>
+                                                </H6>
                                             </YStack>
                                         </Card>
                                     ))}

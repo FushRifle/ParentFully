@@ -14,26 +14,4 @@ goal should have a celebratory modal
 try again, mastered button
 
 
-module.exports = {
-  presets: ['babel-preset-expo'],
-  plugins: [
-    [
-      '@tamagui/babel-plugin',
-      {
-        components: ['tamagui'],
-        config: './tamagui.config.ts',
-        logTimings: true,
-      },
-    ],
-    'react-native-worklets/plugin', // updated plugin
-  ],
-};
-
-
-  expo@54.0.8 - expected version: 54.0.8
-  expo-audio@1.0.12 - expected version: ~1.0.12
-  expo-constants@18.0.9 - expected version: ~18.0.9
-  expo-media-library@18.2.0 - expected version: ~18.2.0
-  expo-router@6.0.6 - expected version: ~6.0.6
-
-  npm install expo@54.0.8 expo-router@6.0.6 expo-audio@1.0.12 expo-constants@18.0.9 expo-media-library@18.2.1 expo-router@6.0.6  --legacy-peer-deps
+npm install expo@54.0.10 expo-file-system@19.0.15 expo-router@6.0.8 --legacy-peer-deps

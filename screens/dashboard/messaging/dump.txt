@@ -1,0 +1,31 @@
+const fabOptions: FabOption[] = [
+        {
+            icon: 'group',
+            label: 'New Group',
+            color: 'blue',
+            onPress: () => setIsModalOpen(true)
+        },
+        {
+            icon: 'person-add',
+            label: 'New Contact',
+            color: 'green',
+            onPress: () => { }
+        },
+        {
+            icon: 'settings',
+            label: 'Settings',
+            color: 'gray',
+            onPress: () => navigation.navigate('Settings')
+        }
+    ]
+
+ const renderGroupItem = useCallback(
+        ({ item }: { item: Group }) => (
+            <GroupListItem
+                group={item}
+                unreadCount={unreadCountsBySenderId[item.id] || 0}
+                onPress={() => handleSelectGroup(item)}
+            />
+        ),
+        [handleSelectGroup, unreadCountsBySenderId]
+    )

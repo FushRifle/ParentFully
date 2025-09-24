@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Lock, Mail } from '@tamagui/lucide-icons'
 import { useNavigation } from 'expo-router'
 import React, { useEffect, useState } from 'react'
+import { Text } from '@/context/GlobalText'
 import {
     Keyboard,
     ScrollView,
@@ -21,7 +22,6 @@ import {
     Label,
     Separator,
     Spinner,
-    Text,
     XStack,
     YStack
 } from 'tamagui'

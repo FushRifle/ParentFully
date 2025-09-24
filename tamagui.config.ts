@@ -8,20 +8,17 @@ const tamaguiConfig = createTamagui({
             background: '#ffffff',
             backgroundHover: '#f7f7f7',
             backgroundPress: '#eaeaea',
-
             borderColor: '#e2e2e2',
             borderColorHover: '#cfcfcf',
             borderColorPress: '#b5b5b5',
             borderColorFocus: '#999999',
-
             color: '#000000',
             colorHover: '#111111',
             colorPress: '#222222',
-
-            // Newly added tokens to silence warnings
             primary: '#007AFF',
             backgroundFocus: '#e0e0e0',
             red2: '#FF3B30',
+            red10: 'red',
             gray10: '#1C1C1E',
         },
         dark: {

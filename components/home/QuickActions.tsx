@@ -6,7 +6,7 @@ import * as Icons from '@tamagui/lucide-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useMemo, useState } from 'react'
 import { Dimensions } from 'react-native'
-import { Card, View, XStack, YStack } from 'tamagui'
+import { Card, H6, View, XStack, YStack } from 'tamagui'
 
 const screenWidth = Dimensions.get('window').width
 const spacing = 16
@@ -239,12 +239,12 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                     )}
                                 </View>
 
-                                <Text fontWeight="600" color={colors.text} marginTop="$2" textAlign="left">
+                                <H6 fontSize={13} fontWeight="600" color={colors.text} marginTop="$3" textAlign="left">
                                     {label}
-                                </Text>
-                                <Text color={colors.textSecondary}
+                                </H6>
+                                <Text fontSize={11} color={colors.textSecondary}
                                     textAlign="left" marginTop="$2"
-                                    mb="$5" flexShrink={0}
+                                    mb="$1" flexShrink={0}
                                 >
                                     {description}
                                 </Text>

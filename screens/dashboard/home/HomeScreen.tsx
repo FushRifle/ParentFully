@@ -157,7 +157,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                 space="$3"
                                 bg={colors.primary}
                                 width="100%"
-                                paddingTop="$4"
+                                paddingTop="$1"
                                 paddingBottom="$4"
                                 px="$3"
                             >

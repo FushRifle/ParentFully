@@ -1,3 +1,4 @@
+// Text.tsx
 import React from 'react';
 import { Text as TamaguiText, TextProps } from 'tamagui';
 import { useResponsiveText } from './ResponsiveTextContext';
@@ -5,7 +6,10 @@ import { useResponsiveText } from './ResponsiveTextContext';
 export const Text = ({ fontSize = 13, ...props }: TextProps) => {
     const { scaleFont } = useResponsiveText();
 
-    const finalFontSize = scaleFont(Number(fontSize));
+    const finalFontSize =
+        typeof fontSize === 'number'
+            ? scaleFont(fontSize)
+            : fontSize;
 
     return <TamaguiText {...props} fontSize={finalFontSize} />;
 };

@@ -5,7 +5,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import { Button, Card, ScrollView, XStack, YStack } from 'tamagui';
+import { Button, Card, H6, ScrollView, XStack, YStack } from 'tamagui';
 
 
 type RootStackParamList = {
@@ -93,7 +93,8 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                             )}
 
                             <YStack mt="$2" space="$1" ai="center" jc="center">
-                                <Text
+                                <H6
+                                fontSize={13}
                                     fontWeight="600"
                                     color={colors.text}
                                     numberOfLines={2}
@@ -101,7 +102,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     style={{ textAlign: 'center' }}
                                 >
                                     {child.name}
-                                </Text>
+                                </H6>
 
                                 <Text color={colors.textSecondary} fontSize='$4'>
                                     Age: {child.age} y/o

@@ -15,6 +15,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message'
+import { Modal } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import {
     Button,
     H4,
@@ -52,8 +54,10 @@ const GoalDetailsScreen = () => {
     const { user } = useAuth()
     const navigation = useNavigation<GoalDetailsScreenNavigationProp>();
     const route = useRoute<GoalDetailsScreenRouteProp>();
-    const { goal, onSave, onDelete } = route.params;
+    const { onSave, onDelete } = route.params;
+    const { goal } = route.params;
     const [isEditing, setIsEditing] = useState(false)
+    const [showCelebration, setShowCelebration] = useState(false);
 
     const [frequencyCount, setFrequencyCount] = useState<number>(0);
     const [frequencyDuration, setFrequencyDuration] = useState<number>(1);
@@ -268,6 +272,7 @@ const GoalDetailsScreen = () => {
 
             navigation.goBack();
             setIsEditing(false);
+            setShowCelebration(true);
 
             Toast.show({
                 type: "success",
@@ -287,7 +292,6 @@ const GoalDetailsScreen = () => {
             setLoading(false);
         }
     };
-
 
     const handleChange = (field: keyof Goal, value: string | boolean) => {
         setEditedGoal((prev) => ({
@@ -414,7 +418,7 @@ const GoalDetailsScreen = () => {
 
                 {/* Time Bound */}
                 <YStack mb="$5">
-                    <Text color={colors.text} fontWeight="600" mb="$1.5">
+                    <Text color={colors.text} fontWeight="600" mb="$1">
                         Time Bound
                     </Text>
                     {isEditing ? (
@@ -472,7 +476,7 @@ const GoalDetailsScreen = () => {
                 <YStack>
                     {isEditing && (
                         <YStack>
-                            <H6 color={colors.text} fontWeight="600" mb="$1.5">
+                            <H6 color={colors.text} fontWeight="600" mb="$1">
                                 Assign To:
                             </H6>
                             <XStack space="$4" px="$2" mb='$4'>
@@ -593,20 +597,6 @@ const GoalDetailsScreen = () => {
                                         {formatTime(reminders[0].time)}
                                     </H4>
                                     <Text>{reminders[0].repeat}</Text>
-
-                                    {/*
-                                    <Button
-                                        size="$1"
-                                        chromeless
-                                        color="red"
-                                        onPress={(e) => {
-                                            e.stopPropagation()
-                                            if (reminders[0].id) handleDeleteReminder(reminders[0].id)
-                                        }}
-                                    >
-                                        Delete
-                                    </Button>
-                                     */}
                                 </YStack>
                                 <XStack ai="center" space="$2">
                                     <ChevronRight size={20} color={colors.text as string} />
@@ -627,44 +617,6 @@ const GoalDetailsScreen = () => {
                         )}
                     </YStack>
                 )}
-
-                {/* Save to CorePlan Radio Button 
-                {isEditing && (
-                    <YStack space="$2" mt="$2" mb="$4">
-                        <XStack alignItems="center" space="$2">
-                            <RadioGroup value={saveToCorePlan ? "yes" : "no"}
-                                onValueChange={() => setSaveToCorePlan((prev) => !prev)}
-                            >
-                                <RadioGroup.Item
-                                    value="yes"
-                                    id="yes"
-                                    unstyled
-                                    borderWidth={2}
-                                    borderColor="black"
-                                    size="$4"
-                                    borderRadius={9999}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                >
-                                    {saveToCorePlan && (
-                                        <RadioGroup.Indicator
-                                            unstyled
-                                            width={12}
-                                            height={12}
-                                            borderRadius={9999}
-                                            backgroundColor="black"
-                                        />
-                                    )}
-                                </RadioGroup.Item>
-                            </RadioGroup>
-
-                            <Label htmlFor="yes" color={colors.text}>
-                                {saveToCorePlan ? "Saved to CorePlan" : "Save Goal to CorePlan"}
-                            </Label>
-                        </XStack>
-                    </YStack>
-                )}
-                */}
 
                 {/* Buttons */}
                 <XStack space="$3" jc='space-between' mt='$7' mb='$5'>
@@ -710,17 +662,72 @@ const GoalDetailsScreen = () => {
                             </Button>
                             <Button
                                 size="$5"
-                                width='48%'
+                                width="48%"
                                 backgroundColor={colors.primary}
                                 onPress={() => setIsEditing(true)}
                             >
-                                <Button.Icon><Feather name="edit-2" size={16} color={colors.onPrimary} /></Button.Icon>
+                                <Button.Icon>
+                                    <Feather name="edit-2" size={16} color={colors.onPrimary} />
+                                </Button.Icon>
                                 <Button.Text color={colors.onPrimary}>Edit</Button.Text>
                             </Button>
                         </>
                     )}
                 </XStack>
             </KeyboardAwareScrollView>
+
+            <Modal
+                visible={showCelebration}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setShowCelebration(false)}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: "rgba(0,0,0,0.6)",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: 20,
+                    }}
+                >
+                    <YStack
+                        bg="white"
+                        p="$5"
+                        br="$6"
+                        width="90%"
+                        height={385}
+                        ai="center"
+                        space="$4"
+                    >
+                        <MaterialCommunityIcons
+                            name="party-popper"
+                            size={56}
+                            color={colors.primary}
+                        />
+                        <Text fontWeight="700" color={colors.text}>
+                            🎉 Goal Assigned!
+                        </Text>
+                        <Text ta="center" color={colors.text}>
+                            {goal.area} has been successfully created
+                        </Text>
+
+                        <Button
+                            bg={colors.primary}
+                            color="white"
+                            width='100%'
+                            size='$5'
+                            mt='$5'
+                            br="$4"
+                            onPress={() => {
+                                setShowCelebration(false);
+                                navigation.goBack()
+                            }}>
+                            View Routine
+                        </Button>
+                    </YStack>
+                </View>
+            </Modal>
         </GoalBackground>
     )
 }

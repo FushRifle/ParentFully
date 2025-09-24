@@ -161,7 +161,7 @@ const PlanDetailScreen = () => {
 
     const renderUserGoalsSection = () => (
         <YStack mb="$4">
-            <H6 fontWeight="600" color={colors.text} mb="$3">My Goals ({goals.userGoals.length})</H6>
+            <H6 fontSize={13} fontWeight="600" color={colors.text} mb="$3">My Goals ({goals.userGoals.length})</H6>
             {goals.userGoals.length > 0 ? (
                 <YStack space="$2">
                     {goals.userGoals.map((item) => (
@@ -179,7 +179,7 @@ const PlanDetailScreen = () => {
 
     const renderPredefinedGoalsSection = () => (
         <YStack>
-            <H6 fontWeight="600" color={colors.text} mb="$3">Predefined Goals ({goals.predefinedGoals.length})</H6>
+            <H6 fontSize={13} fontWeight="600" color={colors.text} mb="$3">Predefined Goals ({goals.predefinedGoals.length})</H6>
             {goals.predefinedGoals.length > 0 ? (
                 <YStack space="$2">
                     {goals.predefinedGoals.map((item) => (

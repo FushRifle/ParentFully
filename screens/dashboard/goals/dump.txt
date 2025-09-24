@@ -1,0 +1,53 @@
+
+                {/* Save to CorePlan Radio Button 
+                {isEditing && (
+                    <YStack space="$2" mt="$2" mb="$4">
+                        <XStack alignItems="center" space="$2">
+                            <RadioGroup value={saveToCorePlan ? "yes" : "no"}
+                                onValueChange={() => setSaveToCorePlan((prev) => !prev)}
+                            >
+                                <RadioGroup.Item
+                                    value="yes"
+                                    id="yes"
+                                    unstyled
+                                    borderWidth={2}
+                                    borderColor="black"
+                                    size="$4"
+                                    borderRadius={9999}
+                                    justifyContent="center"
+                                    alignItems="center"
+                                >
+                                    {saveToCorePlan && (
+                                        <RadioGroup.Indicator
+                                            unstyled
+                                            width={12}
+                                            height={12}
+                                            borderRadius={9999}
+                                            backgroundColor="black"
+                                        />
+                                    )}
+                                </RadioGroup.Item>
+                            </RadioGroup>
+
+                            <Label htmlFor="yes" color={colors.text}>
+                                {saveToCorePlan ? "Saved to CorePlan" : "Save Goal to CorePlan"}
+                            </Label>
+                        </XStack>
+                    </YStack>
+                )}
+                */}
+
+
+                  {/*
+                                    <Button
+                                        size="$1"
+                                        chromeless
+                                        color="red"
+                                        onPress={(e) => {
+                                            e.stopPropagation()
+                                            if (reminders[0].id) handleDeleteReminder(reminders[0].id)
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
+                                     */}

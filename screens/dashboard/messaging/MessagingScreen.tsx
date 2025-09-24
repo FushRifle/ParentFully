@@ -1,3 +1,4 @@
+
 import { DocumentViewer } from '@/components/message/DocumentViewer';
 import { GroupModal } from '@/components/message/GroupModal';
 import { ImageDisplay } from '@/components/message/ImageViewer';
@@ -583,27 +584,6 @@ export const MessagingScreen = ({ navigation }: MessagingScreenProps) => {
         userId: user?.id || ''
     } : { chatId: '', isGroup: false, userId: '' })
 
-    const fabOptions: FabOption[] = [
-        {
-            icon: 'group',
-            label: 'New Group',
-            color: 'blue',
-            onPress: () => setIsModalOpen(true)
-        },
-        {
-            icon: 'person-add',
-            label: 'New Contact',
-            color: 'green',
-            onPress: () => { }
-        },
-        {
-            icon: 'settings',
-            label: 'Settings',
-            color: 'gray',
-            onPress: () => navigation.navigate('Settings')
-        }
-    ]
-
     useEffect(() => {
         const fetchUserAndFamily = async () => {
             try {
@@ -1005,17 +985,6 @@ export const MessagingScreen = ({ navigation }: MessagingScreenProps) => {
     const renderChatItem = useCallback(({ item }: { item: Chat }) => (
         <ChatListItem chat={item} onPress={() => handleSelectChat(item)} />
     ), [handleSelectChat])
-
-    const renderGroupItem = useCallback(
-        ({ item }: { item: Group }) => (
-            <GroupListItem
-                group={item}
-                unreadCount={unreadCountsBySenderId[item.id] || 0}
-                onPress={() => handleSelectGroup(item)}
-            />
-        ),
-        [handleSelectGroup, unreadCountsBySenderId]
-    )
 
     return (
         <YStack flex={1} backgroundColor={colors.background}>
