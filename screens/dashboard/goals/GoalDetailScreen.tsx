@@ -17,6 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Toast from 'react-native-toast-message'
 import { Modal } from 'react-native'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useFocusEffect } from '@react-navigation/native';
 import {
     Button,
     H4,
@@ -141,11 +142,6 @@ const GoalDetailsScreen = () => {
                     const duration = parseInt(match[2], 10) || 1;
                     const unit = match[3].toLowerCase();
 
-                    console.log("🟢 Parsed time_bound:", goal.time_bound);
-                    console.log("   count =", count, "(", typeof count, ")");
-                    console.log("   duration =", duration, "(", typeof duration, ")");
-                    console.log("   unit =", unit, "(", typeof unit, ")");
-
                     setFrequencyCount(count);
                     setFrequencyDuration(duration);
                     setFrequencyUnit(unit);
@@ -180,6 +176,17 @@ const GoalDetailsScreen = () => {
             fetchReminders(goal.id);
         }
     }, [goal]);
+
+    useFocusEffect(
+        useCallback(() => {
+            // This runs every time the screen is focused
+            // Just force a reload however you want here
+            // For example:
+            console.log('Screen is focused. Reload stuff here.');
+
+            // Or trigger a state update, refetch, etc.
+        }, [])
+    );
 
     const calculateTargetDate = () => {
         const now = new Date()
@@ -738,3 +745,7 @@ const styles = StyleSheet.create({
 })
 
 export default GoalDetailsScreen
+
+function refreshPage() {
+    throw new Error('Function not implemented.')
+}

@@ -449,14 +449,14 @@ const RoutineDetailsScreen = () => {
                     >
                         <MaterialCommunityIcons
                             name={mode === "view" ? "arrow-left" : "close"}
-                            size={26}
+                            size={20}
                             color="white"
                         />
                     </TouchableOpacity>
 
                     <XStack jc="flex-start" ai="center" space="$3">
                         <View w={50} h={50} br={25} ai="center" jc="center" bg="#005A31">
-                            <MaterialCommunityIcons name={routine?.icon as any || "calendar"} size={26} color="yellow" />
+                            <MaterialCommunityIcons name={routine?.icon as any || "calendar"} size={24} color="yellow" />
                         </View>
                         <Text fontSize="$8" fontWeight="700" color="white">
                             {routine?.name || "Routine"}
@@ -468,7 +468,7 @@ const RoutineDetailsScreen = () => {
                             <TouchableOpacity onPress={handleReorder}>
                                 <MaterialCommunityIcons
                                     name="reorder-horizontal"
-                                    size={26}
+                                    size={20}
                                     color="white"
                                 />
                             </TouchableOpacity>
@@ -476,7 +476,7 @@ const RoutineDetailsScreen = () => {
                             <TouchableOpacity onPress={handleSaveReorder}>
                                 <MaterialCommunityIcons
                                     name="check"
-                                    size={26}
+                                    size={20}
                                     color="white"
                                 />
                             </TouchableOpacity>
@@ -496,7 +496,7 @@ const RoutineDetailsScreen = () => {
                         Select Tasks that apply to your child's routine
                     </Text>
                 )}
-                
+
                 {/* Tasks */}
                 <YStack space="$2" minHeight={200} px='$2'>
                     {loading ? (

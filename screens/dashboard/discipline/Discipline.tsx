@@ -4,12 +4,13 @@ import { useAuth } from '@/context/AuthContext';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
+import { Text } from '@/context/GlobalText'
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Dimensions, Modal, PixelRatio, ScrollView, TouchableOpacity } from "react-native";
-import { Button, Card, Spinner, Text, View, XStack, YStack } from "tamagui";
+import { Button, Card, Spinner, H6, View, XStack, YStack, H4 } from "tamagui";
 import { v4 as uuidv4 } from 'uuid';
 
 type DisciplineDetailsScreenNavigationProp = NativeStackNavigationProp<
@@ -243,7 +244,7 @@ const DisciplineScreen = () => {
             >
                 <Card
                     bordered
-                    padding={moderateScale(5)}
+                    padding={moderateScale(6)}
                     borderRadius={moderateScale(10)}
                     marginBottom={verticalScale(12)}
                     borderWidth={2}
@@ -285,16 +286,15 @@ const DisciplineScreen = () => {
 
                             <YStack flex={1} space={moderateScale(6)}>
                                 <XStack ai="center" jc="space-between" space={moderateScale(6)}>
-                                    <Text fontSize={scaleFont(12)} fontWeight="700" color="#333">
+                                    <H4 fontSize={14} fontWeight="600" color="#333">
                                         {tpl.name}
-                                    </Text>
-                                    <Text fontSize={scaleFont(12)} fontWeight="600" color={colors.primary}>
+                                    </H4>
+                                    <Text fontSize={scaleFont(13)} fontWeight="600" color={colors.primary}>
                                         {tpl.rules?.length || 0} rule(s)
                                     </Text>
                                 </XStack>
 
                                 <Text
-                                    fontSize={scaleFont(12)}
                                     color="#555"
                                     lineHeight={verticalScale(18)}
                                     numberOfLines={2}
@@ -340,11 +340,11 @@ const DisciplineScreen = () => {
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <MaterialCommunityIcons name="arrow-left" size={moderateScale(24)} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
+                        <H4 fontSize={16} fontWeight="600" color={colors.text}>
                             Choose Template
-                        </Text>
+                        </H4>
                     </XStack>
-                    <Text fontSize={scaleFont(14)} color="#555">
+                    <Text color="#555">
                         Long press to select one or more plans for download or print
                     </Text>
                 </YStack>
@@ -393,9 +393,9 @@ const DisciplineScreen = () => {
                     <YStack space={moderateScale(12)}>
                         <YStack jc="flex-start" mt={verticalScale(24)} space={moderateScale(12)}>
                             <YStack space={moderateScale(8)}>
-                                <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
+                                <H6 fontSize={14} fontWeight="700" color={colors.text}>
                                     My Plans:
-                                </Text>
+                                </H6>
                                 {myPlans.length > 0 ? (
                                     myPlans.map((tpl) => renderDisciplineCard(tpl, true))
                                 ) : (
@@ -429,29 +429,29 @@ const DisciplineScreen = () => {
                                 <YStack>
                                     <XStack ai="center" my={moderateScale(4)} mb={moderateScale(12)}>
                                         <View flex={1} height={1} bg="gray" />
-                                        <Text mx={moderateScale(8)} fontSize={scaleFont(14)} color={colors.text}>
+                                        <H6 fontSize={scaleFont(14)} color={colors.text}>
                                             OR
-                                        </Text>
+                                        </H6>
                                         <View flex={1} height={1} bg="gray" />
                                     </XStack>
                                     <Button
+                                        size='$4'
                                         mt={moderateScale(8)}
                                         mb={moderateScale(12)}
                                         bg={colors.primary}
-                                        size={moderateScale(40)}
-                                        color="white"
                                         borderRadius={moderateScale(8)}
                                         onPress={() => navigation.navigate("AddDiscipline" as never)}
                                     >
-                                        Create Custom
+                                        <Text fontSize={13} color="white"
+                                        >Create Custom</Text>
                                     </Button>
                                 </YStack>
                             )}
 
                             <YStack space={moderateScale(8)}>
-                                <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
+                                <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                     Predefined Plans:
-                                </Text>
+                                </H6>
                                 {templates.filter((t) => t.isPreloaded).map((tpl) =>
                                     renderDisciplineCard(tpl)
                                 )}
