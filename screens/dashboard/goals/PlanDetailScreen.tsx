@@ -301,7 +301,7 @@ const PlanDetailScreen = () => {
                             <Button unstyled
                                 onPress={() => navigation.goBack()}
                                 hitSlop={20} mr="$5">
-                                <MaterialIcons name="arrow-back" size={24} color={tamaguiTheme.primary?.val} />
+                                <MaterialIcons name="arrow-back" size={24} color={colors.text} />
                             </Button>
 
                             <H6 fontWeight='600' ta="left" color={colors.text}> {coreValue.title}</H6>

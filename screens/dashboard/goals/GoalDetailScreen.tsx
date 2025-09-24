@@ -5,18 +5,16 @@ import { useTheme } from '@/styles/ThemeContext'
 import { supabase } from '@/supabase/client'
 import { RootStackParamList } from '@/types'
 import { Child, Goal, Reward } from '@/types/goals'
-import { Feather, MaterialIcons } from '@expo/vector-icons'
+import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Bell, ChevronRight } from '@tamagui/lucide-icons'
 import { add, format } from 'date-fns'
 import React, { useCallback, useEffect, useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { Modal, StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message'
-import { Modal } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 import {
     Button,
     H4,
@@ -269,17 +267,7 @@ const GoalDetailsScreen = () => {
 
                 onSave(goalData as Goal);
             }
-
-            navigation.goBack();
-            setIsEditing(false);
             setShowCelebration(true);
-
-            Toast.show({
-                type: "success",
-                text1: "Success",
-                text2: "Goal saved successfully!",
-                position: "bottom",
-            });
         } catch (error) {
             console.error("Error saving goal:", error);
             Toast.show({
@@ -705,25 +693,26 @@ const GoalDetailsScreen = () => {
                             size={56}
                             color={colors.primary}
                         />
-                        <Text fontWeight="700" color={colors.text}>
+                        <H6 fontWeight="600" color={colors.text}>
                             🎉 Goal Assigned!
-                        </Text>
-                        <Text ta="center" color={colors.text}>
+                        </H6>
+                        <Text ta="center" color={colors.textSecondary}>
                             {goal.area} has been successfully created
                         </Text>
 
                         <Button
                             bg={colors.primary}
                             color="white"
-                            width='100%'
-                            size='$5'
+                            width='55%'
+                            size='$4'
                             mt='$5'
                             br="$4"
                             onPress={() => {
+                                setIsEditing(false);
                                 setShowCelebration(false);
                                 navigation.goBack()
                             }}>
-                            View Routine
+                            Done
                         </Button>
                     </YStack>
                 </View>

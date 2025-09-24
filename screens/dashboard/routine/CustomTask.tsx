@@ -1,4 +1,5 @@
 import { GoalBackground } from "@/constants/GoalBackground";
+import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from '@/supabase/client';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -9,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Card, Input, Text, XStack, YStack } from 'tamagui';
+import { Button, Card, H4, Input, XStack, YStack } from 'tamagui';
 
 type Task = {
     id?: string;
@@ -288,30 +289,30 @@ const CustomTaskScreen = () => {
     return (
         <GoalBackground>
             <SafeAreaView style={{ backgroundColor: colors.secondary }}>
-                <XStack ai="center" jc="flex-start" width="100%" paddingTop="$4" paddingBottom="$4" px="$3" space="$3">
+                <XStack ai="center" jc="flex-start" width="100%" paddingTop="$3" paddingBottom="$4" px="$3" space="$3">
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <MaterialCommunityIcons name={"arrow-left"} size={26} color="white" />
+                        <MaterialCommunityIcons name={"arrow-left"} size={20} color="white" />
                     </TouchableOpacity>
-                    <Text color={colors.onPrimary} fontSize="$7">
+                    <H4 fontSize={16} fontWeight="600" color={colors.onPrimary}>
                         {isEditing ? "Edit Task" : "Create Custom Task"}
-                    </Text>
+                    </H4>
                 </XStack>
             </SafeAreaView>
 
             <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
                 <YStack marginBottom="$4" mt="$2">
-                    <Text color={colors.text} fontSize="$6" fontWeight="600" mb="$4">
+                    <Text color={colors.text} fontWeight="600" mb="$4">
                         {isEditing ? "Edit your task details" : "Add tasks that suit your child needs"}
                     </Text>
 
                     <KeyboardAwareScrollView enableOnAndroid extraScrollHeight={5} keyboardOpeningTime={0} style={{ flex: 1 }}>
                         {/* Task Name */}
                         <YStack>
-                            <Text color={colors.text} fontSize="$5" fontWeight="900" mb="$2">Task Name</Text>
+                            <Text color={colors.text} fontWeight="600" mb="$2">Task Name</Text>
                             <Card flex={1} padding="$3" borderRadius="$2" height={56} width='100%' backgroundColor={colors.card}>
                                 <Input
                                     color={colors.text}
-                                    fontSize={16}
+                                    fontSize={14}
                                     value={task.title}
                                     onChangeText={updateTaskName}
                                     placeholder="e.g., Make my bed"
@@ -325,20 +326,21 @@ const CustomTaskScreen = () => {
 
                             {/* Duration */}
                             <YStack mt='$3'>
-                                <Text color={colors.text} fontSize="$5" fontWeight="900" mb="$2">Duration</Text>
+                                <Text color={colors.text} fontWeight="600" mb="$2">Duration</Text>
                                 <Card padding="$2" borderRadius="$2" height={56} backgroundColor="white" width='100%'>
                                     <XStack alignItems="center" justifyContent="space-between" space="$2" px='$5' flex={1}>
-                                        <TouchableOpacity onPress={() => updateTaskDuration(Math.max(1, parseInt(task.duration_minutes || "5") - 1).toString())}>
-                                            <Text color={colors.text} fontSize={30}>-</Text>
+                                        <TouchableOpacity
+                                            onPress={() => updateTaskDuration(Math.max(1, parseInt(task.duration_minutes || "5") - 1).toString())}>
+                                            <H4 color={colors.text}>-</H4>
                                         </TouchableOpacity>
 
                                         <XStack alignItems="center" space="$3">
-                                            <Text color={colors.text} fontSize={26} fontWeight="600">{task.duration_minutes || "5"}</Text>
-                                            <Text color={colors.textSecondary} fontSize={14}>min</Text>
+                                            <Text color={colors.text} fontWeight="600">{task.duration_minutes || "5"}</Text>
+                                            <Text color={colors.textSecondary}>min</Text>
                                         </XStack>
 
                                         <TouchableOpacity onPress={() => updateTaskDuration((parseInt(task.duration_minutes || "5") + 1).toString())}>
-                                            <Text color={colors.text} fontSize={30}>+</Text>
+                                            <H4 color={colors.text}>+</H4>
                                         </TouchableOpacity>
                                     </XStack>
                                 </Card>
@@ -346,11 +348,11 @@ const CustomTaskScreen = () => {
 
                             {/* Time Picker */}
                             <YStack marginBottom={24} mt="$3">
-                                <Text color={colors.text} fontSize={16} fontWeight="600" mb="$2">Time</Text>
+                                <Text color={colors.text} fontSize={14} fontWeight="600" mb="$2">Time</Text>
                                 <Card flex={1} padding="$3" height={56} borderRadius="$2" width="100%" backgroundColor={colors.card}>
                                     <Button backgroundColor={colors.card} borderColor="transparent" borderWidth={1} borderRadius={8} padding={12} flexDirection="row" alignItems="center" onPress={() => setShowTimePicker(true)} unstyled>
                                         <Clock size={20} color={colors.primary as any} />
-                                        <Text flex={1} color={colors.text} marginLeft={12} fontSize={16}>{formatTime(selectedTime)}</Text>
+                                        <Text flex={1} color={colors.text} marginLeft={12} fontSize={14}>{formatTime(selectedTime)}</Text>
                                         <ChevronDown size={20} color={colors.textSecondary} />
                                     </Button>
                                 </Card>
@@ -371,19 +373,39 @@ const CustomTaskScreen = () => {
                         <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
                             <View style={{ backgroundColor: "white", padding: 20, borderRadius: 10, alignItems: "center", width: "80%" }}>
                                 <MaterialCommunityIcons name="check-circle" size={50} color="#4CAF50" />
-                                <Text fontSize={18} fontWeight="bold" marginVertical={10}>Task {isEditing ? "Updated" : "Added"} Successfully!</Text>
+                                <Text fontSize={14} fontWeight="bold" marginVertical={10}>Task {isEditing ? "Updated" : "Added"} Successfully!</Text>
                             </View>
                         </View>
                     </Modal>
                 </YStack>
 
                 <XStack justifyContent="space-between" marginTop={16}>
-                    <Button flex={1} borderColor={colors.primary as any} borderWidth={1} borderRadius={8} padding={16} marginRight={12} onPress={() => navigation.goBack()} unstyled>
-                        <Text color={colors.text} textAlign="center" fontSize={16} fontWeight="600">Cancel</Text>
+                    <Button flex={1}
+                        size='$5'
+                        borderColor={colors.error as any}
+                        borderWidth={1}
+                        borderRadius={8}
+                        marginRight={12} onPress={() => navigation.goBack()}
+                    >
+                        <Text color={colors.error} textAlign="center">Delete Task</Text>
                     </Button>
 
-                    <Button flex={1} backgroundColor={colors.primary} borderRadius={8} padding={16} size='$6' marginLeft={12} onPress={handleSaveTask} disabled={loading || !task.title.trim()} opacity={loading || !task.title.trim() ? 0.6 : 1}>
-                        {loading ? <ActivityIndicator color="white" /> : <Text color="white" textAlign="center" fontSize={16} fontWeight="600">{isEditing ? "Update Task" : "Save Task"}</Text>}
+                    <Button
+                        size='$5'
+                        flex={1}
+                        backgroundColor={colors.primary}
+                        borderRadius={8} padding={16}
+                        marginLeft={12}
+                        onPress={handleSaveTask}
+                        disabled={loading || !task.title.trim()}
+                        opacity={loading || !task.title.trim() ? 0.6 : 1}
+                    >
+                        {loading ? <ActivityIndicator color="white" /> :
+                            <Text color="white" textAlign="center"
+                            >
+                                {isEditing ? "Update Task" : "Save Task"}
+                            </Text>
+                        }
                     </Button>
                 </XStack>
             </ScrollView>

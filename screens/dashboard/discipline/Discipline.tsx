@@ -1,6 +1,7 @@
 import { PRELOADED_DISCIPLINE } from '@/constants/Discipline';
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from '@/context/AuthContext';
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -9,7 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Dimensions, Modal, PixelRatio, ScrollView, TouchableOpacity } from "react-native";
-import { Button, Card, Spinner, Text, View, XStack, YStack } from "tamagui";
+import { Button, Card, H4, H6, Spinner, View, XStack, YStack } from "tamagui";
 import { v4 as uuidv4 } from 'uuid';
 
 type DisciplineDetailsScreenNavigationProp = NativeStackNavigationProp<
@@ -340,13 +341,13 @@ const DisciplineScreen = () => {
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <MaterialCommunityIcons name="arrow-left" size={moderateScale(24)} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
+                        <H4 fontSize={16} fontWeight="600" color={colors.text}>
                             Choose Template
-                        </Text>
+                        </H4>
                     </XStack>
-                    <Text fontSize={scaleFont(14)} color="#555">
+                    <H4 fontSize={14} color="#555">
                         Long press to select one or more plans for download or print
-                    </Text>
+                    </H4>
                 </YStack>
 
                 <XStack ai="center" jc="flex-start" space={moderateScale(12)} mt={verticalScale(16)}>
@@ -393,9 +394,9 @@ const DisciplineScreen = () => {
                     <YStack space={moderateScale(12)}>
                         <YStack jc="flex-start" mt={verticalScale(24)} space={moderateScale(12)}>
                             <YStack space={moderateScale(8)}>
-                                <Text fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
+                                <H6 fontSize={scaleFont(14)} fontWeight="600" color={colors.text}>
                                     My Plans:
-                                </Text>
+                                </H6>
                                 {myPlans.length > 0 ? (
                                     myPlans.map((tpl) => renderDisciplineCard(tpl, true))
                                 ) : (
@@ -429,9 +430,9 @@ const DisciplineScreen = () => {
                                 <YStack>
                                     <XStack ai="center" my={moderateScale(4)} mb={moderateScale(12)}>
                                         <View flex={1} height={1} bg="gray" />
-                                        <Text mx={moderateScale(8)} fontSize={scaleFont(14)} color={colors.text}>
+                                        <H4 mx={moderateScale(8)} fontSize={scaleFont(14)} color={colors.text}>
                                             OR
-                                        </Text>
+                                        </H4>
                                         <View flex={1} height={1} bg="gray" />
                                     </XStack>
                                     <Button

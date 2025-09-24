@@ -210,7 +210,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                     width={45}
                                     height={45}
                                     borderRadius="$6"
-                                    mt="$3"
+                                    mt="$1"
                                     backgroundColor={isDark ? dark : light}
                                     alignItems="center"
                                     justifyContent="center"
@@ -239,11 +239,11 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                     )}
                                 </View>
 
-                                <H6 fontSize={13} fontWeight="600" color={colors.text} marginTop="$3" textAlign="left">
+                                <H6 fontSize={13} fontWeight="600" color={colors.text} marginTop="$2" textAlign="left">
                                     {label}
                                 </H6>
                                 <Text fontSize={11} color={colors.textSecondary}
-                                    textAlign="left" marginTop="$2"
+                                    textAlign="left" marginTop="$1"
                                     mb="$1" flexShrink={0}
                                 >
                                     {description}

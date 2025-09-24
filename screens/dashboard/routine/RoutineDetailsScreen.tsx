@@ -1,4 +1,5 @@
 import { GoalBackground } from "@/constants/GoalBackground";
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -13,7 +14,6 @@ import {
     ScrollView,
     TouchableOpacity
 } from "react-native";
-
 import DraggableFlatList, {
     RenderItemParams,
     ScaleDecorator,
@@ -24,10 +24,10 @@ import {
     Button,
     Fieldset,
     H4,
+    H6,
     Label,
     Sheet,
     Spinner,
-    Text,
     View,
     XStack,
     YStack,
@@ -302,7 +302,6 @@ const RoutineDetailsScreen = () => {
         setAssignSheetOpen(true);
     }, []);
 
-    // Update the handleAddCustomRoutine function
     const handleAddCustomRoutine = useCallback(() => {
         navigation.navigate("CustomTask", {
             onSave: (savedTask: Task, isEditing: boolean) => {
@@ -423,7 +422,7 @@ const RoutineDetailsScreen = () => {
                         </TouchableOpacity>
 
                         {/* Task Title */}
-                        <Text flex={1} fontSize="$4" color="#333" numberOfLines={1}>
+                        <Text flex={1} color="#333" numberOfLines={1}>
                             {item.title || `Task ${typeof index === "number" ? index + 1 : ""}`}
                         </Text>
                     </XStack>
@@ -440,8 +439,8 @@ const RoutineDetailsScreen = () => {
                     ai="center"
                     jc="space-between"
                     width="100%"
-                    paddingTop="$4"
-                    paddingBottom="$4"
+                    paddingTop="$2"
+                    paddingBottom="$2"
                     px="$3"
                 >
                     <TouchableOpacity
@@ -458,7 +457,7 @@ const RoutineDetailsScreen = () => {
                         <View w={50} h={50} br={25} ai="center" jc="center" bg="#005A31">
                             <MaterialCommunityIcons name={routine?.icon as any || "calendar"} size={26} color="yellow" />
                         </View>
-                        <Text fontSize="$8" fontWeight="700" color="white">
+                        <Text fontWeight="700" color="white">
                             {routine?.name || "Routine"}
                         </Text>
                     </XStack>
@@ -492,11 +491,11 @@ const RoutineDetailsScreen = () => {
         () => (
             <YStack space="$4" px="$3">
                 {mode === "view" && (
-                    <Text fontSize="$5" fontWeight="600" color={colors.text} mb="$1">
+                    <H6 fontSize={14} fontWeight="600" color={colors.text} mb="$1">
                         Select Tasks that apply to your child's routine
-                    </Text>
+                    </H6>
                 )}
-                
+
                 {/* Tasks */}
                 <YStack space="$2" minHeight={200} px='$2'>
                     {loading ? (
@@ -549,7 +548,7 @@ const RoutineDetailsScreen = () => {
                                     />
 
                                     <YStack flex={1} mx="$3">
-                                        <Text fontSize="$4" color="#333" numberOfLines={1}>
+                                        <Text color="#333" numberOfLines={1}>
                                             {task.title || `Task ${index + 1}`}
                                         </Text>
                                         <Text color={colors.text}>
@@ -594,7 +593,6 @@ const RoutineDetailsScreen = () => {
                             ListHeaderComponent={
                                 mode === "reorder" ? (
                                     <Text
-                                        fontSize="$5"
                                         fontWeight="600"
                                         color="#005A31"
                                         mb="$2"
@@ -607,7 +605,7 @@ const RoutineDetailsScreen = () => {
                             }
                         />
                     ) : (
-                        <Text fontSize="$4" color="#777">
+                        <Text color="#777">
                             No tasks yet.
                         </Text>
                     )}
@@ -616,10 +614,10 @@ const RoutineDetailsScreen = () => {
                 {/* Reminder */}
                 {mode === "view" && (
                     <YStack space="$2" mt="$2" px="$1">
-                        <H4 color={colors.text} fontSize="$5" fontWeight="900">
+                        <H6 fontSize={14} color={colors.text} fontWeight="600">
                             Reminder
-                        </H4>
-                        <Text fontSize="$3">When should we remind you about this routine?</Text>
+                        </H6>
+                        <Text> When should we remind you about this routine?</Text>
 
                         {reminders.length > 0 ? (
                             <TouchableOpacity onPress={() => navigation.navigate("Reminder", {
@@ -638,7 +636,7 @@ const RoutineDetailsScreen = () => {
                                     borderColor="#E5E7EB"
                                 >
                                     <YStack>
-                                        <H4 color={colors.text} fontSize="$5">
+                                        <H4 color={colors.text}>
                                             {reminders[0].time.slice(0, 5)}
                                         </H4>
                                         <Text>{reminders[0].repeat}</Text>
@@ -747,7 +745,7 @@ const RoutineDetailsScreen = () => {
                         windowSize={10}
                         ListHeaderComponent={
                             <YStack px="$3" py="$1">
-                                <Text fontSize="$5" fontWeight="600" color={colors.text} mb="$2">
+                                <Text fontWeight="600" color={colors.text} mb="$2">
                                     Drag and drop to reorder tasks
                                 </Text>
                             </YStack>
@@ -772,24 +770,32 @@ const RoutineDetailsScreen = () => {
                 )}
             </SafeAreaView>
 
-            {/* Assign Routine Sheet*/}
+            {/* Assign Routine Sheet */}
             <Sheet
                 open={assignSheetOpen}
                 onOpenChange={setAssignSheetOpen}
-                snapPoints={[65, 50]}
+                snapPoints={[75]}
                 modal
                 dismissOnSnapToBottom
                 animation="medium"
             >
+                {/* Parent background overlay */}
                 <Sheet.Overlay
-                    animation="lazy"
-                    enterStyle={{ opacity: 0 }}
-                    exitStyle={{ opacity: 0 }}
+                    animation="quick"
+                    opacity={0.6}
+                    bg="rgba(0,0,0,0.5)"
                 />
+
+                {/* Handle */}
                 <Sheet.Handle />
-                <Sheet.Frame padding="$4" space="$4">
-                    <H4>Assign Routine</H4>
-                    <ScrollView>
+
+                {/* Sheet frame */}
+                <Sheet.Frame padding="$4" space="$4" bg="$background">
+                    <H4 fontSize={16} fontWeight="600" mb="$3">
+                        Assign Routine
+                    </H4>
+
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         <Fieldset space="$3">
                             <Label>Choose children</Label>
 
@@ -825,16 +831,15 @@ const RoutineDetailsScreen = () => {
                                                 ai="center"
                                                 space="$5"
                                                 borderWidth={1}
-                                                borderColor={
-                                                    isSelected ? colors.primary : (colors.border as any)
-                                                }
+                                                borderColor={isSelected ? colors.primary : (colors.border as any)}
+                                                bg={isSelected ? colors.primary : 'transparent'}
                                             >
                                                 {/* Avatar */}
                                                 <Avatar.Image
                                                     source={
                                                         child.photo
-                                                            ? { uri: child.photo, cache: "force-cache" }
-                                                            : require("@/assets/images/profile.jpg")
+                                                            ? { uri: child.photo, cache: 'force-cache' }
+                                                            : require('@/assets/images/profile.jpg')
                                                     }
                                                     size={54}
                                                 />
@@ -842,21 +847,17 @@ const RoutineDetailsScreen = () => {
                                                 {/* Info */}
                                                 <YStack>
                                                     <Text
-                                                        color={isSelected ? "black" : colors.text}
-                                                        fontSize="$5"
+                                                        color={isSelected ? colors.onPrimary : colors.text}
                                                         fontWeight="600"
                                                     >
                                                         {child.name}
                                                     </Text>
-                                                    <Text
-                                                        color={isSelected ? "black" : colors.text}
-                                                        fontSize="$4"
-                                                    >
+                                                    <Text color={isSelected ? colors.onPrimary : colors.text}>
                                                         {child.age} y/o
                                                     </Text>
                                                 </YStack>
 
-                                                {/* Checkbox (flex-end with ml="auto") */}
+                                                {/* Checkbox */}
                                                 <TouchableOpacity
                                                     onPress={() => {
                                                         if (isSelected) {
@@ -867,7 +868,7 @@ const RoutineDetailsScreen = () => {
                                                             setSelectedChildren((prev) => [...prev, child]);
                                                         }
                                                     }}
-                                                    style={{ marginLeft: "auto" }}
+                                                    style={{ marginLeft: 'auto' }}
                                                 >
                                                     <View
                                                         w={22}
@@ -875,7 +876,7 @@ const RoutineDetailsScreen = () => {
                                                         br={12}
                                                         ai="center"
                                                         jc="center"
-                                                        bg={isSelected ? colors.success : "transparent"}
+                                                        bg={isSelected ? colors.success : 'transparent'}
                                                         borderWidth={2}
                                                         borderColor={isSelected ? colors.success : colors.text}
                                                     >
@@ -895,6 +896,7 @@ const RoutineDetailsScreen = () => {
                             )}
                         </Fieldset>
 
+                        {/* Bottom button */}
                         <XStack space="$3" jc="center" ai="center" mt="$4">
                             <Button
                                 size="$5"
@@ -902,16 +904,17 @@ const RoutineDetailsScreen = () => {
                                 onPress={() =>
                                     handleAssignRoutine({
                                         id: routineId,
-                                        name: routine?.name || "",
+                                        name: routine?.name || '',
                                         description: routine?.description,
                                         icon: routine?.icon,
                                         tasks: tasks,
-                                        ageRange: "",
+                                        ageRange: '',
                                     } as RoutineTemplate)
                                 }
                                 disabled={selectedChildren.length === 0}
                                 bg={colors.primary}
                                 color="white"
+                                br="$4"
                             >
                                 Done
                             </Button>
@@ -920,16 +923,17 @@ const RoutineDetailsScreen = () => {
                 </Sheet.Frame>
             </Sheet>
 
+
             {/* Success Modal */}
             <Modal visible={showAssignmentSuccess} transparent animationType="slide" onRequestClose={() => setShowAssignmentSuccess(false)}>
                 <YStack f={1} jc="flex-end" bg="rgba(0,0,0,0.4)">
                     <YStack bg={colors.card} p="$4" br="$6" space="$6" elevation={6} borderTopLeftRadius={20} borderTopRightRadius={20}>
                         <YStack space='$3' ai="center">
                             <MaterialCommunityIcons name="check-circle" size={48} color={colors.success} />
-                            <Text fontSize="$7" fontWeight="600" textAlign="center" color={colors.text}>
+                            <Text fontWeight="600" textAlign="center" color={colors.text}>
                                 Tasks Assigned Successfully!
                             </Text>
-                            <Text fontSize="$5" fontWeight="600" textAlign="center">
+                            <Text fontWeight="600" textAlign="center">
                                 The selected tasks have been added to your child's routine.
                             </Text>
                         </YStack>
@@ -953,10 +957,10 @@ const RoutineDetailsScreen = () => {
                 <YStack f={1} jc="flex-end" bg="rgba(0,0,0,0.4)">
                     <YStack bg={colors.card} p="$4" br="$6" space="$6" elevation={6} borderTopLeftRadius={20} borderTopRightRadius={20}>
                         <YStack space='$3'>
-                            <Text fontSize="$7" fontWeight="600" jc='center' ai='center' color={colors.text}>
+                            <Text fontWeight="600" jc='center' ai='center' color={colors.text}>
                                 Are you sure you want to Delete this Task ?
                             </Text>
-                            <Text fontSize="$5" fontWeight="600">
+                            <Text fontWeight="600">
                                 Once this Task is deleted it cannot be retrieved.
                             </Text>
                         </YStack>
