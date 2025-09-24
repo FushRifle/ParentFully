@@ -2,6 +2,7 @@ import { GoalBackground } from '@/constants/GoalBackground';
 import type { RootStackParamList } from '@/navigation/MainNavigator';
 import { useTheme } from '@/styles/ThemeContext';
 import { Feather } from '@expo/vector-icons';
+import { Text } from '@/context/GlobalText'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as FileSystem from 'expo-file-system';
@@ -9,7 +10,7 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import React, { useState } from 'react';
 import { Platform } from 'react-native';
-import { Button, Card, ScrollView, Text, View, XStack, YStack } from 'tamagui';
+import { Button, Card, H4, ScrollView, View, XStack, YStack } from 'tamagui';
 
 type DisciplinePlan = {
     id: string;
@@ -56,7 +57,7 @@ export const PrintScreen = () => {
           <thead>
             <tr>
               <th>S/N</th>
-              <th>Rules</th>
+              <th>Name</th>
               <th>Consequences</th>
               <th>Parent Notes</th>
             </tr>
@@ -168,7 +169,7 @@ export const PrintScreen = () => {
         <GoalBackground>
             <View flex={1} padding="$4" mb='$10'>
                 {/* Header */}
-                <XStack space="$4" alignItems="center" mb="$4" mt="$7">
+                <XStack space="$4" alignItems="center" mb="$4" mt="$6">
                     <Button
                         unstyled
                         circular
@@ -176,9 +177,9 @@ export const PrintScreen = () => {
                         onPress={navigation.goBack}
                         icon={<Feather name="chevron-left" size={24} color={colors.text} />}
                     />
-                    <Text fontSize="$6" fontWeight="bold" color={colors.text}>
+                    <H4 fontSize={14} fontWeight="600" color={colors.text}>
                         {allPlans ? 'Print All Selected Plans' : 'Print Plan'}
-                    </Text>
+                    </H4>
                 </XStack>
 
                 <XStack ai="center" jc="flex-start" space="$5" mt="$2">
@@ -191,7 +192,7 @@ export const PrintScreen = () => {
                     >
                         <XStack ai="center" space="$3" py="$3">
                             <Feather name="download" size={20} color={colors.primary} />
-                            <Text color={colors.primary} fontSize="$4">
+                            <Text color={colors.primary}>
                                 Download All
                             </Text>
                         </XStack>
@@ -206,7 +207,7 @@ export const PrintScreen = () => {
                     >
                         <XStack ai="center" space="$3" py="$3">
                             <Feather name="printer" size={20} color={colors.secondary} />
-                            <Text color={colors.secondary} fontSize="$4">
+                            <Text color={colors.secondary}>
                                 Print All
                             </Text>
                         </XStack>
@@ -214,21 +215,20 @@ export const PrintScreen = () => {
                 </XStack>
 
                 {/* Title */}
-                <YStack mt='$6'
+                <YStack mt='$4'
                     borderBottomWidth={4}
                     borderBottomColor={colors.secondary}
-                    mb="$3"
+                    mb="$4"
                 >
                     <Text
-                        fontSize="$7"
-                        fontWeight="bold"
+                        fontWeight="599"
                         color={colors.secondary}
                         textAlign="center"
                         mb="$2"
                     >
-                        Active Discipline Plan
+                        Active Routine Plan
                     </Text>
-                    <Text fontSize="$5" color={colors.text} textAlign="center" mb="$6">
+                    <Text fontSize={13} color={colors.text} textAlign="center" mb="$6">
                         Generated On: {new Date().toLocaleDateString()}
                     </Text>
                 </YStack>
@@ -252,17 +252,17 @@ export const PrintScreen = () => {
                                     backgroundColor="#FFF9F4"
                                     mb="$3"
                                 >
-                                    <Text ml="$3" fontSize="$6" fontWeight="bold" color={colors.text} mb="$2">
+                                    <Text ml="$3" fontSize={12} fontWeight="bold" color={colors.text} mb="$2">
                                         {plan.name}
                                     </Text>
                                     <Text
+                                        fontSize={12}
                                         ml="$3"
-                                        fontSize="$3"
                                         fontWeight="bold"
                                         color={colors.textSecondary}
                                         mb="$2"
                                     >
-                                        {plan.rules?.length || 0} rule(s) • Assigned On:{" "}
+                                        {plan.rules?.length || 0} task(s) • Assigned On:{" "}
                                         {plan.created_at
                                             ? new Date(plan.created_at).toLocaleDateString()
                                             : "—"}
@@ -279,16 +279,21 @@ export const PrintScreen = () => {
                                 >
                                     {/* Table Header */}
                                     <XStack bg={colors.secondary} py="$2" px="$2" space="$4">
-                                        <Text flex={0.6} color="white" fontWeight="bold" fontSize="$4">
+                                        <Text flex={0.6} color="white" fontWeight="500"
+                                            fontSize={12}
+                                        >
                                             S/N
                                         </Text>
-                                        <Text flex={2} color="white" fontWeight="bold" fontSize="$4">
-                                            Rule
+                                        <Text flex={2} color="white" fontWeight="500"
+                                            fontSize={12}>
+                                            Name
                                         </Text>
-                                        <Text flex={2} color="white" fontWeight="bold" fontSize="$4">
-                                            Consequence
+                                        <Text flex={2} color="white" fontWeight="500"
+                                            fontSize={12}>
+                                            tasks
                                         </Text>
-                                        <Text flex={2} color="white" fontWeight="bold" fontSize="$4">
+                                        <Text flex={2} color="white" fontWeight="500"
+                                            fontSize={12}>
                                             Notes
                                         </Text>
                                     </XStack>
@@ -304,16 +309,17 @@ export const PrintScreen = () => {
                                             borderBottomColor={colors.border as any}
                                             space="$4"
                                         >
-                                            <Text flex={0.5} fontSize="$4" lineHeight={20}>
+                                            <Text flex={0.5} fontSize={12} lineHeight={20}>
                                                 {i + 1}
                                             </Text>
-                                            <Text flex={2} fontSize="$4" lineHeight={20}>
+                                            <Text flex={2} fontSize={12} lineHeight={20}>
                                                 {rule.rule}
                                             </Text>
-                                            <Text flex={2} fontSize="$4" lineHeight={20} color="red">
+                                            <Text flex={2} fontSize={12}
+                                                lineHeight={20} color="red">
                                                 {rule.consequence}
                                             </Text>
-                                            <Text flex={2} fontSize="$4" lineHeight={20}>
+                                            <Text flex={2} fontSize={12} lineHeight={20}>
                                                 {rule.notes || "—"}
                                             </Text>
                                         </XStack>
@@ -325,7 +331,7 @@ export const PrintScreen = () => {
                     ) : singlePlan ? (
                         <Card backgroundColor='#FFF9F4'
                             padding="$4" borderRadius="$4">
-                            <Text fontSize="$6" fontWeight="bold" color={colors.primary} mb="$2">
+                            <Text fontWeight="bold" color={colors.primary} mb="$2">
                                 {singlePlan.name}
                             </Text>
 
@@ -333,16 +339,20 @@ export const PrintScreen = () => {
                             <YStack borderWidth={1} borderColor={colors.border as any} br="$4" overflow="hidden">
                                 {/* Table Header */}
                                 <XStack bg={colors.secondary} p="$2">
-                                    <Text flex={0.5} color="white" fontWeight="bold">
+                                    <Text flex={0.5} color="white" fontSize={12}
+                                        fontWeight="500">
                                         S/N
                                     </Text>
-                                    <Text flex={2} color="white" fontWeight="bold">
+                                    <Text flex={2} color="white" fontSize={12}
+                                        fontWeight="500">
                                         Rule
                                     </Text>
-                                    <Text flex={2} color="white" fontWeight="bold">
+                                    <Text flex={2} color="white" fontSize={12}
+                                        fontWeight="500">
                                         Consequence
                                     </Text>
-                                    <Text flex={2} color="white" fontWeight="bold">
+                                    <Text flex={2} color="white" fontSize={12}
+                                        fontWeight="500">
                                         Notes
                                     </Text>
                                 </XStack>
