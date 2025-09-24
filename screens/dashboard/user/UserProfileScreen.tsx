@@ -475,7 +475,9 @@ export function UserProfileScreen() {
                                                 padding="$3"
                                                 alignItems="center"
                                                 space="$3"
-                                                backgroundColor="#F5F8FA"
+                                                backgroundColor={colors.card}
+                                                borderBottomWidth={1}
+                                                borderBottomColor={colors.secondary as any}
                                                 borderRadius={8}
                                             >
                                                 <Avatar circular size="$4.5">
@@ -487,10 +489,12 @@ export function UserProfileScreen() {
                                                     </Avatar.Fallback>
                                                 </Avatar>
 
-                                                <Text color={colors.text} flex={1}>
+                                                <H6 fontSize={14} color={colors.text} flex={1} fontWeight='600'>
                                                     {child.name}
+                                                </H6>
+                                                <Text>
+                                                    Age: {child.age ?? 'N/A'}
                                                 </Text>
-
                                                 <XStack flex={1} jc="flex-end" ai="center">
                                                     <ChevronRight color={colors.textSecondary} />
                                                 </XStack>

@@ -1,3 +1,4 @@
+import { Text } from '@/context/GlobalText';
 import { useGoalsContext } from '@/context/GoalContext';
 import { supabase } from '@/supabase/client';
 import { useNavigation } from '@react-navigation/native';
@@ -5,8 +6,9 @@ import { Award, Edit3, Trash2 } from '@tamagui/lucide-icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Modal } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { Button, Text, XStack, YStack } from 'tamagui';
+import { Button, H3, H6, XStack, YStack } from 'tamagui';
 import CelebrationModal from './CelebrationModal';
+
 
 const statusStyles: Record<string, { bg: string; text: string }> = {
     Mastered: { bg: '#D1FAE5', text: '#059669' },
@@ -188,12 +190,11 @@ const GoalCard: React.FC<GoalCardProps> = ({
 
     return (
         <>
-
             <YStack
                 bg={colors.card}
                 width="100%"
                 h={160}
-                p="$4"
+                p="$3"
                 br="$4"
                 mb="$3"
                 space="$1"
@@ -202,14 +203,14 @@ const GoalCard: React.FC<GoalCardProps> = ({
             >
                 {/* Title + Status Button */}
                 <XStack ai="center" jc="space-between" mb="$2">
-                    <Text fontSize="$5" fontWeight='$9' color={colors.text} flexShrink={1}>
+                    <H6 fontWeight="600" fontSize={14} color={colors.text} flexShrink={1}>
                         {goal.goals_plan.area}
-                    </Text>
+                    </H6>
 
                     <Button
-                        size="$2"
+                        size="$1.5"
                         br="$4"
-                        px="$3"
+                        px="$2"
                         bg={statusColor.bg}
                         color={statusColor.text}
                         onPress={(e) => handleStatusChangeWithCelebration(goal.id, rawStatus, e)}
@@ -221,9 +222,9 @@ const GoalCard: React.FC<GoalCardProps> = ({
                 {/* Progress Count + Controls */}
                 {hasTarget && (
                     <XStack ai="center" jc="space-between" mb="$1">
-                        <Text fontSize="$5" fontWeight='900' color={statusColor.text}>
-                            {currentProgress} / {targetProgress} <Text fontSize="$3" fontWeight='700' color={colors.text}>Times Done</Text>
-                        </Text>
+                        <H6 fontSize={14} fontWeight='600' color={statusColor.text}>
+                            {currentProgress} / {targetProgress} <Text fontSize="$3" fontWeight='500' color={colors.text}>Times Done</Text>
+                        </H6>
 
                         {showProgressControls && (
                             <XStack space="$3" ai="center" jc="space-evenly">
@@ -240,12 +241,12 @@ const GoalCard: React.FC<GoalCardProps> = ({
                                         handleDecrementProgress(goal.id, currentProgress, targetProgress);
                                     }}
                                 >
-                                    <Text fontSize="$8" color={colors.onPrimary}>−</Text>
+                                    <H3 color={colors.onPrimary}>−</H3>
                                 </Button>
 
-                                <Text fontSize="$5" fontWeight="900" color={colors.text}>
+                                <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                     {currentProgress}
-                                </Text>
+                                </H6>
 
                                 <Button
                                     size="$3"
@@ -260,7 +261,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
                                         handleIncrementProgress(goal.id, currentProgress, targetProgress);
                                     }}
                                 >
-                                    <Text fontSize="$8" color={colors.onPrimary}>+</Text>
+                                    <H3 color={colors.onPrimary}>+</H3>
                                 </Button>
                             </XStack>
                         )}
@@ -271,7 +272,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
                 {hasTarget && (
                     <XStack jc="flex-start" ai="center" mt='$2'>
                         <YStack flex={1} mr="$1">
-                            <XStack w="100%" h={10} bg={colors.border} br="$4" overflow="hidden">
+                            <XStack w="100%" h={7} bg={colors.border} br="$5" overflow="hidden">
                                 <XStack
                                     bg={statusColor.text}
                                     w={`${progress}%`}
@@ -286,13 +287,13 @@ const GoalCard: React.FC<GoalCardProps> = ({
 
                 {/* Timeframe + Icons */}
                 <XStack jc="space-between" ai="center" mt="$2">
-                    <Text color={isCompleted ? colors.success : colors.textSecondary} fontSize="$3" flexShrink={1}>
+                    <H6 fontWeight="600" color={isCompleted ? colors.success : colors.textSecondary} fontSize={14} flexShrink={1}>
                         {!hasTarget && !goal.target_date ? "No target set" :
                             isCompleted ? "Mastered" :
                                 typeof daysRemaining === "number" ? (
                                     daysRemaining <= 0 ? "Target date passed" : `${daysRemaining} day${daysRemaining !== 1 ? "s" : ""} left`
                                 ) : "(no target date)"}
-                    </Text>
+                    </H6>
 
                     {isMastered ? (
                         <Button
@@ -306,7 +307,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
                         >
                             <XStack ai="center" space="$2">
                                 <Award size={18} color={colors.onPrimary} />
-                                <Text fontSize="$3" color={colors.onPrimary}>Certificate</Text>
+                                <Text color={colors.onPrimary}>Certificate</Text>
                             </XStack>
                         </Button>
                     ) : (
@@ -366,17 +367,17 @@ const GoalCard: React.FC<GoalCardProps> = ({
                         borderTopRightRadius={20}
                     >
                         <YStack space='$3'>
-                            <Text fontSize="$7" fontWeight="600" jc='center' ai='center' color={colors.text}>
+                            <H6 fontSize={14} fontWeight="600" jc='center' ai='center' color={colors.text}>
                                 Are you sure you want to Delete this goal?
-                            </Text>
-                            <Text fontSize="$5" fontWeight="600">
+                            </H6>
+                            <H6 fontSize={13} fontWeight="600">
                                 Once this goal is deleted it cannot be retrieved and all progress will be lost
-                            </Text>
+                            </H6>
                         </YStack>
 
                         <XStack jc='center' ai='center' space='$6' mt='$5' mb='$7'>
                             <Button
-                                size="$5"
+                                size="$4"
                                 w='40%'
                                 variant="outlined"
                                 borderColor={colors.border}
@@ -386,7 +387,7 @@ const GoalCard: React.FC<GoalCardProps> = ({
                             </Button>
 
                             <Button
-                                size="$5"
+                                size="$4"
                                 w='40%'
                                 bg="red"
                                 color="white"

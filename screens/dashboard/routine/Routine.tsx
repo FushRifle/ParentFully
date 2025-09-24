@@ -1,5 +1,6 @@
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -8,7 +9,8 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, TextInput, TouchableOpacity } from "react-native";
-import { Button, Card, Spinner, Text, View, XStack, YStack } from "tamagui";
+import { Button, Card, H6, Spinner, View, XStack, YStack } from "tamagui";
+
 
 type RoutineDetailsScreenNavigationProp = NativeStackNavigationProp<
     RootStackParamList,
@@ -279,19 +281,17 @@ const RoutineScreen = () => {
                 }
             >
                 <Card
-                    bordered
-                    borderColor={colors.border as any}
-                    padding="$3"
+                    padding="$2"
                     borderRadius="$4"
                     marginBottom="$3"
                     backgroundColor="white"
                 >
                     <XStack ai="center" jc="space-between" mb="$2">
-                        <XStack ai="center" space="$4" f={1}>
+                        <XStack ai="center" space="$2" f={1}>
                             <View w={40} h={40} br={20} ai="center" jc="center">
                                 <MaterialCommunityIcons
                                     name={(tpl.icon as any) || "calendar-check"}
-                                    size={22}
+                                    size={20}
                                     color={colors.primary as any}
                                 />
                             </View>
@@ -302,8 +302,8 @@ const RoutineScreen = () => {
                                         value={editingName}
                                         onChangeText={setEditingName}
                                         style={{
-                                            fontSize: 18,
-                                            fontWeight: "700",
+                                            fontSize: 14,
+                                            fontWeight: "600",
                                             borderBottomWidth: 1,
                                             borderColor: colors.primary,
                                             padding: 4,
@@ -312,10 +312,10 @@ const RoutineScreen = () => {
                                 ) : (
                                     <>
                                         <XStack jc="space-between">
-                                            <Text fontSize="$6" fontWeight="700" color="#333">
+                                            <H6 fontSize={14} fontWeight="600" color="#333">
                                                 {tpl.name}
-                                            </Text>
-                                            <Text fontSize="$3" fontWeight="600" color={colors.primary}>
+                                            </H6>
+                                            <Text fontSize={12} color={colors.primary}>
                                                 {(tpl.tasks ?? []).length} Tasks
                                             </Text>
                                         </XStack>
@@ -323,17 +323,17 @@ const RoutineScreen = () => {
                                 )}
 
                                 <Text
-                                    fontSize="$3"
+                                    mt='3'
                                     color="#555"
                                     lineHeight={20}
-                                    numberOfLines={2}
+                                    numberOfLines={1}
                                     ellipsizeMode="tail"
                                 >
                                     {tpl.description || "No description available"}
                                 </Text>
 
                                 {isUserRoutine && tpl.original_template_id && (
-                                    <Text fontSize="$2" color="#888" mt="$1">
+                                    <Text color="#888" mt="$1">
                                         Based on a predefined template
                                     </Text>
                                 )}
@@ -395,12 +395,12 @@ const RoutineScreen = () => {
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize="$8" fontWeight="700" color={colors.text}>
+                        <H6 fontWeight="600" color={colors.text}>
                             Routine
-                        </Text>
+                        </H6>
                     </XStack>
 
-                    <Text fontSize="$4" color={colors.textSecondary}>
+                    <Text fontSize={14.5} color={colors.textSecondary}>
                         Build your child's routine: choose from ready-made templates or create your
                         own
                     </Text>
@@ -415,17 +415,17 @@ const RoutineScreen = () => {
 
                 {/* Error */}
                 {error && (
-                    <Text color="red" fontSize="$4" mt="$4">
+                    <Text color="red" fontSize="$3" mt="$4">
                         {error}
                     </Text>
                 )}
 
                 {!loading && !error && (
-                    <YStack mt="$6" space="$5">
+                    <YStack mt="$6" space="$2">
                         {/* My Routines */}
-                        <Text fontSize="$7" fontWeight="700" color={colors.text}>
+                        <H6 fontSize={14} fontWeight="600" color={colors.text} mb='$2'>
                             My Routines
-                        </Text>
+                        </H6>
                         {myRoutines.length > 0 ? (
                             myRoutines.map((tpl) => renderRoutineCard(tpl, true))
                         ) : (
@@ -433,9 +433,9 @@ const RoutineScreen = () => {
                         )}
 
                         {/* Predefined Routines */}
-                        <Text fontSize="$7" fontWeight="700" color={colors.text} mt="$6">
+                        <H6 fontSize={14} fontWeight="600" color={colors.text} mt="$4" mb='$2'>
                             Predefined Routines
-                        </Text>
+                        </H6>
                         {filteredPredefined.length > 0 ? (
                             filteredPredefined.map((tpl) => renderRoutineCard(tpl, false))
                         ) : (
@@ -445,9 +445,9 @@ const RoutineScreen = () => {
                         {/* Divider */}
                         <XStack ai="center" my="$4">
                             <View flex={1} height={1} bg="gray" />
-                            <Text mx="$3" fontSize="$7" color={colors.text}>
+                            <H6 fontSize={14} fontWeight='600' mx="$3" color={colors.text}>
                                 OR
-                            </Text>
+                            </H6>
                             <View flex={1} height={1} bg="gray" />
                         </XStack>
 

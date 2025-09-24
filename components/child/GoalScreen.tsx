@@ -2,6 +2,7 @@ import { CelebrationModal } from '@/components/CelebrateModal';
 import { GoalSettingsModal } from '@/components/goals/GoalSettingsModal';
 import { GoalBackground } from '@/constants/GoalBackground';
 import { useAuth } from '@/context/AuthContext';
+import { Text } from '@/context/GlobalText';
 import { updateSelectedGoal } from '@/hooks/goals/useGoal';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
@@ -15,7 +16,6 @@ import {
     Button,
     ScrollView,
     Spinner,
-    Text,
     View,
     YStack
 } from 'tamagui';
@@ -327,7 +327,7 @@ const GoalsScreen = ({ childId }: { childId: string }) => {
                         <YStack ai="center" mt='$3' jc="center" p="$6" br="$4" bg={colors.surface} gap="$3">
                             <Text color={colors.textSecondary}>No goals found. Add some to get started!</Text>
                             <Button
-                                size='$5'
+                                size='$4'
                                 onPress={() => navigation.navigate('CorePlan')}
                                 backgroundColor={colors.secondary}
                                 color={colors.onPrimary}
@@ -358,7 +358,7 @@ const GoalsScreen = ({ childId }: { childId: string }) => {
                             ))}
                             <Button
                                 mt="$5"
-                                size='$5'
+                                size='$4'
                                 bg={colors.primary}
                                 color={colors.onPrimary}
                                 onPress={() => navigation.navigate('CorePlan')}

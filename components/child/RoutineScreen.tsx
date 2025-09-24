@@ -1,6 +1,7 @@
 import { CelebrationModal } from '@/components/CelebrateModal';
 import { GoalBackground } from '@/constants/GoalBackground';
 import { useAuth } from '@/context/AuthContext';
+import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,7 +10,7 @@ import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-n
 import { Bell, Pen } from '@tamagui/lucide-icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, RefreshControl } from 'react-native';
-import { Button, Card, ScrollView, Text, View, XStack, YStack } from 'tamagui';
+import { Button, Card, ScrollView, View, XStack, YStack } from 'tamagui';
 
 type RootStackParamList = {
     ChildProfile: { child: ChildProfile };
@@ -64,8 +65,8 @@ const TaskRow = React.memo(
                     marginBottom="$3"
                     padding="$3"
                     borderRadius="$4"
-                    backgroundColor={completed ? colors.success + "20" : colors.card} // ✅ faint green bg if completed
-                    opacity={completed ? 0.7 : 1} // ✅ slightly faded
+                    backgroundColor={completed ? colors.success + "20" : colors.card}
+                    opacity={completed ? 0.7 : 1}
                 >
                     <XStack justifyContent="space-between" alignItems="center" space="$3">
                         <XStack

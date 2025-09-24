@@ -1,11 +1,13 @@
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
+import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, ScrollView } from "react-native";
-import { Card, Text, View, XStack, YStack } from "tamagui";
+import { Card, H4, H5, View, XStack, YStack } from "tamagui";
+
 
 type TemplateTask = {
     title: string;
@@ -155,10 +157,10 @@ const RoutineScreen: React.FC = ({ navigation }: any) => {
 
                 {/* Section Header */}
                 <YStack px="$4" mb="$5">
-                    <Text fontSize="$8" fontWeight="700" color={colors.text}>
+                    <H5 fontWeight="600" color={colors.text}>
                         Routine
-                    </Text>
-                    <Text fontSize="$4" color="#555">
+                    </H5>
+                    <Text fontWeight="500" color="#555">
                         Create structured Routines that support positive behavior and growth
                     </Text>
                 </YStack>
@@ -172,10 +174,10 @@ const RoutineScreen: React.FC = ({ navigation }: any) => {
                         borderRadius="$6"
                         backgroundColor="white"
                     >
-                        <Text fontSize="$9" color="#FF8C01" fontWeight="700">
+                        <H4 color="#FF8C01" fontWeight="600">
                             {activeCount}
-                        </Text>
-                        <Text fontSize="$4" color="#555">
+                        </H4>
+                        <Text color="#555">
                             Active Plans
                         </Text>
                     </Card>
@@ -187,10 +189,10 @@ const RoutineScreen: React.FC = ({ navigation }: any) => {
                         borderRadius="$6"
                         backgroundColor="white"
                     >
-                        <Text fontSize="$9" color="#4CAF50" fontWeight="700">
+                        <H4 color="#4CAF50" fontWeight="600">
                             {templateCount}
-                        </Text>
-                        <Text fontSize="$4" color="#555">
+                        </H4>
+                        <Text color="#555">
                             Templates
                         </Text>
                     </Card>

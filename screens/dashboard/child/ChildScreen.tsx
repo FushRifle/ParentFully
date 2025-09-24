@@ -4,16 +4,17 @@ import { RoutineScreen } from '@/components/child/RoutineScreen';
 import { CompletedGoalsSheet } from '@/components/goals/CompletedGoalsModal';
 import ChildOptionsModal from '@/components/profile/EditChildModal';
 import { GoalBackground } from '@/constants/GoalBackground';
+import { Text } from '@/context/GlobalText';
 import useImageUpload from '@/hooks/image/cloudinary/cloudinary';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { Alert, Pressable, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import { TabBar, TabView } from 'react-native-tab-view';
-import { Card, ScrollView, Text, View, XStack, YStack } from 'tamagui';
+import { Card, H6, ScrollView, View, XStack, YStack } from 'tamagui';
 
 type RootStackParamList = {
     ChildProfile: { child: ChildProfile };
@@ -47,7 +48,6 @@ const ChildProfileScreen = ({ navigation, route }: ChildProfileScreenProps) => {
     const { pickImage, tempImage, isUploading, setTempImage } = useImageUpload();
     const [imageVersions, setImageVersions] = useState<Record<string, number>>({});
     const [loadError, setLoadError] = useState(false);
-
     const routes = React.useMemo(() => [
         { key: 'goals', title: 'Goals' },
         { key: 'routine', title: 'Routine' },
@@ -107,7 +107,7 @@ const ChildProfileScreen = ({ navigation, route }: ChildProfileScreenProps) => {
             {...props}
             indicatorStyle={{
                 backgroundColor: colors.secondaryContainer,
-                height: "100%",
+                height: "90%",
                 borderRadius: 8,
             }} style={{
                 backgroundColor: colors.card,
@@ -171,23 +171,14 @@ const ChildProfileScreen = ({ navigation, route }: ChildProfileScreenProps) => {
 
     return (
         <GoalBackground>
-            <View style={{ flex: 1, backgroundColor: colors.background }}>
-                <Appbar.Header style={{ backgroundColor: colors.background }}>
+            <View style={{ flex: 1 }}>
+                <XStack jc='flex-start' ai='center' padding={16} marginTop={20} space={16}>
                     <Appbar.BackAction
                         onPress={navigation.goBack}
                         color={typeof colors.text === 'string' ? colors.text : undefined}
                     />
-                    <Appbar.Content
-                        title="Child's Profile"
-                        color={typeof colors.text === 'string' ? colors.text : undefined}
-                    />
-
-                    <Appbar.Action
-                        icon="cog"
-                        onPress={() => openEditModal(child)}
-                        color={typeof colors.text === 'string' ? colors.text : undefined}
-                    />
-                </Appbar.Header>
+                    <H6 fontWeight="600" color={colors.text}>Profile</H6>
+                </XStack>
 
                 <ScrollView
                     contentContainerStyle={{
@@ -196,51 +187,54 @@ const ChildProfileScreen = ({ navigation, route }: ChildProfileScreenProps) => {
                     }}
                     showsVerticalScrollIndicator={false}
                 >
-                    <Card
-                        backgroundColor={colors.card}
-                        margin={16}
-                        borderRadius={16}
-                        elevation={2}
-                        padding={16}
+                    <TouchableOpacity
+                        onPress={() => openEditModal(child)}
                     >
-                        <XStack alignItems="center" space={16}>
-                            <Avatar.Image
-                                size={80}
-                                source={
-                                    child.photo
-                                        ? { uri: child.photo, cache: 'force-cache' }
-                                        : require('@/assets/images/profile.jpg')
-                                }
-                                style={{ backgroundColor: colors.accent }}
-                                onError={() => setLoadError(true)}
-                            />
-                            <YStack flex={1} gap="$2">
-                                <Text fontSize={22} fontWeight="bold" color={colors.text}>
-                                    {child.name}
-                                </Text>
-                                <Text fontSize={16} color={colors.text}>
-                                    {child.age} years old
-                                </Text>
-                                <XStack alignItems="center" space="$2" marginTop="$2">
-                                    <Pressable onPress={() => setSheetOpen(true)}>
-                                        <Text
-                                            paddingHorizontal={12}
-                                            paddingVertical={6}
-                                            borderRadius={8}
-                                            space='$3'
-                                            color={colors.primaryDark}
-                                            backgroundColor='#FFE9CE'
-                                            fontSize={14}
-                                            fontWeight="500"
-                                        >
-                                            {masteredGoalsCount}
-                                            Mastered Goals
-                                        </Text>
-                                    </Pressable>
-                                </XStack>
-                            </YStack>
-                        </XStack>
-                    </Card>
+                        <Card
+                            backgroundColor={colors.card}
+                            margin={16}
+                            borderRadius={16}
+                            elevation={2}
+                            padding={16}
+                        >
+                            <XStack alignItems="center" space={16}>
+                                <Avatar.Image
+                                    size={80}
+                                    source={
+                                        child.photo
+                                            ? { uri: child.photo, cache: 'force-cache' }
+                                            : require('@/assets/images/profile.jpg')
+                                    }
+                                    style={{ backgroundColor: colors.accent }}
+                                    onError={() => setLoadError(true)}
+                                />
+                                <YStack flex={1} gap="$2">
+                                    <H6 fontSize={14} fontWeight="600" color={colors.text}>
+                                        {child.name}
+                                    </H6>
+                                    <Text fontSize='$3' color={colors.text}>
+                                        {child.age} years old
+                                    </Text>
+                                    <XStack alignItems="center" space="$2" marginTop="$2">
+                                        <Pressable onPress={() => setSheetOpen(true)}>
+                                            <Text
+                                                paddingHorizontal={12}
+                                                paddingVertical={6}
+                                                borderRadius={8}
+                                                space='$3'
+                                                color={colors.primaryDark}
+                                                backgroundColor='#FFE9CE'
+                                                fontWeight="500"
+                                            >
+                                                {masteredGoalsCount}
+                                                Mastered Goals
+                                            </Text>
+                                        </Pressable>
+                                    </XStack>
+                                </YStack>
+                            </XStack>
+                        </Card>
+                    </TouchableOpacity>
 
                     <View style={{ flex: 1, marginTop: 6, }}>
                         <TabView
@@ -280,7 +274,7 @@ const styles = StyleSheet.create({
         paddingBottom: 32,
     },
     title: {
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
         marginVertical: 8,
     },
