@@ -100,7 +100,7 @@ const SettingItem: React.FC<SettingItemProps> = memo(
                         color={iconColor || colors.primary}
                     />
                 </View>
-                <Text color={textColor || colors.text}>
+                <Text fontSize={13} color={textColor || colors.text}>
                     {name}
                 </Text>
             </XStack>
@@ -666,7 +666,7 @@ export function UserProfileScreen() {
                                     </Text>
                                     <ChevronRight />
                                 </XStack>
-                                <Text>
+                                <Text color={colors.textSecondary}>
                                     Earn rewards by inviting friends to join
                                 </Text>
                             </Card>
@@ -685,7 +685,7 @@ export function UserProfileScreen() {
                                     <ChevronRight />
                                 </XStack>
 
-                                <Text color={colors.text}>
+                                <Text color={colors.textSecondary}>
                                     Unlock exclusive features and benefits
                                 </Text>
                             </Card>

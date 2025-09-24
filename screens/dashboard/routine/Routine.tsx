@@ -400,7 +400,7 @@ const RoutineScreen = () => {
                         </H6>
                     </XStack>
 
-                    <Text fontSize={14.5} color={colors.textSecondary}>
+                    <Text color={colors.textSecondary}>
                         Build your child's routine: choose from ready-made templates or create your
                         own
                     </Text>
