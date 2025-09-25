@@ -144,20 +144,22 @@ const DisciplineScreen = () => {
         }
     }, [user?.id]);
 
-    const handlePlanPress = (tpl: any, isUserPlan: boolean) => {
+    const handlePlanPress = useCallback((tpl: DisciplineTemplate, isUserPlan: boolean) => {
         if (selectedIds.length > 0) {
             handleSelectPlan(tpl.id);
             return;
         }
 
-        navigation.navigate("DisciplineDetails", {
-            id: tpl.id,
-            name: tpl.name,
-            description: tpl.description,
-            rules: tpl.rules || [],
-            icon: tpl.icon || "calendar-check",
+        requestAnimationFrame(() => {
+            navigation.navigate("DisciplineDetails", {
+                id: tpl.id,
+                name: tpl.name,
+                description: tpl.description,
+                rules: tpl.rules || [],
+                icon: tpl.icon || "calendar-check",
+            });
         });
-    };
+    }, [navigation, selectedIds]);
 
     const handleSelectPlan = (id: string) => {
         setSelectedIds(prev =>
@@ -269,7 +271,7 @@ const DisciplineScreen = () => {
                     )}
 
                     <XStack ai="center" jc="space-between" mb={verticalScale(8)} flex={1}>
-                        <XStack ai="center" space={moderateScale(12)} flex={1}>
+                        <XStack ai="center" space={moderateScale(14)} flex={1}>
                             <View
                                 width={moderateScale(40)}
                                 height={moderateScale(40)}
@@ -285,13 +287,30 @@ const DisciplineScreen = () => {
                             </View>
 
                             <YStack flex={1} space={moderateScale(6)}>
-                                <XStack ai="center" jc="space-between" space={moderateScale(6)}>
-                                    <H4 fontSize={14} fontWeight="600" color="#333">
+                                <XStack ai="center" jc="space-between"
+                                >
+                                    <H6 fontSize={14} fontWeight="600">
                                         {tpl.name}
-                                    </H4>
-                                    <Text fontSize={scaleFont(13)} fontWeight="600" color={colors.primary}>
-                                        {tpl.rules?.length || 0} rule(s)
-                                    </Text>
+                                    </H6>
+
+                                    <TouchableOpacity
+                                        onPress={() => handleSelectPlan(tpl.id)}
+                                    >
+                                        <View
+                                            w={20}
+                                            h={20}
+                                            mr={10}
+                                            mt={5}
+                                            br={12}
+                                            ai="center"
+                                            jc="center"
+                                            bg="transparent"
+                                            borderWidth={2}
+                                            borderColor={isSelected ? (colors.border as any) : colors.text}
+                                        >
+                                            <MaterialCommunityIcons name="check" size={20} color="white" />
+                                        </View>
+                                    </TouchableOpacity>
                                 </XStack>
 
                                 <Text
@@ -303,26 +322,20 @@ const DisciplineScreen = () => {
                                     {tpl.description || "No description available"}
                                 </Text>
 
-                                <XStack space={moderateScale(12)} mr={moderateScale(8)} jc="flex-end">
-                                    <XStack space={moderateScale(12)}>
-                                        <TouchableOpacity onPress={() => handlePlanPress(tpl, isUserPlan)}>
+                                <XStack space={moderateScale(12)} mr={moderateScale(8)} jc="space-between">
+                                    <Text fontSize={scaleFont(13)} fontWeight="600" color={colors.primary}>
+                                        {tpl.rules?.length || 0} rule(s)
+                                    </Text>
+
+                                    {!isPredefined && (
+                                        <TouchableOpacity onPress={() => handleDelete(tpl.id)}>
                                             <MaterialCommunityIcons
-                                                name="pencil"
+                                                name="trash-can"
                                                 size={moderateScale(20)}
-                                                color={colors.primary}
+                                                color="red"
                                             />
                                         </TouchableOpacity>
-
-                                        {!isPredefined && (
-                                            <TouchableOpacity onPress={() => handleDelete(tpl.id)}>
-                                                <MaterialCommunityIcons
-                                                    name="trash-can"
-                                                    size={moderateScale(20)}
-                                                    color="red"
-                                                />
-                                            </TouchableOpacity>
-                                        )}
-                                    </XStack>
+                                    )}
                                 </XStack>
                             </YStack>
                         </XStack>
@@ -344,42 +357,63 @@ const DisciplineScreen = () => {
                             Choose Template
                         </H4>
                     </XStack>
-                    <H4 fontSize={scaleFont(14)} color="#555">
+                    <H4 fontSize={scaleFont(13)} color="#555">
                         Long press to select one or more plans for download or print
                     </H4>
                 </YStack>
 
                 <XStack ai="center" jc="flex-start" space={moderateScale(12)} mt={verticalScale(16)}>
-                    <Button
-                        unstyled
-                        borderRadius={moderateScale(12)}
-                        backgroundColor="#FFF0DE"
-                        paddingHorizontal={moderateScale(12)}
-                        onPress={() => navigation.navigate('Print', { printAll: true })}
-                    >
-                        <XStack ai="center" space={moderateScale(12)} paddingVertical={moderateScale(8)}>
-                            <Feather name="download" size={moderateScale(18)} color={colors.primary} />
-                            <Text color={colors.primary} fontSize={scaleFont(12)}>
-                                Download All
-                            </Text>
-                        </XStack>
-                    </Button>
+                    {selectedIds.length > 0 ? (
+                        <XStack space={moderateScale(12)} jc="center" mt={verticalScale(5)} mb="$4">
+                            <Button size={moderateScale(40)} bg={colors.primary} onPress={handleDownloadPlan}>
+                                <XStack ai="center" jc="center" space={moderateScale(8)}>
+                                    <Feather name="download" size={moderateScale(16)} color="white" />
+                                    <Text color="white">Download ({selectedIds.length})</Text>
+                                </XStack>
+                            </Button>
 
-                    <Button
-                        unstyled
-                        backgroundColor="#E3FFF2"
-                        paddingHorizontal={moderateScale(12)}
-                        borderRadius={moderateScale(12)}
-                        onPress={() => handlePrintAllPlans(allPlans, childName)}
-                    >
-                        <XStack ai="center" space={moderateScale(12)} paddingVertical={moderateScale(8)}>
-                            <Feather name="printer" size={moderateScale(18)} color={colors.secondary} />
-                            <Text color={colors.secondary} fontSize={scaleFont(12)}>
-                                Print All
-                            </Text>
+                            <Button size={moderateScale(40)} bg="#9FCC16" onPress={handlePrintSelectedPlans}>
+                                <XStack ai="center" jc="center" space={moderateScale(8)}>
+                                    <Feather name="printer" size={moderateScale(16)} color="white" />
+                                    <Text color="white">Print ({selectedIds.length})</Text>
+                                </XStack>
+                            </Button>
                         </XStack>
-                    </Button>
+                    ) : (
+                        <XStack space={moderateScale(12)}>
+                            <Button
+                                unstyled
+                                borderRadius={moderateScale(12)}
+                                backgroundColor="#FFF0DE"
+                                paddingHorizontal={moderateScale(12)}
+                                onPress={() => navigation.navigate("Print", { printAll: true })}
+                            >
+                                <XStack ai="center" space={moderateScale(12)} paddingVertical={moderateScale(8)}>
+                                    <Feather name="download" size={moderateScale(18)} color={colors.primary} />
+                                    <Text color={colors.primary} fontSize={scaleFont(12)}>
+                                        Download All
+                                    </Text>
+                                </XStack>
+                            </Button>
+
+                            <Button
+                                unstyled
+                                backgroundColor="#E3FFF2"
+                                paddingHorizontal={moderateScale(12)}
+                                borderRadius={moderateScale(12)}
+                                onPress={() => handlePrintAllPlans(allPlans, childName)}
+                            >
+                                <XStack ai="center" space={moderateScale(12)} paddingVertical={moderateScale(8)}>
+                                    <Feather name="printer" size={moderateScale(18)} color={colors.secondary} />
+                                    <Text color={colors.secondary} fontSize={scaleFont(12)}>
+                                        Print All
+                                    </Text>
+                                </XStack>
+                            </Button>
+                        </XStack>
+                    )}
                 </XStack>
+
 
                 {loading && (
                     <View alignItems="center" mt={verticalScale(24)}>
@@ -393,7 +427,7 @@ const DisciplineScreen = () => {
                     <YStack space={moderateScale(12)}>
                         <YStack jc="flex-start" mt={verticalScale(24)} space={moderateScale(12)}>
                             <YStack space={moderateScale(8)}>
-                                <H6 fontSize={scaleFont(18)} fontWeight="700" color={colors.text}>
+                                <H6 fontSize={14} fontWeight="700" color={colors.text}>
                                     My Plans:
                                 </H6>
                                 {myPlans.length > 0 ? (
@@ -405,49 +439,20 @@ const DisciplineScreen = () => {
                                 )}
                             </YStack>
 
-                            {selectedIds.length > 0 ? (
-                                <YStack space={moderateScale(12)} jc="center" mt={verticalScale(16)}>
-                                    <Button size={moderateScale(40)} bg={colors.primary} onPress={handleDownloadPlan}>
-                                        <XStack ai="center" jc="center" space={moderateScale(8)}>
-                                            <Feather name="download" size={moderateScale(16)} color="white" />
-                                            <Text color="white">
-                                                Download ({selectedIds.length})
-                                            </Text>
-                                        </XStack>
-                                    </Button>
+                            <YStack>
 
-                                    <Button size={moderateScale(40)} bg='#9FCC16' onPress={handlePrintSelectedPlans}>
-                                        <XStack ai="center" jc="center" space={moderateScale(8)}>
-                                            <Feather name="printer" size={moderateScale(16)} color="white" />
-                                            <Text color="white">
-                                                Print ({selectedIds.length})
-                                            </Text>
-                                        </XStack>
-                                    </Button>
-                                </YStack>
-                            ) : (
-                                <YStack>
-                                    <XStack ai="center" my={moderateScale(4)} mb={moderateScale(12)}>
-                                        <View flex={1} height={1} bg="gray" />
-                                        <Text mx={moderateScale(8)} fontSize={scaleFont(14)} color={colors.text}>
-                                            OR
-                                        </Text>
-                                        <View flex={1} height={1} bg="gray" />
-                                    </XStack>
-                                    <Button
-                                        size='$4'
-                                        mt={moderateScale(8)}
-                                        mb={moderateScale(12)}
-                                        bg={colors.primary}
-                                        borderRadius={moderateScale(8)}
-                                        onPress={() => navigation.navigate("AddDiscipline" as never)}
-                                    >
-                                        <Text fontSize={13} color="white"
-                                        >Create Custom</Text>
-                                    </Button>
-                                </YStack>
-                            )}
-
+                                <Button
+                                    size='$4'
+                                    mt={moderateScale(8)}
+                                    mb={moderateScale(12)}
+                                    bg={colors.primary}
+                                    borderRadius={moderateScale(8)}
+                                    onPress={() => navigation.navigate("AddDiscipline" as never)}
+                                >
+                                    <Text fontSize={13} color="white"
+                                    >Create Custom</Text>
+                                </Button>
+                            </YStack>
                             <YStack space={moderateScale(8)}>
                                 <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                     Predefined Plans:

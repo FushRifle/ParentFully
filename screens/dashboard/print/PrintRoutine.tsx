@@ -2,7 +2,7 @@ import { GoalBackground } from '@/constants/GoalBackground';
 import { Text } from '@/context/GlobalText';
 import type { RootStackParamList } from '@/navigation/MainNavigator';
 import { useTheme } from '@/styles/ThemeContext';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as FileSystem from 'expo-file-system';
@@ -10,7 +10,7 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import React, { useState } from 'react';
 import { Image, Platform } from 'react-native';
-import { Button, Card, ScrollView, View, XStack } from 'tamagui';
+import { Button, Card, H6, ScrollView, View, XStack } from 'tamagui';
 
 type TemplateTask = {
      title: string;
@@ -24,9 +24,9 @@ type TemplateTask = {
 
 type DisciplinePlan = {
      id: string;
-     name: string;         // Routine Name
+     name: string;
      description: string;
-     tasks?: TemplateTask[]; // ✅ instead of rules
+     tasks?: TemplateTask[];
      created_at?: string;
      isPreloaded?: boolean;
 };
@@ -46,17 +46,40 @@ export const PrintRoutineScreen = () => {
      const generateHtmlForSinglePlan = (plan: DisciplinePlan) => {
           const tasks = plan.tasks || [];
           return `
+    <Html>
+      <style>
+        h1 { 
+          color: #005A31; 
+          text-align: center; 
+          margin-bottom: 10px; 
+          font-size: 34px; /* increased font size */
+        }
+          h2 {
+          color: #005A31;
+          margin-bottom: 10px;
+          font-size: 27px; /* increased font size */
+        }
+        table {
+        margin-top: 15px;
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          border: 1px solid #ccc;
+          padding: 6px 8px;
+          text-align: left;
+        }
+      </style>
       <div class="plan-section">
-        <h2>${plan.name || 'Routine Plan'}</h2>
-        <p><strong>${tasks.length} Task(s)</strong> · Assigned on ${plan.created_at ? new Date(plan.created_at).toLocaleDateString() : '—'}</p>
+        <h2 style="text-align: left;">${plan.name || 'Routine Plan'}</h2>
+        <p><strong style='margin-bottom: 15px;'>${tasks.length} Task(s)</strong> · Assigned on ${plan.created_at ? new Date(plan.created_at).toLocaleDateString() : '—'}</p>
 
         <table>
           <thead>
             <tr>
               <th>S/N</th>
               <th>Task</th>
-              <th>Time Slot</th>
-              <th>Priority</th>
+              <th>Time</th>
               <th>Duration</th>
               <th>Icon</th>
             </tr>
@@ -67,7 +90,6 @@ export const PrintRoutineScreen = () => {
                 <td>${i + 1}</td>
                 <td>${task.title}</td>
                 <td>${task.time_slot || '—'}</td>
-                <td>${task.priority || '—'}</td>
                 <td>${task.duration_minutes || '—'}</td>
                 <td>${task.icon ? `<img src="${task.icon}" width="20" height="20" />` : '—'}</td>
               </tr>
@@ -75,39 +97,50 @@ export const PrintRoutineScreen = () => {
           </tbody>
         </table>
       </div>
-    `;
+    </Html>
+  `;
      };
 
      const generateHtmlForAllPlans = () =>
           allPlans?.map(plan => generateHtmlForSinglePlan(plan)).join('') || '';
 
      const generateHtml = () => `
-    <html>
-      <head>
-        <style>
-          body { font-family: Arial; padding: 20px; }
-          h1 { color: #005A31; text-align: center; margin-bottom: 10px; }
-          h2 { color: #005A31; margin: 20px 0 10px 0; font-size: 18px; }
-          p { margin: 0 0 10px 0; color: #444; }
-          .plan-section { margin-bottom: 40px; page-break-inside: avoid; }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-          th { background-color: #005A31; color: white; padding: 8px; text-align: left; }
-          td { padding: 8px; border: 1px solid #ddd; vertical-align: top; }
-          img { object-fit: contain; }
-          .footer { margin-top: 40px; font-size: 12px; color: #666; text-align: center; }
-        </style>
-      </head>
-      <body>
-        <h1>Active Routine Plan</h1>
-        ${childName ? `<p style="text-align:center;">For: ${childName}</p>` : ''}
-        <p style="text-align:center;">Generated on ${new Date().toLocaleDateString()}</p>
+<html>
+  <head>
+    <style>
+      body { font-family: Arial; padding: 20px; }
+      h1 { 
+        color: #005A31; 
+        text-align: center; 
+        margin-bottom: 20px; 
+        font-size: 32px; 
+      }
+      h2 { 
+        color: #005A31; 
+        margin: 20px 0 10px 0; 
+        font-size: 18px; 
+      }
+      p { margin: 0 0 10px 0; color: #444; }
+      .plan-section { margin-bottom: 40px; page-break-inside: avoid; }
+      table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+      th { background-color: #005A31; color: white; padding: 8px; text-align: left; font-size: 18px; }
+      td { padding: 8px; border: 1px solid #ddd; vertical-align: top; font-size: 20px; } /* increased font size */
+      img { object-fit: contain; }
+      .footer { margin-top: 40px; font-size: 12px; color: #666; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <h1>Active Routine Plan</h1>
+    ${childName ? `<p style="text-align:center;">For: ${childName}</p>` : ''}
+    <p style="text-align:center;">Generated on ${new Date().toLocaleDateString()}</p>
 
-        ${allPlans ? generateHtmlForAllPlans() : (singlePlan ? generateHtmlForSinglePlan(singlePlan) : '<p>No plan data available</p>')}
+    ${allPlans ? generateHtmlForAllPlans() : (singlePlan ? generateHtmlForSinglePlan(singlePlan) : '<p>No plan data available</p>')}
 
-        <div class="footer">Generated on: ${new Date().toLocaleDateString()}</div>
-      </body>
-    </html>
-  `;
+    <div class="footer">Generated on: ${new Date().toLocaleDateString()}</div>
+  </body>
+</html>
+`;
+
 
      const handlePrint = async () => {
           setLoading(true);
@@ -130,7 +163,7 @@ export const PrintRoutineScreen = () => {
           setLoading(true);
           try {
                const { uri } = await Print.printToFileAsync({ html: generateHtml() });
-               const downloadDir = `${FileSystem.documentDirectory}Downloads`;
+               const downloadDir = `${FileSystem.cacheDirectory}Downloads`;
                await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
                const fileName = allPlans
                     ? `All_Routines_${Date.now()}.pdf`
@@ -150,7 +183,7 @@ export const PrintRoutineScreen = () => {
           <GoalBackground>
                <View flex={1} padding="$4" mb='$10'>
                     {/* Header */}
-                    <XStack space="$4" alignItems="center" mb="$4" mt="$7">
+                    <XStack space="$4" alignItems="center" mb="$4" mt="$5">
                          <Button
                               unstyled
                               circular
@@ -158,9 +191,9 @@ export const PrintRoutineScreen = () => {
                               onPress={navigation.goBack}
                               icon={<Feather name="chevron-left" size={24} color={colors.text} />}
                          />
-                         <Text fontSize="$6" fontWeight="bold" color={colors.text}>
+                         <H6 fontSize={14} fontWeight="600" color={colors.text}>
                               {allPlans ? 'Print All Routines' : 'Print Routine'}
-                         </Text>
+                         </H6>
                     </XStack>
 
                     {/* Action Buttons */}
@@ -182,26 +215,38 @@ export const PrintRoutineScreen = () => {
                     {/* Content */}
                     <ScrollView>
                          {allPlans?.length ? allPlans.map((plan, idx) => (
-                              <Card key={idx} backgroundColor={colors.card} padding="$2" borderRadius="$4" mb="$6">
-                                   <Text ml="$3" fontSize="$6" fontWeight="bold" color={colors.text} mb="$2">{plan.name}</Text>
+                              <Card key={idx} backgroundColor={colors.card} padding="$2" borderRadius="$5" mb="$3" mt='$4'>
+                                   <H6 ml="$3" fontSize={14} fontWeight="600" color={colors.text} mb="$2">{plan.name}</H6>
 
-                                   <XStack bg={colors.secondary} py="$2" px="$2" space="$3">
-                                        <Text flex={0.6} color="white" fontWeight="bold">S/N</Text>
+                                   <XStack bg={colors.secondary} py="$2" px="$2" space="$3" br='$3'>
+                                        <Text flex={2} color="white" fontWeight="bold">Time</Text>
                                         <Text flex={2} color="white" fontWeight="bold">Task</Text>
-                                        <Text flex={2} color="white" fontWeight="bold">Time Slot</Text>
-                                        <Text flex={2} color="white" fontWeight="bold">Priority</Text>
                                         <Text flex={2} color="white" fontWeight="bold">Duration</Text>
-                                        <Text flex={1} color="white" fontWeight="bold">Icon</Text>
+                                        <Text flex={2} color="white" fontWeight="bold">Status</Text>
                                    </XStack>
 
                                    {plan.tasks?.map((task, i) => (
-                                        <XStack key={i} py="$2" px="$2" borderBottomWidth={1} borderBottomColor={colors.border as any} space="$3">
-                                             <Text flex={0.6}>{i + 1}</Text>
-                                             <Text flex={2}>{task.title}</Text>
+                                        <XStack
+                                             key={i}
+                                             py="$2"
+                                             px="$2"
+                                             borderBottomWidth={1}
+                                             borderBottomColor={colors.border as any}
+                                             space="$3"
+                                             ai="center"
+                                        >
                                              <Text flex={2}>{task.time_slot || '—'}</Text>
-                                             <Text flex={2}>{task.priority || '—'}</Text>
-                                             <Text flex={2}>{task.duration_minutes || '—'}</Text>
-                                             <View flex={1}>{task.icon && <Image source={{ uri: task.icon }} style={{ width: 20, height: 20 }} />}</View>
+                                             <Text flex={3}>{task.title}</Text>
+                                             <Text flex={1}>{task.duration_minutes || '—'}</Text>
+
+                                             {/* ✅ Checkbox aligned center with margin */}
+                                             <XStack ai="center" jc="center" mr="$7">
+                                                  <MaterialCommunityIcons
+                                                       name="checkbox-blank-outline"
+                                                       size={20}
+                                                       color={colors.secondary}
+                                                  />
+                                             </XStack>
                                         </XStack>
                                    ))}
                               </Card>

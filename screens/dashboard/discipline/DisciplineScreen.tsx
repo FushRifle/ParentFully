@@ -1,6 +1,7 @@
 import { PRELOADED_DISCIPLINE } from "@/constants/Discipline";
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
+import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { DisciplinePlan, DisciplineTemplate } from "@/types/discipline";
@@ -8,7 +9,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useState } from "react";
 import { Dimensions, Image, PixelRatio, ScrollView } from "react-native";
-import { Card, Text, View, XStack, YStack } from "tamagui";
+import { Card, View, XStack, YStack } from "tamagui";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
@@ -173,9 +174,9 @@ const DisciplineScreen: React.FC = ({ navigation }: any) => {
                         <XStack ai="center" jc="space-between">
                             <XStack ai="center" space={moderateScale(12)}>
                                 <MaterialCommunityIcons name="star" size={moderateScale(20)} color={colors.secondary} />
-                                <YStack>
+                                <YStack >
                                     <Text fontWeight="700" color={colors.text}>Active Discipline Plans</Text>
-                                    <Text color="#666">Your kid’s current discipline plans at a glance</Text>
+                                    <Text fontSize={12} color="#666">Your kid’s current discipline plans at a glance</Text>
                                 </YStack>
                             </XStack>
                             <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="#999" />
@@ -193,9 +194,9 @@ const DisciplineScreen: React.FC = ({ navigation }: any) => {
                         <XStack ai="center" jc="space-between">
                             <XStack ai="center" space={moderateScale(12)}>
                                 <MaterialCommunityIcons name="file-document-outline" size={moderateScale(20)} color="white" />
-                                <YStack>
+                                <YStack space='$1'>
                                     <Text fontWeight="700" color="white">Use Template</Text>
-                                    <Text color="#EEE">Start with recommendations from experts</Text>
+                                    <Text fontSize={12} color="#EEE">Start with recommendations from experts</Text>
                                 </YStack>
                             </XStack>
                             <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="white" />
@@ -226,9 +227,9 @@ const DisciplineScreen: React.FC = ({ navigation }: any) => {
                                 }}>
                                     <MaterialCommunityIcons name="plus-circle-outline" size={moderateScale(20)} color={colors.primary} />
                                 </View>
-                                <YStack>
+                                <YStack space='$1'>
                                     <Text fontWeight="700" color={colors.text}>Create custom Discipline Plan</Text>
-                                    <Text color="#666">Build from scratch</Text>
+                                    <Text fontSize={12} color="#666">Build from scratch</Text>
                                 </YStack>
                             </XStack>
                             <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="#999" />

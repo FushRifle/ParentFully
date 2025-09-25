@@ -514,9 +514,9 @@ const RoutineCard = React.memo(({
 
                         <YStack flex={1} space={scaling.moderateScale(6)}>
                             <XStack ai="center" jc="space-between"
-                                space={scaling.moderateScale(6)}
+                                space={scaling.moderateScale(12)}
                             >
-                                <H6 fontSize={scaling.scaleFont(12)} fontWeight="600">
+                                <H6 fontSize={scaling.scaleFont(14)} fontWeight="600">
                                     {routine.name}
                                 </H6>
 
@@ -556,12 +556,12 @@ const RoutineCard = React.memo(({
                             )}
 
                             <XStack mt='$3' space={scaling.moderateScale(12)} jc='space-between'>
-                                <XStack space={scaling.moderateScale(12)}>
-                                    <Text fontSize={scaling.scaleFont(12)} fontWeight="600" color={colors.primary}>
-                                        {(routine.tasks ?? []).length} Tasks
-                                    </Text>
+                                <Text fontSize={scaling.scaleFont(12)} fontWeight="600" color={colors.primary}>
+                                    {(routine.tasks ?? []).length} Tasks
+                                </Text>
 
-                                    {isUserRoutine && (
+                                {isUserRoutine && (
+                                    <XStack mr='$2.5'>
                                         <TouchableOpacity onPress={onDelete}>
                                             <MaterialCommunityIcons
                                                 name="trash-can"
@@ -569,8 +569,8 @@ const RoutineCard = React.memo(({
                                                 color="red"
                                             />
                                         </TouchableOpacity>
-                                    )}
-                                </XStack>
+                                    </XStack>
+                                )}
                             </XStack>
                         </YStack>
                     </XStack>
@@ -657,10 +657,11 @@ const RoutineScreen = () => {
             selectedIds.includes(p.id)
         );
 
-        navigation.navigate("Print", {
+        navigation.navigate("PrintRoutine", {
             allPlans: JSON.stringify(selectedPlans),
             childName: CHILD_NAME,
         });
+
         clearSelection();
     }, [selectedIds, myRoutines, predefinedRoutines, navigation, clearSelection]);
 
@@ -668,7 +669,7 @@ const RoutineScreen = () => {
         const allPlans = [...myRoutines, ...predefinedRoutines];
         if (allPlans.length === 0) return;
 
-        navigation.navigate("Print", {
+        navigation.navigate("PrintRoutine", {
             allPlans: JSON.stringify(allPlans),
             childName: CHILD_NAME,
         });

@@ -1,8 +1,8 @@
 import { GoalBackground } from '@/constants/GoalBackground';
+import { Text } from '@/context/GlobalText';
 import type { RootStackParamList } from '@/navigation/MainNavigator';
 import { useTheme } from '@/styles/ThemeContext';
 import { Feather } from '@expo/vector-icons';
-import { Text } from '@/context/GlobalText'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as FileSystem from 'expo-file-system';
@@ -49,32 +49,41 @@ export const PrintScreen = () => {
         const rules = (plan.rules as RuleSet[]) || [];
 
         return `
-      <div class="plan-section">
-        <h2>${plan.name || 'Discipline Plan'}</h2>
-        <p><strong>${rules.length} Rule(s)</strong> · Assigned on ${new Date(plan.created_at || '').toLocaleDateString()}</p>
+    <div class="plan-section">
+      <h2 style="font-size: 28px; color: #005A31; text-align: left; margin-bottom: 12px;">
+        ${plan.name || 'Discipline Plan'}
+      </h2>
+      <p style="font-size: 16px; margin-bottom: 20px;">
+        <strong>${rules.length} Rule(s)</strong> · Assigned on ${plan.created_at ? new Date(plan.created_at).toLocaleDateString() : '—'
+            }
+      </p>
 
-        <table>
-          <thead>
+      <table style="width:100%; border-collapse: collapse; font-size: 15px;">
+        <thead>
+          <tr>
+            <th style="background:#005A31; color:white; padding:10px; font-size:20px;">S/N</th>
+            <th style="background:#005A31; color:white; padding:10px; font-size:20px;">Name</th>
+            <th style="background:#005A31; color:white; padding:10px; font-size:20px;">Consequences</th>
+            <th style="background:#005A31; color:white; padding:10px; font-size:20px;">Parent Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rules
+                .map(
+                    (rule, i) => `
             <tr>
-              <th>S/N</th>
-              <th>Name</th>
-              <th>Consequences</th>
-              <th>Parent Notes</th>
+              <td style="padding:8px; border:1px solid #ddd;">${i + 1}</td>
+              <td style="padding:8px; border:1px solid #ddd;">${rule.rule || ''}</td>
+              <td style="padding:8px; border:1px solid #ddd; color:red;">${rule.consequence || '—'}</td>
+              <td style="padding:8px; border:1px solid #ddd;">${rule.notes || ''}</td>
             </tr>
-          </thead>
-          <tbody>
-            ${rules.map((rule, i) => `
-              <tr>
-                <td>${i + 1}</td>
-                <td>${rule.rule || ''}</td>
-                <td style="color: red;">${rule.consequence || '—'}</td>
-                <td>${rule.notes || ''}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
+          `
+                )
+                .join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
     };
 
     const generateHtmlForAllPlans = () => {
@@ -226,7 +235,7 @@ export const PrintScreen = () => {
                         textAlign="center"
                         mb="$2"
                     >
-                        Active Routine Plan
+                        Active Discipline Plan
                     </Text>
                     <Text fontSize={13} color={colors.text} textAlign="center" mb="$6">
                         Generated On: {new Date().toLocaleDateString()}

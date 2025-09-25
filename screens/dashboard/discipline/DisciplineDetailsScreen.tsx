@@ -1,9 +1,10 @@
 import { GoalBackground } from "@/constants/GoalBackground";
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useState } from "react";
 import { Dimensions, Modal, PixelRatio, ScrollView, TouchableOpacity } from "react-native";
@@ -18,16 +19,15 @@ import {
     Label,
     Sheet,
     Spinner,
-    Text,
     TextArea,
     View,
     XStack,
-    YStack,
+    YStack
 } from "tamagui";
 import { v4 as uuidv4 } from "uuid";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const BASE_WIDTH = 390; // iPhone 12 width 
+const BASE_WIDTH = 390;
 const BASE_HEIGHT = 844;
 
 type Props = NativeStackScreenProps<RootStackParamList, "DisciplineDetails">;
@@ -97,6 +97,17 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
             setIsEditing(true);
         }
     }, [id]);
+
+    useFocusEffect(
+        useCallback(() => {
+            // This runs every time the screen is focused
+            // Just force a reload however you want here
+            // For example:
+            console.log('Screen is focused. Reload stuff here.');
+
+            // Or trigger a state update, refetch, etc.
+        }, [])
+    );
 
     const fetchChildren = useCallback(async () => {
         try {
@@ -230,7 +241,7 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
 
                         {/* Rules Set */}
                         <XStack ai="center" jc="space-between" mt="$5" mb="$2">
-                            <Text fontSize="$3" fontWeight="600" color="#444">
+                            <Text fontSize="$3" fontWeight="500" color="#444">
                                 Rules Set
                             </Text>
                             {isEditing && (
@@ -251,7 +262,8 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                             <Card
                                 key={index}
                                 p={moderateScale(10)}      // reduced padding 
-                                mb={moderateScale(10)}     // reduced margin 
+                                mb={moderateScale(10)}
+                                mt='$3'
                                 borderRadius={moderateScale(12)}
                                 bordered
                                 backgroundColor="white"
@@ -276,6 +288,7 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                                         value={ruleItem.rule}
                                         editable={isEditing}
                                         onChangeText={(text) => handleUpdateRuleSet(index, "rule", text)}
+                                        inputStyle={{ paddingLeft: 10 }} // adds left padding inside the input
                                     />
 
                                     <Field
@@ -284,6 +297,7 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                                         value={ruleItem.consequence}
                                         editable={isEditing}
                                         onChangeText={(text) => handleUpdateRuleSet(index, "consequence", text)}
+                                        inputStyle={{ paddingLeft: 10 }}
                                     />
 
                                     <Field
@@ -293,6 +307,7 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                                         editable={isEditing}
                                         isMultiline
                                         onChangeText={(text) => handleUpdateRuleSet(index, "notes", text)}
+                                        inputStyle={{ paddingLeft: 10, paddingTop: 6 }} // optional top padding for multiline
                                     />
                                 </YStack>
 
@@ -302,7 +317,6 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
 
                     {/* Buttons */}
 
-                    Kay, [9/21/2025 4:33 PM]
                     <XStack space="$3" jc="space-between" mt="$6" mb='$9'>
                         {!isEditing && (
                             <Button
@@ -339,8 +353,6 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                             backgroundColor={colors.primary}
                             onPress={() => {
                                 if (isEditing) {
-                                    // Save changes first 
-                                    // In a real app, you would save the changes to the database here 
                                     setIsEditing(false);
                                 } else {
                                     fetchChildren();
@@ -460,7 +472,6 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                                 Plan Assigned Successfully!
                             </Text>
 
-                            Kay, [9/21/2025 4:33 PM]
                             <Text textAlign="center" color="#666" mb="$4">
                                 Your discipline plan has been successfully assigned to the selected children.
                             </Text>
@@ -490,6 +501,7 @@ const Field = ({
     editable,
     isMultiline,
     onChangeText,
+    inputStyle,
 }: {
     label: string;
     color: string;
@@ -497,6 +509,7 @@ const Field = ({
     editable: boolean;
     isMultiline?: boolean;
     onChangeText: (text: string) => void;
+    inputStyle?: any;
 }) => (
     <View space="$2">
         <Text color={color} fontSize="$4" fontWeight="700">
@@ -510,6 +523,7 @@ const Field = ({
                 editable={editable}
                 numberOfLines={4}
                 onChangeText={onChangeText}
+                style={inputStyle}
             />
         ) : (
             <Input
@@ -518,6 +532,7 @@ const Field = ({
                 value={value}
                 editable={editable}
                 onChangeText={onChangeText}
+                style={inputStyle}
             />
         )}
     </View>

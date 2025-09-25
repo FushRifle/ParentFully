@@ -1,4 +1,5 @@
 import { GoalBackground } from "@/constants/GoalBackground";
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -17,7 +18,6 @@ import {
     Label,
     Sheet,
     Spinner,
-    Text,
     View,
     XStack,
     YStack,
@@ -104,7 +104,6 @@ export default function AddDisciplineScreen({ navigation }: Props) {
         setRuleSets([...ruleSets, { rule: "", consequence: "", notes: "" }]);
     };
 
-    // Save discipline plan
     const saveDisciplinePlan = async (childId: string) => {
         try {
             const { data: userRes, error: userErr } = await supabase.auth.getUser();
@@ -124,70 +123,48 @@ export default function AddDisciplineScreen({ navigation }: Props) {
             ]);
 
             if (error) throw error;
+            setShowSuccessModal(true)
         } catch (err: any) {
             console.error("❌ Failed to save:", err?.message ?? err);
         }
     };
 
-    // Child Item Component
-    const ChildItem = ({
-        child,
-        isSelected,
-        onToggle,
-    }: {
-        child: Child;
-        isSelected: boolean;
-        onToggle: () => void;
-    }) => (
-        <XStack
-            p="$3"
-            br="$3"
-            height={70}
-            ai="center"
-            space="$5"
-            borderWidth={1}
-            borderColor={isSelected ? colors.primary : colors.border as any}
-        >
-            <Avatar.Image
-                source={
-                    child.photo
-                        ? { uri: child.photo, cache: "force-cache" }
-                        : require("@/assets/images/profile.jpg")
-                }
-                size={54}
-            />
-            <YStack>
-                <Text
-                    color={isSelected ? "black" : colors.text}
-                    fontSize="$5"
-                    fontWeight="600"
-                >
-                    {child.name}
-                </Text>
-                {child.age !== undefined && (
-                    <Text color={isSelected ? "black" : colors.text} fontSize="$4">
-                        {child.age} y/o
+    const ChildItem = ({ child, isSelected, onToggle }: { child: Child; isSelected: boolean; onToggle: () => void }) => {
+        return (
+            <XStack
+                p="$3"
+                br="$3"
+                height={70}
+                ai="center"
+                space="$5"
+                borderWidth={1}
+                borderColor={isSelected ? colors.primary : colors.border as any}
+                onTouchEnd={onToggle} // attach toggle directly
+            >
+                <Avatar.Image
+                    source={
+                        child.photo
+                            ? { uri: child.photo, cache: "force-cache" }
+                            : require("@/assets/images/profile.jpg")
+                    }
+                    size={54}
+                />
+                <YStack>
+                    <Text color={isSelected ? "black" : colors.text} fontSize="$5" fontWeight="600">
+                        {child.name}
                     </Text>
-                )}
-            </YStack>
-            <TouchableOpacity onPress={onToggle} style={{ marginLeft: "auto" }}>
-                <View
-                    w={22}
-                    h={22}
-                    br={12}
-                    ai="center"
-                    jc="center"
-                    bg={isSelected ? colors.success : "transparent"}
-                    borderWidth={2}
-                    borderColor={isSelected ? colors.success : colors.text}
-                >
-                    {isSelected && (
-                        <MaterialCommunityIcons name="check" size={14} color="white" />
+                    {child.age !== undefined && (
+                        <Text color={isSelected ? "black" : colors.text} fontSize="$4">
+                            {child.age} y/o
+                        </Text>
                     )}
+                </YStack>
+                <View ml="auto" w={22} h={22} br={12} ai="center" jc="center" bg={isSelected ? colors.success : "transparent"} borderWidth={2} borderColor={isSelected ? colors.success : colors.text}>
+                    {isSelected && <MaterialCommunityIcons name="check" size={14} color="white" />}
                 </View>
-            </TouchableOpacity>
-        </XStack>
-    );
+            </XStack>
+        );
+    };
 
     return (
         <GoalBackground>
@@ -373,30 +350,27 @@ export default function AddDisciplineScreen({ navigation }: Props) {
                             )}
                         </Fieldset>
 
-                       
-<Button
-  size="$5"
-  mt="$4"
-  bg={colors.primary}
-  disabled={selectedChildren.length === 0}
-  onPress={async () => {
-    try {
-      for (const child of selectedChildren) {
-        await saveDisciplinePlan(child.id)
-      }
-      setAssignSheetOpen(false)
-      setSelectedChildren([])
-      setShowSuccessModal(true)
 
-      // 👇 navigate back after saving & closing
-      navigation.goBack()
-    } catch (err: any) {
-      console.error("❌ Failed to assign:", err?.message ?? err)
-    }
-  }}
->
-  <Text color="white">Done</Text>
-</Button>
+                        <Button
+                            size="$5"
+                            mt="$4"
+                            bg={colors.primary}
+                            disabled={selectedChildren.length === 0}
+                            onPress={async () => {
+                                try {
+                                    for (const child of selectedChildren) {
+                                        await saveDisciplinePlan(child.id);
+                                    }
+                                    setAssignSheetOpen(false);
+                                    setSelectedChildren([]);
+                                    setShowSuccessModal(true); // show modal, don't navigate yet
+                                } catch (err: any) {
+                                    console.error("❌ Failed to assign:", err?.message ?? err);
+                                }
+                            }}
+                        >
+                            <Text color="white">Done</Text>
+                        </Button>
                     </ScrollView>
                 </Sheet.Frame>
             </Sheet>
@@ -421,10 +395,13 @@ export default function AddDisciplineScreen({ navigation }: Props) {
                         }}
                     >
                         <MaterialCommunityIcons name="check-circle" size={50} color="#4CAF50" />
-                        <Text fontSize={18} fontWeight="bold" marginVertical={10}>
-                            Discipline Plan Assigned Successfully!
-                        </Text>
+                        <XStack ai='center' jc='center'>
+                            <Text fontSize={16} color="#333">
+                                Discipline Plan Assigned Successfully!
+                            </Text>
+                        </XStack>
                         <Button
+                            width='48%'
                             mt="$4"
                             bg={colors.primary}
                             onPress={() => {
