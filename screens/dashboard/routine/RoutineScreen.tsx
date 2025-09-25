@@ -259,7 +259,7 @@ const RoutineScreen: React.FC = ({ navigation }: any) => {
                                     <Text fontWeight="700" color="white">
                                         Use Template
                                     </Text>
-                                    <Text color="#EEE">
+                                    <Text fontSize={11} color="#EEE">
                                         Start with recommendations from experts
                                     </Text>
                                 </YStack>

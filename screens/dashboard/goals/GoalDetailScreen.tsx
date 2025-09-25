@@ -7,7 +7,7 @@ import { RootStackParamList } from '@/types'
 import { Child, Goal, Reward } from '@/types/goals'
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Bell, ChevronRight } from '@tamagui/lucide-icons'
 import { add, format } from 'date-fns'
@@ -15,8 +15,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Modal, StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message'
-import { Modal } from 'react-native'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 import {
     Button,
     H4,

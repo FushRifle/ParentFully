@@ -30,9 +30,8 @@ interface CombinedChildProfileProps {
 }
 
 const { width: screenWidth } = Dimensions.get('window');
-// Adjust margin/padding to calculate card width dynamically
 const CARD_MARGIN = 5;
-const CARD_WIDTH = (screenWidth - CARD_MARGIN * 1) / 3; // 2 cards per screen width
+const CARD_WIDTH = (screenWidth - CARD_MARGIN * 1) / 3;
 
 const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
     children,
@@ -94,7 +93,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
 
                             <YStack mt="$2" space="$1" ai="center" jc="center">
                                 <H6
-                                fontSize={13}
+                                    fontSize={13}
                                     fontWeight="600"
                                     color={colors.text}
                                     numberOfLines={2}
@@ -104,7 +103,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     {child.name}
                                 </H6>
 
-                                <Text color={colors.textSecondary} fontSize='$4'>
+                                <Text color={colors.textSecondary} fontSize={11}>
                                     Age: {child.age} y/o
                                 </Text>
 
@@ -118,7 +117,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                                     mt="$2"
                                     mb='$2'
                                 >
-                                    <Text color="white" fontSize='$3'>
+                                    <Text color="white" fontSize={10}>
                                         View Profile
                                     </Text>
                                 </Button>

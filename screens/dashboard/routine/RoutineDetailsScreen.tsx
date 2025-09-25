@@ -8,6 +8,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Bell, ChevronRight, Menu } from "@tamagui/lucide-icons";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+
 import {
     Modal,
     RefreshControl,
@@ -102,6 +103,9 @@ const RoutineDetailsScreen = () => {
     const route = useRoute<RoutineDetailsScreenRouteProp>();
     const { routineId } = route.params;
     const [routine, setRoutine] = useState<RoutineTemplate | null>(null);
+
+    const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loading, setLoading] = useState(true);
 
     // ---- State ----
@@ -272,6 +276,14 @@ const RoutineDetailsScreen = () => {
         fetchChildren();
     }, [fetchChildren]);
 
+    useEffect(() => {
+        const handleClickOutside = () => {
+            if (activeMenu !== null) {
+                setActiveMenu(null);
+            }
+        };
+    }, [activeMenu]);
+
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         Promise.all([fetchRoutine(), fetchReminders(routineId), fetchChildren()]).finally(() =>
@@ -398,7 +410,7 @@ const RoutineDetailsScreen = () => {
         []
     );
 
-    const renderItem = useCallback(
+    const renderReorderItem = useCallback(
         ({ item, drag, isActive, getIndex }: RenderItemParams<Task>) => {
             const index = getIndex();
             return (
@@ -425,11 +437,141 @@ const RoutineDetailsScreen = () => {
                         <Text flex={1} color="#333" numberOfLines={1}>
                             {item.title || `Task ${typeof index === "number" ? index + 1 : ""}`}
                         </Text>
+
+                        {/* Task Details */}
+                        <Text color={colors.text} fontSize={12}>
+                            {item.time_slot || "—"} | {item.duration_minutes || "—"} mins
+                        </Text>
                     </XStack>
                 </ScaleDecorator>
             );
         },
         [colors.border, colors.text]
+    );
+
+    const renderViewItem = useCallback(
+        ({ item: task, drag, isActive, getIndex }: RenderItemParams<Task>) => {
+            const index = typeof getIndex === "function" ? getIndex() : undefined;
+            const isSelected = typeof index === "number" && selectedTasks.includes(index);
+
+            return (
+                <XStack
+                    key={keyExtractor(task, typeof index === "number" ? index : 0)}
+                    bg={isActive ? "#f0f0f0" : "white"}
+                    p="$3"
+                    br="$3"
+                    mb='$5'
+                    space="$5"
+                    height={76}
+                    ai="center"
+                    jc="space-between"
+                    borderWidth={1}
+                    borderColor={colors.border as any}
+                    style={{ zIndex: openDropdownIndex === index ? 1000 : 1 }}
+                >
+                    {/* Checkbox */}
+                    <TouchableOpacity onPress={() => typeof index === "number" && toggleTask(index)}>
+                        <View
+                            w={20}
+                            h={20}
+                            br={12}
+                            ai="center"
+                            jc="center"
+                            bg={isSelected ? colors.success : "transparent"}
+                            borderWidth={2}
+                            borderColor={isSelected ? (colors.border as any) : colors.text}
+                        >
+                            {isSelected && <MaterialCommunityIcons name="check" size={20} color="white" />}
+                        </View>
+                    </TouchableOpacity>
+
+                    {/* Icon */}
+                    <MaterialCommunityIcons
+                        name={(task.icon as any) || "calendar-check"}
+                        size={22}
+                        color={colors.primary}
+                    />
+
+                    {/* Task info */}
+                    <YStack flex={1} mx="$3">
+                        <Text color="#333" numberOfLines={1}>
+                            {task.title || `Task ${typeof index === "number" ? index + 1 : ""}`}
+                        </Text>
+                        <Text color={colors.text}>
+                            {task.time_slot || "—"} | {task.duration_minutes || "—"} mins
+                        </Text>
+                    </YStack>
+
+                    {/* Dropdown toggle */}
+                    <XStack ai="center" jc="center" position="relative">
+                        <TouchableOpacity onPress={() => typeof index === "number" && setOpenDropdownIndex(prev => prev === index ? null : index)}>
+                            <MaterialCommunityIcons
+                                name="pen"
+                                size={18}
+                                color={colors.secondary as any}
+                            />
+                        </TouchableOpacity>
+
+                        {/* Dropdown on card */}
+                        {typeof index === "number" && openDropdownIndex === index && (
+                            <YStack
+                                bg="white"
+                                br="$3"
+                                shadowColor="#000"
+                                shadowOpacity={0.1}
+                                shadowRadius={5}
+                                elevation={10}
+                                position="absolute"
+                                top={-10} // moves dropdown slightly above card
+                                right={-10} // adjust for card alignment
+                                zIndex={1000}
+                                width={150}
+                            >
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setOpenDropdownIndex(null);
+                                        navigation.navigate("CustomTask", {
+                                            task,
+                                            onSave: (savedTask: Task, isEditing: boolean) => {
+                                                if (isEditing) {
+                                                    const updatedTasks = tasks.map(t =>
+                                                        t.id === savedTask.id ? savedTask : t
+                                                    );
+                                                    setTasks(updatedTasks);
+                                                }
+                                            },
+                                            routineId: routine?.id,
+                                            isPredefined: routine?.isPreloaded || false,
+                                        });
+                                    }}
+                                >
+                                    <Text px="$2" py="$1">Edit</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setOpenDropdownIndex(null);
+                                        setTasks(prev => prev.filter(t => t.id !== task.id));
+                                    }}
+                                >
+                                    <Text px="$2" py="$1">Delete</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setOpenDropdownIndex(null);
+                                        drag?.(); // optional chaining in case drag is undefined
+                                    }}
+                                >
+                                    <Text px="$2" py="$1">Reorder</Text>
+                                </TouchableOpacity>
+                            </YStack>
+                        )}
+                    </XStack>
+                </XStack>
+            );
+        },
+        [colors, keyExtractor, selectedTasks, toggleTask, tasks, routine, openDropdownIndex, setTasks, navigation]
     );
 
     const Header = useMemo(
@@ -457,17 +599,17 @@ const RoutineDetailsScreen = () => {
                         <View w={50} h={50} br={25} ai="center" jc="center" bg="#005A31">
                             <MaterialCommunityIcons name={routine?.icon as any || "calendar"} size={24} color="yellow" />
                         </View>
-                        <Text fontWeight="700" color="white">
+                        <H4 fontWeight="600" color="white">
                             {routine?.name || "Routine"}
-                        </Text>
+                        </H4>
                     </XStack>
 
                     <XStack>
                         {mode === "view" ? (
                             <TouchableOpacity onPress={handleReorder}>
                                 <MaterialCommunityIcons
-                                    name="reorder-horizontal"
-                                    size={20}
+                                    name='dots-vertical'
+                                    size={22}
                                     color="white"
                                 />
                             </TouchableOpacity>
@@ -482,292 +624,178 @@ const RoutineDetailsScreen = () => {
                         )}
                     </XStack>
                 </XStack>
+
+                <XStack px='$3' mb='$2'>
+                    <Text fontSize={13} fontWeight="700" color="white">
+                        {routine?.description || "Routine"}
+                    </Text>
+                </XStack>
             </SafeAreaView>
         ),
         [colors.secondary, handleCancel, handleReorder, handleSaveReorder, mode, navigation, routine]
     );
 
-    const Body = useMemo(
-        () => (
-            <YStack space="$4" px="$3">
-                {mode === "view" && (
-                    <H6 fontSize={14} fontWeight="600" color={colors.text} mb="$1">
-                        Select Tasks that apply to your child's routine
-                    </H6>
-                )}
+    const Content = useMemo(() => {
+        return (
+            <DraggableFlatList
+                data={tasks}
+                keyExtractor={keyExtractor}
+                renderItem={renderViewItem} // unified view item with dropdown + drag
+                onDragEnd={({ data }) => setTasks(data)}
+                activationDistance={10} // long press to start drag
+                dragItemOverflow={false}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+                removeClippedSubviews={false}
+                windowSize={10}
+                contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 12 }}
+                ListHeaderComponent={
+                    <YStack px="$3" mb='$4'>
+                        <Text fontWeight="500" color={colors.text} mb="$2">
+                            Select Tasks that apply to your child's routine
+                        </Text>
+                        <Text color={colors.textSecondary} fontSize={12}>
+                            Long press a task to drag and reorder it. Tap the pen icon to edit, delete, or reorder.
+                        </Text>
+                    </YStack>
+                }
+                ListFooterComponent={
+                    <YStack space="$4" px="$3" py="$2">
+                        {/* Reminder */}
+                        <YStack space="$2" mt="$2" px="$1">
+                            <H6 fontSize={14} color={colors.text} fontWeight="600">
+                                Reminder
+                            </H6>
+                            <Text>When should we remind you to start this routine?</Text>
 
-                {/* Tasks */}
-                <YStack space="$2" minHeight={200} px='$2'>
-                    {loading ? (
+                            {reminders.length > 0 ? (
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        navigation.navigate("Reminder", {
+                                            routine: { id: routineId, title: routine?.name },
+                                            reminderId: reminders[0]?.id,
+                                            onSave: () => fetchReminders(routineId),
+                                        })
+                                    }
+                                >
+                                    <XStack
+                                        mt="$3"
+                                        ai="center"
+                                        jc="space-between"
+                                        p="$3"
+                                        bg="#F9FAFB"
+                                        br="$4"
+                                        borderWidth={1}
+                                        borderColor="#E5E7EB"
+                                    >
+                                        <YStack>
+                                            <H4 color={colors.text}>{reminders[0].time.slice(0, 5)}</H4>
+                                            <Text>{reminders[0].repeat}</Text>
+                                        </YStack>
+                                        <ChevronRight size={20} color={colors.text as string} />
+                                    </XStack>
+                                </TouchableOpacity>
+                            ) : (
+                                <Button
+                                    width="100%"
+                                    borderColor={colors.border as any}
+                                    mt="$3"
+                                    onPress={() =>
+                                        navigation.navigate("Reminder", {
+                                            routine: { id: routineId, title: routine?.name },
+                                            onSave: () => fetchReminders(routineId),
+                                        })
+                                    }
+                                    icon={<Bell size={16} />}
+                                >
+                                    Set Reminder
+                                </Button>
+                            )}
+                        </YStack>
+
+                        {/* Assign / Add buttons */}
+                        {selectedTasks.length > 0 ? (
+                            <Button
+                                mt="$3"
+                                size="$5"
+                                bg={colors.primary}
+                                color={colors.onPrimary}
+                                onPress={handleAssignToChild}
+                                icon={
+                                    <MaterialCommunityIcons
+                                        name="account-child-outline"
+                                        size={18}
+                                        color="white"
+                                    />
+                                }
+                            >
+                                Assign Routine ({selectedTasks.length} selected)
+                            </Button>
+                        ) : (
+                            <Button
+                                mt="$3"
+                                size="$5"
+                                bg={colors.primary}
+                                color={colors.onPrimary}
+                                onPress={handleAddCustomRoutine}
+                                icon={
+                                    <MaterialCommunityIcons
+                                        name="plus-circle-outline"
+                                        size={18}
+                                        color="white"
+                                    />
+                                }
+                            >
+                                Add Custom Task
+                            </Button>
+                        )}
+                    </YStack>
+                }
+                ListEmptyComponent={
+                    loading ? (
                         <XStack ai="center" jc="center" p="$4">
                             <Spinner size="large" />
                             <Text ml="$3">Loading tasks...</Text>
                         </XStack>
-                    ) : mode === "view" && tasks.length > 0 ? (
-                        tasks.map((task, index) => {
-                            const isSelected = selectedTasks.includes(index);
-                            const isMenuOpen = activeMenu === index;
-
-                            return (
-                                <XStack
-                                    bg="white"
-                                    key={keyExtractor(task, index)}
-                                    onPress={() => toggleTask(index)}
-                                    p="$3"
-                                    br="$3"
-                                    space="$5"
-                                    height={76}
-                                    ai="center"
-                                    jc="space-between"
-                                    borderWidth={1}
-                                    borderColor={colors.border as any}
-                                    zIndex={isMenuOpen ? 1000 : 1}
-                                >
-                                    {/* Checkbox */}
-                                    <TouchableOpacity onPress={() => toggleTask(index)}>
-                                        <View
-                                            w={20}
-                                            h={20}
-                                            br={12}
-                                            ai="center"
-                                            jc="center"
-                                            bg={isSelected ? colors.success : "transparent"}
-                                            borderWidth={2}
-                                            borderColor={isSelected ? (colors.border as any) : colors.text}
-                                        >
-                                            {isSelected && (
-                                                <MaterialCommunityIcons name="check" size={20} color="white" />
-                                            )}
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <MaterialCommunityIcons
-                                        name={(task.icon as any) || "calendar-check"}
-                                        size={22}
-                                        color={colors.primary}
-                                    />
-
-                                    <YStack flex={1} mx="$3">
-                                        <Text color="#333" numberOfLines={1}>
-                                            {task.title || `Task ${index + 1}`}
-                                        </Text>
-                                        <Text color={colors.text}>
-                                            {task.time_slot || "—"} | {task.duration_minutes || "—"} mins
-                                        </Text>
-                                    </YStack>
-
-                                    {/* Pen Icon - Navigates to edit page */}
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate("CustomTask", {
-                                            task: task,
-                                            onSave: (savedTask: Task, isEditing: boolean) => {
-                                                if (isEditing) {
-                                                    const updatedTasks = tasks.map(t =>
-                                                        t.id === savedTask.id ? savedTask : t
-                                                    );
-                                                    setTasks(updatedTasks);
-                                                }
-                                            },
-                                            routineId: routine?.id,
-                                            isPredefined: routine?.isPreloaded || false,
-                                        })}>
-                                        <MaterialCommunityIcons
-                                            name="pencil"
-                                            size={18}
-                                            color={colors.secondary as any}
-                                        />
-                                    </TouchableOpacity>
-                                </XStack>
-                            );
-                        })
-                    ) : mode !== "view" ? (
-                        <DraggableFlatList
-                            data={tasks}
-                            onDragEnd={({ data }) => setTasks(data)}
-                            keyExtractor={keyExtractor}
-                            renderItem={renderItem}
-                            activationDistance={10}
-                            dragItemOverflow={false}
-                            nestedScrollEnabled
-                            style={{ flex: 1 }}
-                            ListHeaderComponent={
-                                mode === "reorder" ? (
-                                    <Text
-                                        fontWeight="600"
-                                        color="#005A31"
-                                        mb="$2"
-                                        mt="$2"
-                                        px="$1"
-                                    >
-                                        Drag and drop to reorder tasks
-                                    </Text>
-                                ) : null
-                            }
-                        />
                     ) : (
-                        <Text color="#777">
-                            No tasks yet.
+                        <Text color="#777" textAlign="center" py="$4">
+                            No tasks yet. Add custom tasks to get started.
                         </Text>
-                    )}
-                </YStack>
+                    )
+                }
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor={colors.primary as string}
+                    />
+                }
+            />
+        );
+    }, [
+        tasks,
+        keyExtractor,
+        renderViewItem,
+        colors,
+        loading,
+        refreshing,
+        onRefresh,
+        reminders,
+        routineId,
+        fetchReminders,
+        navigation,
+        selectedTasks,
+        handleAssignToChild,
+        handleAddCustomRoutine,
+    ]);
 
-                {/* Reminder */}
-                {mode === "view" && (
-                    <YStack space="$2" mt="$2" px="$1">
-                        <H6 fontSize={14} color={colors.text} fontWeight="600">
-                            Reminder
-                        </H6>
-                        <Text> When should we remind you about this routine?</Text>
-
-                        {reminders.length > 0 ? (
-                            <TouchableOpacity onPress={() => navigation.navigate("Reminder", {
-                                routine: { id: routineId, title: routine?.name },
-                                reminderId: reminders[0]?.id,
-                                onSave: () => fetchReminders(routineId),
-                            })}>
-                                <XStack
-                                    mt="$3"
-                                    ai="center"
-                                    jc="space-between"
-                                    p="$3"
-                                    bg="#F9FAFB"
-                                    br="$4"
-                                    borderWidth={1}
-                                    borderColor="#E5E7EB"
-                                >
-                                    <YStack>
-                                        <H4 color={colors.text}>
-                                            {reminders[0].time.slice(0, 5)}
-                                        </H4>
-                                        <Text>{reminders[0].repeat}</Text>
-                                    </YStack>
-                                    <ChevronRight size={20} color={colors.text as string} />
-                                </XStack>
-                            </TouchableOpacity>
-                        ) : (
-                            <Button
-                                width="100%"
-                                borderColor={colors.border as any}
-                                mt="$3"
-                                onPress={() =>
-                                    navigation.navigate("Reminder", {
-                                        routine: { id: routineId, title: routine?.name },
-                                        onSave: () => fetchReminders(routineId),
-                                    })
-                                }
-                                icon={<Bell size={16} />}
-                            >
-                                Set Reminder
-                            </Button>
-                        )}
-                    </YStack>
-                )}
-
-                {/* Assign / Add buttons */}
-                {mode === "view" && selectedTasks.length > 0 && (
-                    <Button
-                        mt="$3"
-                        size="$5"
-                        bg={colors.primary}
-                        color={colors.onPrimary}
-                        onPress={handleAssignToChild}
-                        icon={
-                            <MaterialCommunityIcons
-                                name="account-child-outline"
-                                size={18}
-                                color="white"
-                            />
-                        }
-                    >
-                        Assign Routine
-                    </Button>
-                )}
-
-                {mode === "view" && selectedTasks.length === 0 && (
-                    <Button
-                        mt="$3"
-                        size="$5"
-                        bg={colors.primary}
-                        color={colors.onPrimary}
-                        onPress={handleAddCustomRoutine}
-                        icon={
-                            <MaterialCommunityIcons
-                                name="plus-circle-outline"
-                                size={18}
-                                color="white"
-                            />
-                        }
-                    >
-                        Add Custom
-                    </Button>
-                )}
-            </YStack>
-        ),
-        [
-            activeMenu,
-            colors.border,
-            colors.onPrimary,
-            colors.primary,
-            colors.secondary,
-            colors.success,
-            colors.text,
-            fetchReminders,
-            keyExtractor,
-            loading,
-            mode,
-            navigation,
-            reminders,
-            routine,
-            routineId,
-            selectedTasks,
-            tasks,
-            toggleTask,
-            renderItem,
-        ]
-    );
 
     return (
         <GoalBackground>
             {Header}
 
             <SafeAreaView style={{ flex: 1 }}>
-                {mode === "reorder" ? (
-                    <DraggableFlatList
-                        data={tasks}
-                        onDragEnd={({ data }) => setTasks(data)}
-                        keyExtractor={keyExtractor}
-                        renderItem={renderItem}
-                        activationDistance={10}
-                        dragItemOverflow={false}
-                        keyboardShouldPersistTaps="handled"
-                        keyboardDismissMode="on-drag"
-                        removeClippedSubviews={false}
-                        windowSize={10}
-                        ListHeaderComponent={
-                            <YStack px="$3" py="$1">
-                                <Text fontWeight="600" color={colors.text} mb="$2">
-                                    Drag and drop to reorder tasks
-                                </Text>
-                            </YStack>
-                        }
-                        contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 20 }}
-                    />
-                ) : (
-                    <ScrollView
-                        contentContainerStyle={{ paddingBottom: 100 }}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={refreshing}
-                                onRefresh={onRefresh}
-                                tintColor={colors.primary as string}
-                            />
-                        }
-                        showsVerticalScrollIndicator={false}
-                        style={{ flex: 1 }}
-                    >
-                        {Body}
-                    </ScrollView>
-                )}
+                {Content}
             </SafeAreaView>
 
             {/* Assign Routine Sheet */}
@@ -922,7 +950,6 @@ const RoutineDetailsScreen = () => {
                     </ScrollView>
                 </Sheet.Frame>
             </Sheet>
-
 
             {/* Success Modal */}
             <Modal visible={showAssignmentSuccess} transparent animationType="slide" onRequestClose={() => setShowAssignmentSuccess(false)}>

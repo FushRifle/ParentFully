@@ -17,7 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import React, { useCallback, useEffect, useState } from 'react'
 import { RefreshControl, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Avatar, Button, H2, ScrollView, XStack, YStack } from 'tamagui'
+import { Avatar, Button, H2, H4, ScrollView, XStack, YStack } from 'tamagui'
 
 interface HomeScreenProps {
     navigation: any
@@ -187,10 +187,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
                                     {/* Greeting */}
                                     <YStack flex={1} ml="$2">
-                                        <Text fontWeight="700" color="white">
+                                        <H4 fontSize={16} fontWeight="600" color="white">
                                             Hi {profile?.username}
-                                        </Text>
-                                        <Text color="white">
+                                        </H4>
+                                        <Text fontSize={11} color="white">
                                             Ready to make today amazing?
                                         </Text>
                                     </YStack>

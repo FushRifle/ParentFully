@@ -15,3 +15,9 @@ try again, mastered button
 
 
 npm install expo@54.0.10 expo-file-system@19.0.15 expo-router@6.0.8 --legacy-peer-deps
+
+
+
+--no need for edit button 
+no need for predefined Goals
+reorder and dropdown on routine details screen

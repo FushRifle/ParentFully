@@ -387,7 +387,7 @@ const CustomTaskScreen = () => {
                         borderRadius={8}
                         marginRight={12} onPress={() => navigation.goBack()}
                     >
-                        <Text color={colors.error} textAlign="center">Delete Task</Text>
+                        <Text color={colors.error} textAlign="center">Cancel</Text>
                     </Button>
 
                     <Button

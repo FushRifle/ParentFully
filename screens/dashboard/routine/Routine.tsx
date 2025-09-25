@@ -7,8 +7,8 @@ import { supabase } from "@/supabase/client";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useCallback, useMemo, useState } from "react";
-import { Dimensions, PixelRatio, ScrollView, TouchableOpacity } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Alert, Dimensions, Modal, PixelRatio, TextInput as RNTextInput, ScrollView, TouchableOpacity } from "react-native";
 import { Button, Card, H6, Spinner, View, XStack, YStack } from "tamagui";
 
 // Types
@@ -160,8 +160,10 @@ const useRoutineData = () => {
 // Custom hook for routine operations
 const useRoutineOperations = (myRoutines: RoutineTemplate[], predefinedRoutines: RoutineTemplate[]) => {
     const { user } = useAuth();
-    const [editingId, setEditingId] = useState<string | null>(null);
-    const [editingName, setEditingName] = useState("");
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [editingRoutine, setEditingRoutine] = useState<RoutineTemplate | null>(null);
+    const [editName, setEditName] = useState("");
+    const [editDescription, setEditDescription] = useState("");
 
     const fetchTasksForRoutine = useCallback(async (routineId: string): Promise<TemplateTask[]> => {
         const { data, error } = await supabase
@@ -192,39 +194,39 @@ const useRoutineOperations = (myRoutines: RoutineTemplate[], predefinedRoutines:
         }
     }, []);
 
-    const handleStartEdit = (tpl: RoutineTemplate) => {
-        setEditingId(tpl.id);
-        setEditingName(tpl.name);
-    };
+    const handleStartEdit = useCallback((routine: RoutineTemplate) => {
+        setEditingRoutine(routine);
+        setEditName(routine.name);
+        setEditDescription(routine.description || "");
+    }, []);
 
     const handleSaveEdit = useCallback(async () => {
-        if (!editingId || !user) return;
-
-        const predefinedRoutine = predefinedRoutines.find((t) => t.id === editingId);
-        const myRoutine = myRoutines.find((t) => t.id === editingId);
+        if (!editingRoutine || !user) return;
 
         try {
-            if (predefinedRoutine) {
+            // Check if it's a predefined routine (needs to be cloned first)
+            if (editingRoutine.is_preloaded && !editingRoutine.user_id) {
                 // Prevent duplicate copies
                 const alreadyCopied = myRoutines.some(
-                    (t) => t.original_template_id === predefinedRoutine.id
+                    (t) => t.original_template_id === editingRoutine.id
                 );
 
                 if (alreadyCopied) {
-                    console.log("Template already copied!");
+                    Alert.alert("Error", "This template has already been copied to your routines.");
                     return;
                 }
 
+                // Clone the predefined routine
                 const { data: newRoutine, error: insertErr } = await supabase
                     .from("routine_templates")
                     .insert({
                         user_id: user.id,
-                        name: editingName || predefinedRoutine.name,
-                        description: predefinedRoutine.description,
-                        icon: predefinedRoutine.icon,
-                        ageRange: predefinedRoutine.ageRange,
+                        name: editName || editingRoutine.name,
+                        description: editDescription || editingRoutine.description,
+                        icon: editingRoutine.icon,
+                        ageRange: editingRoutine.ageRange,
                         is_preloaded: false,
-                        original_template_id: predefinedRoutine.id,
+                        original_template_id: editingRoutine.id,
                         created_at: new Date().toISOString(),
                         updated_at: new Date().toISOString(),
                     })
@@ -233,7 +235,7 @@ const useRoutineOperations = (myRoutines: RoutineTemplate[], predefinedRoutines:
 
                 if (insertErr) throw insertErr;
 
-                const tasks = await fetchTasksForRoutine(predefinedRoutine.id);
+                const tasks = await fetchTasksForRoutine(editingRoutine.id);
 
                 if (tasks.length > 0) {
                     const tasksToInsert = tasks.map((task) => ({
@@ -251,153 +253,327 @@ const useRoutineOperations = (myRoutines: RoutineTemplate[], predefinedRoutines:
                 }
 
                 return { type: 'clone' as const, routine: { ...newRoutine, tasks } };
-            } else if (myRoutine) {
+            } else {
                 // Editing user routine
                 const { data, error: updateErr } = await supabase
                     .from("routine_templates")
                     .update({
-                        name: editingName,
+                        name: editName,
+                        description: editDescription,
                         updated_at: new Date().toISOString(),
                     })
-                    .eq("id", editingId)
+                    .eq("id", editingRoutine.id)
                     .select()
                     .single();
 
                 if (updateErr) throw updateErr;
 
-                return { type: 'update' as const, routine: { ...myRoutine, ...data } };
+                return { type: 'update' as const, routine: { ...editingRoutine, ...data } };
             }
         } catch (err) {
             console.error("Error saving routine:", err);
             throw err;
         }
-    }, [editingId, editingName, predefinedRoutines, myRoutines, user, fetchTasksForRoutine]);
+    }, [editingRoutine, editName, editDescription, user, myRoutines, fetchTasksForRoutine]);
 
-    const cancelEdit = useCallback(() => {
-        setEditingId(null);
-        setEditingName("");
+    const handleSelectPlan = useCallback((id: string) => {
+        setSelectedIds(prev =>
+            prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+        );
+    }, []);
+
+    const clearSelection = useCallback(() => {
+        setSelectedIds([]);
+    }, []);
+
+    const closeEditModal = useCallback(() => {
+        setEditingRoutine(null);
+        setEditName("");
+        setEditDescription("");
     }, []);
 
     return {
-        editingId,
-        editingName,
-        setEditingName,
+        selectedIds,
+        editingRoutine,
+        editName,
+        editDescription,
+        setEditName,
+        setEditDescription,
         handleDelete,
         handleStartEdit,
         handleSaveEdit,
-        cancelEdit
+        handleSelectPlan,
+        clearSelection,
+        closeEditModal
     };
 };
+
+// Edit Modal Component
+const EditRoutineModal = React.memo(({
+    visible,
+    routine,
+    name,
+    description,
+    onNameChange,
+    onDescriptionChange,
+    onSave,
+    onClose,
+    colors,
+    scaling
+}: {
+    visible: boolean;
+    routine: RoutineTemplate | null;
+    name: string;
+    description: string;
+    onNameChange: (text: string) => void;
+    onDescriptionChange: (text: string) => void;
+    onSave: () => void;
+    onClose: () => void;
+    colors: any;
+    scaling: ReturnType<typeof useScaling>;
+}) => {
+    if (!routine) return null;
+
+    return (
+        <Modal
+            visible={visible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={onClose}
+        >
+            <View
+                flex={1}
+                justifyContent="center"
+                alignItems="center"
+                backgroundColor="rgba(0,0,0,0.5)"
+            >
+                <Card
+                    backgroundColor="white"
+                    padding={scaling.moderateScale(20)}
+                    borderRadius={scaling.moderateScale(15)}
+                    width={scaling.moderateScale(320)}
+                    maxHeight={scaling.verticalScale(400)}
+                >
+                    <YStack space={scaling.verticalScale(16)}>
+                        <XStack justifyContent="space-between" alignItems="center">
+                            <H6 fontWeight="600" color={colors.text}>
+                                Edit Routine
+                            </H6>
+                            <TouchableOpacity onPress={onClose}>
+                                <MaterialCommunityIcons name="close" size={24} color={colors.text} />
+                            </TouchableOpacity>
+                        </XStack>
+
+                        <YStack space={scaling.verticalScale(12)}>
+                            <Text fontSize={scaling.scaleFont(14)} fontWeight="600" color={colors.text}>
+                                Routine Name
+                            </Text>
+                            <RNTextInput
+                                value={name}
+                                onChangeText={onNameChange}
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: colors.border,
+                                    borderRadius: scaling.moderateScale(8),
+                                    padding: scaling.moderateScale(12),
+                                    fontSize: scaling.scaleFont(14),
+                                    color: colors.text,
+                                }}
+                                placeholder="Enter routine name"
+                                placeholderTextColor="#999"
+                            />
+                        </YStack>
+
+                        <YStack space={scaling.verticalScale(12)}>
+                            <Text fontSize={scaling.scaleFont(14)} fontWeight="600" color={colors.text}>
+                                Description
+                            </Text>
+                            <RNTextInput
+                                value={description}
+                                onChangeText={onDescriptionChange}
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: colors.border,
+                                    borderRadius: scaling.moderateScale(8),
+                                    padding: scaling.moderateScale(12),
+                                    fontSize: scaling.scaleFont(14),
+                                    color: colors.text,
+                                    minHeight: scaling.verticalScale(80),
+                                    textAlignVertical: 'top',
+                                }}
+                                placeholder="Enter routine description"
+                                placeholderTextColor="#999"
+                                multiline
+                                numberOfLines={4}
+                            />
+                        </YStack>
+
+                        {routine.is_preloaded && !routine.user_id && (
+                            <Text color={colors.primary} fontSize={scaling.scaleFont(12)} fontStyle="italic">
+                                This is a predefined template. Saving will create a copy in your routines.
+                            </Text>
+                        )}
+
+                        <XStack space={scaling.moderateScale(12)} justifyContent="flex-end" marginTop={scaling.verticalScale(16)}>
+                            <Button
+                                onPress={onClose}
+                                backgroundColor="#f0f0f0"
+                                color={colors.text}
+                                paddingHorizontal={scaling.moderateScale(20)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onPress={onSave}
+                                backgroundColor={colors.primary}
+                                color="white"
+                                paddingHorizontal={scaling.moderateScale(20)}
+                            >
+                                Save
+                            </Button>
+                        </XStack>
+                    </YStack>
+                </Card>
+            </View>
+        </Modal>
+    );
+});
 
 // Routine Card Component
 const RoutineCard = React.memo(({
     routine,
     isUserRoutine,
-    isEditing,
-    editingName,
-    onNameChange,
-    onSave,
-    onCancel,
+    isSelected,
     onEdit,
     onDelete,
     onPress,
-    colors
+    onLongPress,
+    colors,
+    scaling
 }: {
     routine: RoutineTemplate;
     isUserRoutine: boolean;
-    isEditing: boolean;
-    editingName: string;
-    onNameChange: (text: string) => void;
-    onSave: () => void;
-    onCancel: () => void;
+    isSelected: boolean;
     onEdit: () => void;
     onDelete: () => void;
     onPress: () => void;
+    onLongPress: () => void;
     colors: any;
+    scaling: ReturnType<typeof useScaling>;
 }) => {
-    const TextInput = require('react-native').TextInput;
-
     return (
-        <TouchableOpacity onPress={onPress} disabled={isEditing}>
-            <Card padding="$2" borderRadius="$4" marginBottom="$3" backgroundColor="white">
-                <XStack ai="center" jc="space-between" mb="$2">
-                    <XStack ai="center" space="$2" f={1}>
-                        <View w={40} h={40} br={20} ai="center" jc="center">
+        <TouchableOpacity
+            onPress={onPress}
+            onLongPress={onLongPress}
+        >
+            <Card
+                bordered
+                padding={scaling.moderateScale(5)}
+                borderRadius={scaling.moderateScale(10)}
+                marginBottom={scaling.verticalScale(12)}
+                borderWidth={2}
+                backgroundColor={isSelected ? colors.card : "white"}
+                borderColor={isSelected ? colors.primary : (colors.border as any)}
+            >
+                {isSelected && (
+                    <View
+                        position="absolute"
+                        top={-scaling.moderateScale(6)}
+                        right={-scaling.moderateScale(6)}
+                        zIndex={10}
+                        width={scaling.moderateScale(28)}
+                        height={scaling.moderateScale(28)}
+                        borderRadius={scaling.moderateScale(14)}
+                        backgroundColor={colors.primary}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <MaterialCommunityIcons
+                            name="check"
+                            size={scaling.moderateScale(16)}
+                            color="white"
+                        />
+                    </View>
+                )}
+
+                <XStack ai="center" jc="space-between" mb={scaling.verticalScale(8)} flex={1}>
+                    <XStack ai="center" space={scaling.moderateScale(12)} flex={1}>
+                        <View
+                            width={scaling.moderateScale(40)}
+                            height={scaling.moderateScale(40)}
+                            borderRadius={scaling.moderateScale(20)}
+                            alignItems="center"
+                            justifyContent="center"
+                        >
                             <MaterialCommunityIcons
                                 name={(routine.icon as any) || "calendar-check"}
-                                size={20}
-                                color={colors.primary as any}
+                                size={scaling.moderateScale(20)}
+                                color={colors.primary}
                             />
                         </View>
 
-                        <YStack f={1}>
-                            {isEditing ? (
-                                <TextInput
-                                    value={editingName}
-                                    onChangeText={onNameChange}
-                                    style={{
-                                        fontSize: 14,
-                                        fontWeight: "600",
-                                        borderBottomWidth: 1,
-                                        borderColor: colors.primary,
-                                        padding: 4,
-                                    }}
-                                    autoFocus
-                                />
-                            ) : (
-                                <>
-                                    <XStack jc="space-between">
-                                        <H6 fontSize={14} fontWeight="600" color="#333">
-                                            {routine.name}
-                                        </H6>
-                                        <Text fontSize={12} color={colors.primary}>
-                                            {(routine.tasks ?? []).length} Tasks
-                                        </Text>
-                                    </XStack>
-                                </>
-                            )}
+                        <YStack flex={1} space={scaling.moderateScale(6)}>
+                            <XStack ai="center" jc="space-between"
+                                space={scaling.moderateScale(6)}
+                            >
+                                <H6 fontSize={scaling.scaleFont(12)} fontWeight="600">
+                                    {routine.name}
+                                </H6>
+
+                                <TouchableOpacity>
+                                    <View
+                                        w={20}
+                                        h={20}
+                                        mr={10}
+                                        mt={5}
+                                        br={12}
+                                        onPress={onLongPress}
+                                        ai="center"
+                                        jc="center"
+                                        bg="transparent"
+                                        borderWidth={2}
+                                        borderColor={isSelected ? (colors.border as any) : colors.text}
+                                    >
+                                        <MaterialCommunityIcons name="check" size={20} color="white" />
+                                    </View>
+                                </TouchableOpacity>
+                            </XStack>
 
                             <Text
-                                mt='3'
+                                fontSize={scaling.scaleFont(10)}
                                 color="#555"
-                                lineHeight={20}
-                                numberOfLines={1}
+                                lineHeight={scaling.verticalScale(18)}
+                                numberOfLines={2}
                                 ellipsizeMode="tail"
                             >
                                 {routine.description || "No description available"}
                             </Text>
 
                             {isUserRoutine && routine.original_template_id && (
-                                <Text color="#888" mt="$1">
+                                <Text color="#888" fontSize={scaling.scaleFont(10)}>
                                     Based on a predefined template
                                 </Text>
                             )}
+
+                            <XStack mt='$3' space={scaling.moderateScale(12)} jc='space-between'>
+                                <XStack space={scaling.moderateScale(12)}>
+                                    <Text fontSize={scaling.scaleFont(12)} fontWeight="600" color={colors.primary}>
+                                        {(routine.tasks ?? []).length} Tasks
+                                    </Text>
+
+                                    {isUserRoutine && (
+                                        <TouchableOpacity onPress={onDelete}>
+                                            <MaterialCommunityIcons
+                                                name="trash-can"
+                                                size={scaling.moderateScale(20)}
+                                                color="red"
+                                            />
+                                        </TouchableOpacity>
+                                    )}
+                                </XStack>
+                            </XStack>
                         </YStack>
                     </XStack>
-                </XStack>
-
-                <XStack space="$4" mr="$2" jc="flex-end">
-                    {isEditing ? (
-                        <XStack space="$4">
-                            <TouchableOpacity onPress={onSave}>
-                                <MaterialCommunityIcons name="check" size={23} color={colors.primary} />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={onCancel}>
-                                <MaterialCommunityIcons name="close" size={23} color="gray" />
-                            </TouchableOpacity>
-                        </XStack>
-                    ) : (
-                        <XStack space="$4">
-                            <TouchableOpacity onPress={onEdit}>
-                                <MaterialCommunityIcons name="pencil" size={23} color={colors.primary} />
-                            </TouchableOpacity>
-                            {isUserRoutine && (
-                                <TouchableOpacity onPress={onDelete}>
-                                    <MaterialCommunityIcons name="trash-can" size={23} color="red" />
-                                </TouchableOpacity>
-                            )}
-                        </XStack>
-                    )}
                 </XStack>
             </Card>
         </TouchableOpacity>
@@ -419,13 +595,18 @@ const RoutineScreen = () => {
     } = useRoutineData();
 
     const {
-        editingId,
-        editingName,
-        setEditingName,
+        selectedIds,
+        editingRoutine,
+        editName,
+        editDescription,
+        setEditName,
+        setEditDescription,
         handleDelete,
         handleStartEdit,
         handleSaveEdit,
-        cancelEdit
+        handleSelectPlan,
+        clearSelection,
+        closeEditModal
     } = useRoutineOperations(myRoutines, predefinedRoutines);
 
     // Focus effect for data loading
@@ -434,6 +615,13 @@ const RoutineScreen = () => {
             loadAllData();
         }, [loadAllData])
     );
+
+    // Clear selection when data reloads
+    useEffect(() => {
+        if (!loading) {
+            clearSelection();
+        }
+    }, [loading, clearSelection]);
 
     // Filter out predefined routines that are already copied
     const filteredPredefined = useMemo(() =>
@@ -445,13 +633,36 @@ const RoutineScreen = () => {
 
     // Navigation handlers
     const handleRoutinePress = useCallback((routine: RoutineTemplate, isUserRoutine: boolean) => {
-        if (editingId === routine.id) return;
+        if (selectedIds.length > 0) {
+            handleSelectPlan(routine.id);
+            return;
+        }
 
         navigation.navigate("RoutineDetails", {
             routineId: routine.id,
             isPredefined: !isUserRoutine,
         });
-    }, [editingId, navigation]);
+    }, [selectedIds.length, handleSelectPlan, navigation]);
+
+    const handleDownloadPlan = useCallback(() => {
+        if (selectedIds.length === 0) return;
+        Alert.alert("Download Plan", `Downloading ${selectedIds.length} selected plan(s)...`);
+        clearSelection();
+    }, [selectedIds.length, clearSelection]);
+
+    const handlePrintSelectedPlans = useCallback(() => {
+        if (selectedIds.length === 0) return;
+
+        const selectedPlans = [...myRoutines, ...predefinedRoutines].filter((p) =>
+            selectedIds.includes(p.id)
+        );
+
+        navigation.navigate("Print", {
+            allPlans: JSON.stringify(selectedPlans),
+            childName: CHILD_NAME,
+        });
+        clearSelection();
+    }, [selectedIds, myRoutines, predefinedRoutines, navigation, clearSelection]);
 
     const handlePrintAllPlans = useCallback(() => {
         const allPlans = [...myRoutines, ...predefinedRoutines];
@@ -467,26 +678,40 @@ const RoutineScreen = () => {
         navigation.navigate("AddRoutine" as never);
     }, [navigation]);
 
+    const handleModalSave = useCallback(async () => {
+        try {
+            await handleSaveEdit();
+            closeEditModal();
+            loadAllData(); // Refresh the data
+        } catch (err) {
+            Alert.alert("Error", "Failed to save routine. Please try again.");
+        }
+    }, [handleSaveEdit, closeEditModal, loadAllData]);
+
     // Routine card renderer
     const renderRoutineCard = useCallback((routine: RoutineTemplate, isUserRoutine: boolean) => {
-        const isEditing = editingId === routine.id;
-
-        const handleCardSave = async () => {
-            try {
-                await handleSaveEdit();
-            } catch (err) {
-                // Error is already logged in handleSaveEdit
-            }
-        };
+        const isSelected = selectedIds.includes(routine.id);
 
         const handleCardDelete = async () => {
-            try {
-                await handleDelete(routine.id);
-                // Optimistically remove from local state
-                loadAllData();
-            } catch (err) {
-                // Error is already logged in handleDelete
-            }
+            Alert.alert(
+                "Delete Routine",
+                "Are you sure you want to delete this routine?",
+                [
+                    { text: "Cancel", style: "cancel" },
+                    {
+                        text: "Delete",
+                        style: "destructive",
+                        onPress: async () => {
+                            try {
+                                await handleDelete(routine.id);
+                                loadAllData();
+                            } catch (err) {
+                                Alert.alert("Error", "Failed to delete routine. Please try again.");
+                            }
+                        }
+                    }
+                ]
+            );
         };
 
         return (
@@ -494,18 +719,25 @@ const RoutineScreen = () => {
                 key={routine.id}
                 routine={routine}
                 isUserRoutine={isUserRoutine}
-                isEditing={isEditing}
-                editingName={editingName}
-                onNameChange={setEditingName}
-                onSave={handleCardSave}
-                onCancel={cancelEdit}
+                isSelected={isSelected}
                 onEdit={() => handleStartEdit(routine)}
                 onDelete={handleCardDelete}
                 onPress={() => handleRoutinePress(routine, isUserRoutine)}
+                onLongPress={() => handleSelectPlan(routine.id)}
                 colors={colors}
+                scaling={scaling}
             />
         );
-    }, [editingId, editingName, handleSaveEdit, handleDelete, handleStartEdit, cancelEdit, handleRoutinePress, colors, loadAllData]);
+    }, [
+        selectedIds,
+        handleDelete,
+        handleStartEdit,
+        handleSelectPlan,
+        handleRoutinePress,
+        colors,
+        scaling,
+        loadAllData
+    ]);
 
     return (
         <GoalBackground>
@@ -530,37 +762,67 @@ const RoutineScreen = () => {
                 </YStack>
 
                 {/* Action Buttons */}
-                <XStack ai="center" jc="flex-start" space={scaling.moderateScale(12)} mt={scaling.verticalScale(16)}>
-                    <Button
-                        unstyled
-                        borderRadius={scaling.moderateScale(12)}
-                        backgroundColor="#FFF0DE"
-                        paddingHorizontal={scaling.moderateScale(12)}
-                        onPress={handlePrintAllPlans}
-                    >
-                        <XStack ai="center" space={scaling.moderateScale(12)} paddingVertical={scaling.moderateScale(8)}>
-                            <Feather name="download" size={scaling.moderateScale(18)} color={colors.primary} />
-                            <Text color={colors.primary} fontSize={scaling.scaleFont(12)}>
-                                Download All
-                            </Text>
-                        </XStack>
-                    </Button>
+                {selectedIds.length > 0 ? (
+                    <YStack space={scaling.moderateScale(12)} jc="center" mt={scaling.verticalScale(16)}>
+                        <Button
+                            size={scaling.moderateScale(40)}
+                            bg={colors.primary}
+                            onPress={handleDownloadPlan}
+                        >
+                            <XStack ai="center" jc="center" space={scaling.moderateScale(8)}>
+                                <Feather name="download" size={scaling.moderateScale(16)} color="white" />
+                                <Text color="white">
+                                    Download ({selectedIds.length})
+                                </Text>
+                            </XStack>
+                        </Button>
 
-                    <Button
-                        unstyled
-                        backgroundColor="#E3FFF2"
-                        paddingHorizontal={scaling.moderateScale(12)}
-                        borderRadius={scaling.moderateScale(12)}
-                        onPress={handlePrintAllPlans}
-                    >
-                        <XStack ai="center" space={scaling.moderateScale(12)} paddingVertical={scaling.moderateScale(8)}>
-                            <Feather name="printer" size={scaling.moderateScale(18)} color={colors.secondary} />
-                            <Text color={colors.secondary} fontSize={scaling.scaleFont(12)}>
-                                Print All
-                            </Text>
-                        </XStack>
-                    </Button>
-                </XStack>
+                        <Button
+                            size={scaling.moderateScale(40)}
+                            bg='#9FCC16'
+                            onPress={handlePrintSelectedPlans}
+                        >
+                            <XStack ai="center" jc="center" space={scaling.moderateScale(8)}>
+                                <Feather name="printer" size={scaling.moderateScale(16)} color="white" />
+                                <Text color="white">
+                                    Print ({selectedIds.length})
+                                </Text>
+                            </XStack>
+                        </Button>
+                    </YStack>
+                ) : (
+                    <XStack ai="center" jc="flex-start" space={scaling.moderateScale(12)} mt={scaling.verticalScale(16)}>
+                        <Button
+                            unstyled
+                            borderRadius={scaling.moderateScale(12)}
+                            backgroundColor="#FFF0DE"
+                            paddingHorizontal={scaling.moderateScale(12)}
+                            onPress={handlePrintAllPlans}
+                        >
+                            <XStack ai="center" space={scaling.moderateScale(12)} paddingVertical={scaling.moderateScale(8)}>
+                                <Feather name="download" size={scaling.moderateScale(18)} color={colors.primary} />
+                                <Text color={colors.primary} fontSize={scaling.scaleFont(12)}>
+                                    Download All
+                                </Text>
+                            </XStack>
+                        </Button>
+
+                        <Button
+                            unstyled
+                            backgroundColor="#E3FFF2"
+                            paddingHorizontal={scaling.moderateScale(12)}
+                            borderRadius={scaling.moderateScale(12)}
+                            onPress={handlePrintAllPlans}
+                        >
+                            <XStack ai="center" space={scaling.moderateScale(12)} paddingVertical={scaling.moderateScale(8)}>
+                                <Feather name="printer" size={scaling.moderateScale(18)} color={colors.secondary} />
+                                <Text color={colors.secondary} fontSize={scaling.scaleFont(12)}>
+                                    Print All
+                                </Text>
+                            </XStack>
+                        </Button>
+                    </XStack>
+                )}
 
                 {/* Loading State */}
                 {loading && (
@@ -620,6 +882,20 @@ const RoutineScreen = () => {
                         </Button>
                     </YStack>
                 )}
+
+                {/* Edit Routine Modal */}
+                <EditRoutineModal
+                    visible={!!editingRoutine}
+                    routine={editingRoutine}
+                    name={editName}
+                    description={editDescription}
+                    onNameChange={setEditName}
+                    onDescriptionChange={setEditDescription}
+                    onSave={handleModalSave}
+                    onClose={closeEditModal}
+                    colors={colors}
+                    scaling={scaling}
+                />
             </ScrollView>
         </GoalBackground>
     );

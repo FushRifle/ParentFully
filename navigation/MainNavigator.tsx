@@ -83,12 +83,12 @@ import AddPaymentScreen from '@/screens/dashboard/budget/payment/AddPayment';
 import ConfirmPaymentScreen from '@/screens/dashboard/budget/payment/ConfirmPayment';
 import ConfirmRequestScreen from '@/screens/dashboard/budget/payment/ConfirmRequest';
 import RequestPaymentScreen from '@/screens/dashboard/budget/payment/RequestPayment';
+import { PrintRoutineScreen } from '@/screens/dashboard/print/PrintRoutine';
 import ChildEditScreen from '@/screens/dashboard/settings/EditChildScreen';
 import EditUserScreen from '@/screens/dashboard/settings/EditUserScreen';
 import NotificationSettingsScreen from '@/screens/dashboard/settings/NotisSettingScreen';
 import GiftInviteScreen from '@/screens/dashboard/user/GiftReferScreen';
 import PremiumScreen from '@/screens/dashboard/user/PremiumScreen';
-
 
 
 type BottomTabParamList = {
@@ -206,6 +206,12 @@ export type RootStackParamList = {
 
     //Print
     Print: {
+        plan?: string;
+        childName?: string;
+        printAll?: boolean;
+        allPlans?: string;
+    };
+    PrintRoutine: {
         plan?: string;
         childName?: string;
         printAll?: boolean;
@@ -663,7 +669,10 @@ const MainStack = () => (
         <RootStack.Screen name="ChildProfile" component={ChildProfileScreen} />
         <RootStack.Screen name="AddChild" component={AddChildScreen} />
         <RootStack.Screen name="Documents" component={DocumentScreen} />
+
         <RootStack.Screen name="Print" component={PrintScreen} />
+        <RootStack.Screen name="PrintRoutine" component={PrintRoutineScreen} />
+
         <RootStack.Screen name="Certificate" component={CertificateScreen} />
 
     </RootStack.Navigator>

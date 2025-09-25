@@ -19,6 +19,16 @@ type TemplateTask = {
     icon?: string;
 };
 
+{/*
+                                    <TouchableOpacity onPress={onEdit}>
+                                        <MaterialCommunityIcons
+                                            name="pencil"
+                                            size={scaling.moderateScale(20)}
+                                            color={colors.primary}
+                                        />
+                                    </TouchableOpacity>
+                                     */}
+
 type RoutineTemplate = {
     id: string;
     name: string;

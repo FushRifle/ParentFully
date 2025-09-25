@@ -1,5 +1,6 @@
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
+import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -9,7 +10,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChevronRight } from "@tamagui/lucide-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
-import { Card, Text, View, XStack, YStack } from "tamagui";
+import { Card, View, XStack, YStack } from "tamagui";
 
 type ActiveRoutineRouteProp = RouteProp<
     RootStackParamList,
