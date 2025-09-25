@@ -12,7 +12,7 @@ export const GoalBackground = ({ children }: { children: React.ReactNode }) => {
     return (
         <YStack flex={1} bg={colors.background}>
             <ImageBackground
-                source={isDark ? colors.background : GOAL_BACKGROUND}
+                source={isDark ? GOAL_BACKGROUND_DARK : GOAL_BACKGROUND}
                 style={{ flex: 1, width: "100%", height: "100%" }}
                 imageStyle={{ opacity: 0.07, resizeMode: "cover" }}
             >

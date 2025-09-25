@@ -19,6 +19,7 @@ const withFallbackColors = (colors: Partial<ThemeColors>): ThemeColors => {
         white: '#FFFFFF',
         primaryDark: '#002233',
         primaryContainer: '#cce7f5',
+        primaryBackground: 'black',
         secondaryContainer: '#ffe5b4',
         onPrimaryContainer: '#000000',
         onSecondaryContainer: '#000000',
@@ -54,6 +55,7 @@ const withFallbackColors = (colors: Partial<ThemeColors>): ThemeColors => {
 export interface ThemeColors {
     white: ColorValue | undefined;
     primaryDark: ColorValue | undefined;
+    primaryBackground: ColorValue | undefined;
     primaryContainer: ColorValue | undefined;
     secondaryContainer: ColorValue | undefined;
     onPrimaryContainer: string | undefined;
@@ -120,6 +122,7 @@ export interface ThemeShadows {
 const lightColors: ThemeColors = withFallbackColors({
     primary: '#FF8C01',
     primaryDark: '#B35D00',
+    primaryBackground: '#2E2E2E',
     secondary: '#005A31',
     secondaryContainer: '#9FCC16',
     accent: '#42C6A1',
@@ -147,15 +150,17 @@ const lightColors: ThemeColors = withFallbackColors({
 
 // --- Dark Theme ---
 const darkColors: ThemeColors = withFallbackColors({
-    primary: '#FFFFFF',
-    secondary: '#FF7594',
+    primary: '#FF8C01',
+    primaryBackground: '#2E2E2E',
+    primaryDark: '#B35D00',
+    secondary: '#9FCC16',
     secondaryContainer: '#9FCC16',
     accent: '#52D6B1',
     background: '#000000',
     cardBackground: '#141414',
     text: '#FFFFFF',
     lightText: '#B1B1C5',
-    card: '#1E1E1E',
+    card: '#2E2E2E',
     textSecondary: '#A0A0A0',
     border: '#333333',
     primaryLight: '#D3D3D3',
@@ -163,7 +168,7 @@ const darkColors: ThemeColors = withFallbackColors({
     error: '#FF6B6B',
     success: '#4CAF50',
     disabled: '#555555',
-    warning: '#FFC107',
+    warning: '#FF8C01',
     buttonText: '#000000',
     notificationUnread: '#1e3a8a',
     notificationRead: '#1f2937',

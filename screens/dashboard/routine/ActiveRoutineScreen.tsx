@@ -10,17 +10,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChevronRight } from "@tamagui/lucide-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
-import { Card, View, XStack, YStack } from "tamagui";
+import { Card, H4, H6, View, XStack, YStack } from "tamagui";
 
-type ActiveRoutineRouteProp = RouteProp<
-    RootStackParamList,
-    "ActiveRoutine"
->;
-
-type RoutineDetailsNav = NativeStackNavigationProp<
-    RootStackParamList,
-    "RoutineDetails"
->;
+type ActiveRoutineRouteProp = RouteProp<RootStackParamList, "ActiveRoutine">;
+type RoutineDetailsNav = NativeStackNavigationProp<RootStackParamList, "RoutineDetails">;
 
 type Task = {
     title: string;
@@ -57,22 +50,31 @@ interface ChildProfile {
     points?: number;
 }
 
+interface RoutineTemplate {
+    id: string;
+    name: string;
+    tasks: Task[];
+    icon?: string;
+    is_preloaded?: boolean;
+    user_id?: string;
+    original_template_id?: string;
+}
+
 const ActiveRoutineScreen = () => {
     const { colors } = useTheme();
     const { user } = useAuth();
     const navigation = useNavigation<RoutineDetailsNav>();
-
     const route = useRoute<ActiveRoutineRouteProp>();
     const [uniqueRoutines, setUniqueRoutines] = useState<UniqueRoutine[]>([]);
     const [children, setChildren] = useState<Child[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // Fetch routine tasks from Supabase
     const fetchRoutineTasks = useCallback(async () => {
         try {
-            // Fetch routine tasks
             const { data: tasksData, error: tasksError } = await supabase
                 .from("routine_tasks")
-                .select("routine_name, child_id, created_at")
+                .select("*")
                 .eq("user_id", user?.id)
                 .order("created_at", { ascending: false });
 
@@ -80,24 +82,21 @@ const ActiveRoutineScreen = () => {
 
             const { data: templatesData, error: templatesError } = await supabase
                 .from("routine_templates")
-                .select("name, child_id, created_at")
+                .select("*")
                 .eq("is_active", true)
                 .order("created_at", { ascending: false });
 
             if (templatesError) throw templatesError;
 
-            // Combine both datasets
-            const combinedData = [...(tasksData || [])];
+            const combinedData: any[] = [...(tasksData || [])];
 
-            if (templatesData) {
-                templatesData.forEach(template => {
-                    combinedData.push({
-                        routine_name: template.name,
-                        child_id: null,
-                        created_at: template.created_at
-                    });
+            templatesData?.forEach(template => {
+                combinedData.push({
+                    routine_name: template.name,
+                    child_id: template.child_id || null,
+                    created_at: template.created_at,
                 });
-            }
+            });
 
             return combinedData;
         } catch (err) {
@@ -130,63 +129,53 @@ const ActiveRoutineScreen = () => {
 
             setChildren(childrenData);
 
-            // Process routine tasks to get unique routine names with task counts
-            const routineMap = new Map();
-
+            // Aggregate unique routines with task counts
+            const routineMap = new Map<string, UniqueRoutine>();
             routineTasksData.forEach(task => {
-                if (task.routine_name) {
-                    if (routineMap.has(task.routine_name)) {
-                        // Increment count for existing routine
-                        const existing = routineMap.get(task.routine_name);
-                        routineMap.set(task.routine_name, {
-                            ...existing,
-                            taskCount: existing.taskCount + 1
-                        });
-                    } else {
-                        // Add new routine
-                        routineMap.set(task.routine_name, {
-                            id: task.routine_name, // Using name as ID
-                            name: task.routine_name,
-                            tasks: [], // Empty array since we don't have task details
-                            taskCount: 1,
-                            child_id: task.child_id,
-                            created_at: task.created_at
-                        });
-                    }
+                const routineName = task.routine_name || task.name;
+                if (!routineName) return;
+
+                if (routineMap.has(routineName)) {
+                    const existing = routineMap.get(routineName)!;
+                    routineMap.set(routineName, {
+                        ...existing,
+                        taskCount: existing.taskCount + 1,
+                    });
+                } else {
+                    routineMap.set(routineName, {
+                        id: task.id || routineName,
+                        name: routineName,
+                        tasks: task.tasks || [],
+                        taskCount: 1,
+                        child_id: task.child_id,
+                        created_at: task.created_at,
+                        color: task.color || colors.primary,
+                    });
                 }
             });
 
-            // Convert map to array
-            const uniqueRoutinesArray = Array.from(routineMap.values());
-            setUniqueRoutines(uniqueRoutinesArray);
+            setUniqueRoutines(Array.from(routineMap.values()));
         } catch (error) {
             console.error("Error loading data:", error);
         } finally {
             setLoading(false);
         }
-    }, [fetchRoutineTasks, fetchChildren]);
+    }, [fetchRoutineTasks, fetchChildren, colors.primary]);
 
     useEffect(() => {
         loadData();
     }, [loadData]);
 
-    const getChildName = (childId?: string) => {
-        if (!childId) return "Unknown";
-        const child = children.find((c) => c.id === childId);
-        return child ? child.name : "Unknown";
-    };
-
     const getChildProfile = (childId?: string): ChildProfile | null => {
         if (!childId) return null;
-        const child = children.find((c) => c.id === childId);
+        const child = children.find(c => c.id === childId);
         if (!child) return null;
-
         return {
             id: child.id,
             name: child.name,
             age: child.age || 0,
             photo: child.photo || "",
-            points: 0
+            points: 0,
         };
     };
 
@@ -194,14 +183,10 @@ const ActiveRoutineScreen = () => {
         navigation.navigate('ChildProfile', { child });
     };
 
-    const handleSelectRoutine = (routine: UniqueRoutine) => {
-        // If you want to navigate to RoutineDetails instead
+    const handleRoutinePress = (routine: UniqueRoutine) => {
         navigation.navigate("RoutineDetails", {
-            id: routine.id,
-            title: routine.name,
-            description: routine.description || "",
-            tasks: routine.tasks as any,
-            icon: routine.icon || "calendar-check",
+            routineId: routine.id,
+            isPredefined: false,
         });
     };
 
@@ -209,32 +194,30 @@ const ActiveRoutineScreen = () => {
         const childProfile = getChildProfile(routine.child_id);
 
         return (
-            <TouchableOpacity key={routine.id}
+            <TouchableOpacity
+                key={routine.id}
                 onPress={() => {
-                    if (childProfile) {
-                        handleSelectChild(childProfile);
-                    } else {
-                        handleSelectRoutine(routine);
-                    }
+                    if (childProfile) handleSelectChild(childProfile);
+                    else handleRoutinePress(routine);
                 }}
             >
                 <Card
                     padding="$5"
                     borderRadius="$5"
-                    height={184}
+                    height={130}
                     marginBottom="$3"
                     borderTopWidth={4}
                     backgroundColor="white"
-                    borderTopColor={routine.color as any || colors.primary}
+                    borderTopColor={routine.color as any}
                 >
                     <XStack ai="center" jc="space-between" mb="$2" f={1}>
                         <XStack ai="center" space="$4" f={1}>
                             <YStack f={1} space="$2">
                                 <YStack jc="flex-start" space="$2" mt="$1">
                                     <XStack jc="space-between">
-                                        <Text fontSize="$6" fontWeight="700" color="#333">
+                                        <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                             {routine.name}
-                                        </Text>
+                                        </H6>
                                         <ChevronRight />
                                     </XStack>
 
@@ -244,14 +227,14 @@ const ActiveRoutineScreen = () => {
                                         px="$2"
                                         backgroundColor={routine.color || colors.primary}
                                     >
-                                        <Text fontSize="$4" fontWeight="600" color="white">
+                                        <Text fontWeight="600" color={colors.onPrimary}>
                                             {routine.taskCount} task(s)
                                         </Text>
                                     </View>
                                 </YStack>
 
-                                <Text fontSize="$4" color={colors.textSecondary}>
-                                    Assigned to: {getChildName(routine.child_id)} on{" "}
+                                <Text fontSize="$3" color={colors.textSecondary}>
+                                    Assigned to: {childProfile?.name || "Unknown"} on{" "}
                                     {routine.created_at
                                         ? new Date(routine.created_at).toLocaleDateString()
                                         : "N/A"}
@@ -272,9 +255,9 @@ const ActiveRoutineScreen = () => {
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize="$7" fontWeight="700" color={colors.text}>
+                        <H4 fontSize={16} fontWeight="600" color={colors.text}>
                             Active Routines
-                        </Text>
+                        </H4>
                     </XStack>
                     <Text fontSize="$5" color="#555">
                         See what's in progress for your child right now
@@ -282,14 +265,15 @@ const ActiveRoutineScreen = () => {
                 </YStack>
 
                 <YStack space="$3" mt="$3">
-                    {loading && <Text color={colors.text}>Loading routines...</Text>}
+                    {/* {loading && <Text color={colors.text}>Loading routines...</Text>} */}
 
-                    {!loading && uniqueRoutines.length === 0 && (
-                        <Text color={colors.text}>No active routines found.</Text>
-                    )}
+                    {/* {!loading && uniqueRoutines.length === 0 && (
+                    <Text color={colors.text}>No active routines found.</Text>
+                    )} */}
 
-                    {!loading && uniqueRoutines.map((routine) => renderRoutineCard(routine))}
+                    {uniqueRoutines.map(renderRoutineCard)}
                 </YStack>
+
             </ScrollView>
         </GoalBackground>
     );

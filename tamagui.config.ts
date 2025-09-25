@@ -15,11 +15,14 @@ const tamaguiConfig = createTamagui({
             color: '#000000',
             colorHover: '#111111',
             colorPress: '#222222',
+            $colorSecondary: 'gray',
+            onPrimary: 'white',
             primary: '#007AFF',
             backgroundFocus: '#e0e0e0',
             red2: '#FF3B30',
             red10: 'red',
             gray10: '#1C1C1E',
+            gray12: 'grays'
         },
         dark: {
             background: '#000000',
@@ -34,6 +37,7 @@ const tamaguiConfig = createTamagui({
             color: '#ffffff',
             colorHover: '#f0f0f0',
             colorPress: '#e0e0e0',
+            $colorSecondary: '#e0e0e0',
 
             // Newly added tokens
             primary: '#0A84FF',

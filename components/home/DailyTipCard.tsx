@@ -4,7 +4,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { Card, View, YStack } from 'tamagui';
 
-
 const tipsList = [
     'Encourage your child to read for 15 minutes daily.',
     'Plan a family walk after dinner to bond and get fresh air.',
@@ -19,9 +18,8 @@ const tipsList = [
 ];
 
 const DailyTipCard: React.FC = () => {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
 
-    // Pick two tips daily (one for primary, one for secondary)
     const [tipPrimary, tipSecondary] = useMemo(() => {
         const dayIndex = new Date().getDate() % tipsList.length;
         const nextIndex = (dayIndex + 1) % tipsList.length;
@@ -46,7 +44,7 @@ const DailyTipCard: React.FC = () => {
                         alignItems: 'center',
                         marginRight: 12,
                         borderRadius: 12,
-                        backgroundColor: '#FFFFFF40',
+                        backgroundColor: isDark ? '#FFFFFF20' : '#FFFFFF20',
                     }}
                 >
                     <MaterialCommunityIcons

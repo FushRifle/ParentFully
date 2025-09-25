@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, Pressable, ScrollView } from "react-native";
 import { Avatar, Card, FAB, Searchbar } from "react-native-paper";
 import { Button, H6, XStack, YStack } from "tamagui";
-
+import { MaterialIcons } from "@expo/vector-icons";
 
 type FamilyContact = {
   id: string;
@@ -165,12 +165,26 @@ export default function FamilyContactScreen() {
   return (
     <GoalBackground>
       <YStack f={1} mb="$9">
-        {/* Search + Tabs */}
-        <YStack p="$4" mt="$6" mb="$4" jc="center" ai="center">
-          <H6 fontWeight="600" mt="$2">
+        {/* Header */}
+        <XStack mt="$8" mb="$3" ai="center" jc="flex-start" position="relative" px='$5'>
+          <Button unstyled
+            onPress={() => navigation.goBack()}
+            hitSlop={24} mr="$5">
+            <MaterialIcons name="arrow-back" size={20} color={colors.text} />
+          </Button>
+
+          <H6
+            fontWeight="600"
+            position="absolute"
+            left={0}
+            right={0}
+            textAlign="center"
+          >
             Family Contacts
           </H6>
+        </XStack>
 
+        <YStack p="$4" mt="$6" mb="$4" jc="center" ai="center">
           <Searchbar
             placeholder="Search"
             onChangeText={setSearchQuery}
@@ -207,7 +221,7 @@ export default function FamilyContactScreen() {
                   style={{
                     color: activeTab === tab ? "white" : colors.text,
                     fontWeight: "600",
-                    fontSize: 14,
+                    fontSize: 12,
                     textAlign: "center",
                   }}
                 >
@@ -362,7 +376,8 @@ export default function FamilyContactScreen() {
                         navigation.navigate("FamilyDetails", { id: item.id })
                       }
                     >
-                      View Details
+                      <Text color={colors.onPrimary}
+                      >View Details</Text>
                     </Button>
                   </YStack>
                 </Card>

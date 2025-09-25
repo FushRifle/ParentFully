@@ -16,6 +16,7 @@ import { Modal, TouchableOpacity, useWindowDimensions } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { Button, Card, H5, H6, ScrollView, Spinner, useTheme as useTamaguiTheme, View, XStack, YStack } from 'tamagui'
 import { v4 as uuidv4 } from 'uuid'
+import { useFocusEffect } from '@react-navigation/native'
 
 const IconMap: Record<string, any> = { Feather, FontAwesome, MaterialIcons, AntDesign }
 
@@ -100,7 +101,11 @@ const PlanDetailScreen = () => {
         fetchChildren()
     }, [user?.id])
 
-    useEffect(() => { if (ageGroup) fetchGoals(ageGroup) }, [fetchGoals, ageGroup])
+    useFocusEffect(
+        useCallback(() => {
+            fetchGoals(ageGroup)
+        }, [ageGroup])
+    )
 
     const toggleGoalSelection = useCallback((goalId: string, e: any) => {
         e.stopPropagation()
@@ -214,7 +219,6 @@ const PlanDetailScreen = () => {
             width={screenWidth - 32}
             maxWidth={500}
             minHeight={102}
-            shadowColor="white"
             pressStyle={{ scale: 0.975 }}
             onPress={() => navigateToGoalDetails(item)}
             br={10}
@@ -295,6 +299,7 @@ const PlanDetailScreen = () => {
     return (
         <GoalBackground>
             <YStack f={1} w="100%" h="100%">
+
                 <YStack position="absolute" f={1} jc="center" ai="center" w="100%" h="100%">
                     <YStack p="$4" pb="$4" borderBottomLeftRadius="$4" borderBottomRightRadius="$4" width="100%">
                         <XStack ai="center" jc="flex-start" mb="$2" mt="$5">
@@ -306,7 +311,7 @@ const PlanDetailScreen = () => {
 
                             <H6 fontWeight='600' ta="left" color={colors.text}> {coreValue.title}</H6>
                         </XStack>
-                        <Text ta="left" px="$3" color={isDark ? colors.primary : colors.text}>{ageDescription}</Text>
+                        <Text ta="left" px="$3" color={isDark ? colors.text : colors.text}>{ageDescription}</Text>
                     </YStack>
 
                     <XStack jc="flex-end" ai="center" mt="$4" mb="$2" mr="$5" width="100%" space="$2">

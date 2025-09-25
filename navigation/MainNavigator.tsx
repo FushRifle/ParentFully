@@ -8,7 +8,7 @@ import * as SystemUI from 'expo-system-ui';
 import React, { useCallback, useEffect } from 'react';
 import { Platform, StatusBar, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { YStack } from 'tamagui';
+import { View } from 'tamagui';
 
 // Tab Screens
 import CommunityScreen from '@/screens/dashboard/home/CommunityScreen';
@@ -20,7 +20,6 @@ import { UserProfileScreen } from '@/screens/dashboard/user/UserProfileScreen';
 
 // System Screens
 import NotificationScreen from '@/screens/dashboard/notification/NotificationScreen';
-
 
 //Goals and CorePlans
 import AddGoalScreen from '@/screens/dashboard/goals/AddGoalScreen';
@@ -48,7 +47,7 @@ import AddChildScreen from '@/screens/dashboard/home/AddAnotherChild';
 
 // Components
 import CustomDrawerContent from '@/components/CustomDrawerContent';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 //Discipline Screens
 import ActiveDisciplineScreen from '@/screens/dashboard/discipline/ActiveDisiplineScreen';
@@ -89,7 +88,6 @@ import EditUserScreen from '@/screens/dashboard/settings/EditUserScreen';
 import NotificationSettingsScreen from '@/screens/dashboard/settings/NotisSettingScreen';
 import GiftInviteScreen from '@/screens/dashboard/user/GiftReferScreen';
 import PremiumScreen from '@/screens/dashboard/user/PremiumScreen';
-
 
 type BottomTabParamList = {
     Home: undefined;
@@ -470,54 +468,57 @@ const MainTabs = () => {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => {
-                const iconName = (focused: boolean): string => {
-                    switch (route.name) {
+
+                const iconName = (routeName: string, focused: boolean) => {
+                    switch (routeName) {
                         case 'Home':
-                            return focused ? 'home' : 'home-outline';
+                            return { lib: 'Ionicons', name: focused ? 'home' : 'home-outline' };
                         case 'Resources':
-                            return focused ? 'book' : 'book-outline';
-                        case 'CorePlan':
-                            return focused ? 'people' : 'people-outline';
+                            return { lib: 'MaterialCommunityIcons', name: focused ? 'file-document' : 'file-document-outline' };
+                        case 'Goals':
+                            return { lib: 'MaterialIcons', name: focused ? 'track-changes' : 'track-changes' };
                         case 'Profile':
-                            return focused ? 'person' : 'person-outline';
-                        case 'Budgets':
-                            return focused ? 'wallet' : 'wallet-outline';
+                            return { lib: 'Ionicons', name: focused ? 'wallet' : 'wallet-outline' };
                         default:
-                            return 'help-outline';
+                            return { lib: 'Ionicons', name: 'help-outline' };
                     }
                 };
 
+                const insets = useSafeAreaInsets();
+
                 return {
                     headerShown: false,
+
                     tabBarIcon: ({ focused, color, size }) => {
-                        const name = iconName(focused)
+                        const { lib, name } = iconName(route.name, focused);
 
-                        if (route.name === 'CorePlan') {
-                            return (
-                                <YStack alignItems="center" top={-28}>
-                                    <YStack
-                                        width={70}
-                                        height={70}
-                                        borderRadius={35}
-                                        bg={colors.background}
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        borderColor="rgba(0,0,0,0.05)"
-                                        borderWidth={1}
-                                        elevation={12}
-                                        shadowColor="#000"
-                                        shadowOffset={{ width: 0, height: 6 }}
-                                        shadowOpacity={0.2}
-                                        shadowRadius={10}
-                                    >
-                                        <Ionicons name={name as any} size={32} color={colors.primary} />
-                                    </YStack>
-                                </YStack>
-                            )
-                        }
+                        const iconBackground = focused ? colors.primary : 'transparent';
+                        const iconColor = focused ? '#fff' : color;
 
-                        return <Ionicons name={name as any} size={size ?? 24} color={color} />
+                        const IconComponent =
+                            lib === 'Ionicons'
+                                ? Ionicons
+                                : lib === 'MaterialCommunityIcons'
+                                    ? MaterialCommunityIcons
+                                    : MaterialIcons;
+
+                        return (
+                            <View
+                                style={{
+                                    width: 56,
+                                    height: 56,
+                                    borderRadius: 99,
+                                    marginTop: 12,
+                                    backgroundColor: iconBackground,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <IconComponent name={name as any} size={size ?? 28} color={iconColor} />
+                            </View>
+                        );
                     },
+
                     tabBarActiveTintColor: String(colors.primary),
                     tabBarInactiveTintColor: String(colors.textSecondary),
                     tabBarStyle: {
@@ -525,9 +526,8 @@ const MainTabs = () => {
                         bottom: Platform.OS === 'ios' ? insets.bottom : 0,
                         left: 20,
                         right: 20,
-                        height: 75,
+                        height: 95,
                         alignSelf: 'center',
-                        paddingBottom: 12,
                         paddingHorizontal: 16,
                         backgroundColor: colors.background,
                         borderRadius: 12,
@@ -540,17 +540,19 @@ const MainTabs = () => {
                     },
                     tabBarLabelStyle: {
                         fontSize: 12,
-                        marginBottom: 6,
+                        fontWeight: 600,
+                        marginTop: 20,
+                        marginBottom: 5,
                     },
-                }
+                };
             }}
         >
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="Resources" component={ResourcesScreen} />
-            <Tab.Screen name="CorePlan" component={CorePlanScreen} />
-            <Tab.Screen name="Budgets" component={ExpenseScreen} />
+            <Tab.Screen name="Goals" component={CorePlanScreen} />
             <Tab.Screen name="Profile" component={UserProfileScreen} />
         </Tab.Navigator>
+
     );
 };
 

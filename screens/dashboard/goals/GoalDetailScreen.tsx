@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Modal, StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message'
+import { Platform } from "react-native"
 import {
     Button,
     H4,
@@ -48,9 +49,10 @@ type Reminder = {
 };
 
 const GoalDetailsScreen = () => {
-    const { colors } = useTheme()
+    const { colors, isDark } = useTheme()
     const { user } = useAuth()
-    const navigation = useNavigation<GoalDetailsScreenNavigationProp>();
+    const navigation =
+        useNavigation<GoalDetailsScreenNavigationProp>();
     const route = useRoute<GoalDetailsScreenRouteProp>();
     const { onSave, onDelete } = route.params;
     const { goal } = route.params;
@@ -173,17 +175,6 @@ const GoalDetailsScreen = () => {
             fetchReminders(goal.id);
         }
     }, [goal]);
-
-    useFocusEffect(
-        useCallback(() => {
-            // This runs every time the screen is focused
-            // Just force a reload however you want here
-            // For example:
-            console.log('Screen is focused. Reload stuff here.');
-
-            // Or trigger a state update, refetch, etc.
-        }, [])
-    );
 
     const calculateTargetDate = () => {
         const now = new Date()
@@ -356,7 +347,7 @@ const GoalDetailsScreen = () => {
                     onChangeText={(text) => handleChange(field, text)}
                     placeholder={`Enter ${title.toLowerCase()}`}
                     borderColor={colors.border as any}
-                    backgroundColor='white'
+                    backgroundColor={isDark ? colors.card : 'white'}
                     borderRadius="$5"
                     padding="$3"
                     multiline={multiline}
@@ -366,7 +357,7 @@ const GoalDetailsScreen = () => {
             ) : (
                 <Paragraph
                     color={editedGoal && editedGoal[field] ? colors.text : colors.textSecondary}
-                    backgroundColor='white'
+                    backgroundColor={isDark ? colors.card : 'white'}
                     padding="$3"
                     borderRadius="$3"
                     minHeight={multiline ? 45 : undefined}
@@ -392,7 +383,6 @@ const GoalDetailsScreen = () => {
                 showsVerticalScrollIndicator={false}
                 extraScrollHeight={150}
             >
-
                 {/* Header */}
                 <XStack alignItems="center" mb="$4" mt='$6'>
                     <Button unstyled onPress={() => navigation.goBack()} hitSlop={20} mr="$5">
@@ -453,7 +443,6 @@ const GoalDetailsScreen = () => {
                                         <Picker.Item label="Years" value="years" />
                                     </Picker>
                                 </View>
-
                             </XStack>
                             <Text mb='$3' color={colors.textSecondary}>
                                 Target date: {format(calculateTargetDate(), 'MMM dd, yyyy')}
@@ -498,9 +487,10 @@ const GoalDetailsScreen = () => {
                                                 h={50}
                                                 jc="center"
                                                 ai="center"
-                                                br={33}
+                                                br={33} // makes the parent round
                                                 borderWidth={3}
                                                 borderColor={isSelected ? colors.primary : "transparent"}
+                                                overflow="hidden" // important: clips image to round shape
                                             >
                                                 <Image
                                                     source={
@@ -508,9 +498,14 @@ const GoalDetailsScreen = () => {
                                                             ? { uri: child.photo }
                                                             : require("@/assets/images/profile.jpg")
                                                     }
-                                                    style={{ width: 50, height: 50, borderRadius: 30 }}
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        borderRadius: 30, // keeps image round inside
+                                                    }}
                                                 />
                                             </XStack>
+
                                             <Label
                                                 textAlign="center"
                                                 color={isSelected ? colors.primary : colors.text}
@@ -690,7 +685,7 @@ const GoalDetailsScreen = () => {
                         p="$5"
                         br="$6"
                         width="90%"
-                        height={385}
+                        height={310}
                         ai="center"
                         space="$4"
                     >
@@ -699,9 +694,9 @@ const GoalDetailsScreen = () => {
                             size={56}
                             color={colors.primary}
                         />
-                        <H6 fontWeight="600" color={colors.text}>
+                        <H4 fontWeight="600" color={colors.text}>
                             🎉 Goal Assigned!
-                        </H6>
+                        </H4>
                         <Text ta="center" color={colors.textSecondary}>
                             {goal.area} has been successfully created
                         </Text>
@@ -733,7 +728,3 @@ const styles = StyleSheet.create({
 })
 
 export default GoalDetailsScreen
-
-function refreshPage() {
-    throw new Error('Function not implemented.')
-}

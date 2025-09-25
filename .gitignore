@@ -39,6 +39,7 @@ logs/
 # === macOS ===
 .DS_Store
 *.pem
+*.tmp
 
 # === Local environment files ===
 .env.local*

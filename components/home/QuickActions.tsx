@@ -6,7 +6,7 @@ import * as Icons from '@tamagui/lucide-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useMemo, useState } from 'react'
 import { Dimensions } from 'react-native'
-import { Card, H6, View, XStack, YStack } from 'tamagui'
+import { Card, H4, H6, View, XStack, YStack } from 'tamagui'
 
 const screenWidth = Dimensions.get('window').width
 const spacing = 16
@@ -155,23 +155,24 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
 
             <XStack ai="center" jc="space-between" w="100%" px="$2" py="$1">
                 <YStack>
-                    <Text
-                        fontWeight="700"
+                    <H4
+                        fontSize={14}
+                        fontWeight="600"
                         style={{
                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
                             WebkitBackgroundClip: 'text',
-                            color: 'green',
+                            color: isDark ? colors.text : 'green'
                         }}
                     >
                         Quick Actions
-                    </Text>
+                    </H4>
 
                     <LinearGradient
                         colors={['#9FCC16', '#FF8C01']}
                         start={[0, 0]}
                         end={[1, 0]}
                         style={{
-                            height: 4,
+                            height: 2,
                             borderRadius: 2,
                             marginTop: 2,
                             width: '100%',
@@ -179,7 +180,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                     />
                 </YStack>
                 <Text
-                    color={colors.primaryDark}
+                    color={isDark ? 'white' : colors.primaryDark}
                     textDecorationLine="underline"
                     onPress={() => setShowAll(!showAll)}
                 >
@@ -211,7 +212,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                     height={45}
                                     borderRadius="$6"
                                     mt="$1"
-                                    backgroundColor={isDark ? dark : light}
+                                    backgroundColor={light}
                                     alignItems="center"
                                     justifyContent="center"
                                     position="relative"
@@ -223,7 +224,7 @@ const QuickActions = ({ handleActionPress }: { handleActionPress: (screen: strin
                                                 position: 'absolute',
                                                 top: -6,
                                                 right: -6,
-                                                backgroundColor: colors.primary,
+                                                backgroundColor: isDark ? colors.warning : colors.primary,
                                                 borderRadius: 10,
                                                 paddingHorizontal: 5,
                                                 minWidth: 16,

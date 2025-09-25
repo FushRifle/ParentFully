@@ -7,9 +7,10 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Pen } from "@tamagui/lucide-icons";
+import { Text } from '@/context/GlobalText';
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
-import { Button, Card, Text, XStack, YStack } from "tamagui";
+import { Button, Card, H4, H6, XStack, YStack } from "tamagui";
 
 type ActiveDisciplineRouteProp = RouteProp<
     RootStackParamList,
@@ -144,7 +145,7 @@ const ActiveDisciplineScreen = () => {
                 <Card
                     padding="$5"
                     borderRadius="$5"
-                    height={184}
+                    height={152}
                     marginBottom="$3"
                     borderWidth={2}
                     backgroundColor={isSelected ? colors.card : "white"}
@@ -154,15 +155,15 @@ const ActiveDisciplineScreen = () => {
                         <XStack ai="center" space="$4" f={1}>
                             <YStack f={1} space="$2">
                                 <YStack jc="flex-start" space="$2" mt="$1">
-                                    <Text fontSize="$6" fontWeight="700" color="#333">
+                                    <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                         {tpl.name}
-                                    </Text>
-                                    <Text fontSize="$4" fontWeight="600" color="#008CFF">
+                                    </H6>
+                                    <Text fontWeight="500" color={colors.text}>
                                         {tpl.rules?.length || 0} rule(s)
                                     </Text>
                                 </YStack>
 
-                                <Text fontSize="$4" color={colors.textSecondary}>
+                                <Text fontSize="$2" color={colors.textSecondary}>
                                     Assigned to: {getChildName(tpl.child_id)} on{" "}
                                     {tpl.created_at
                                         ? new Date(tpl.created_at).toLocaleDateString()
@@ -180,7 +181,7 @@ const ActiveDisciplineScreen = () => {
                                     >
                                         <XStack ai="center" space="$2" py="$2">
                                             <Pen size={18} color="#0080FF" />
-                                            <Text color="#0080FF" fontSize="$4" fontWeight="600">
+                                            <Text color="#0080FF" fontSize="$2" fontWeight="600">
                                                 Edit
                                             </Text>
                                         </XStack>
@@ -196,7 +197,7 @@ const ActiveDisciplineScreen = () => {
                                     >
                                         <XStack ai="center" space="$2" py="$2">
                                             <Feather name="download" size={16} color={colors.primary} />
-                                            <Text color={colors.primary} fontSize="$4" fontWeight="600">
+                                            <Text color={colors.primary} fontSize="$2" fontWeight="600">
                                                 Download
                                             </Text>
                                         </XStack>
@@ -212,7 +213,7 @@ const ActiveDisciplineScreen = () => {
                                     >
                                         <XStack ai="center" space="$2" py="$2">
                                             <Feather name="printer" size={18} color={colors.secondary} />
-                                            <Text color={colors.secondary} fontSize="$4" fontWeight="600">
+                                            <Text color={colors.secondary} fontSize="$2" fontWeight="600">
                                                 Print
                                             </Text>
                                         </XStack>
@@ -229,28 +230,28 @@ const ActiveDisciplineScreen = () => {
     return (
         <GoalBackground>
             <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-                <YStack space="$4" mt="$6">
+                <YStack space="$4" mt="$7">
                     <XStack space="$4" ai="center">
                         <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
+                            <MaterialCommunityIcons name="arrow-left" size={23} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize="$7" fontWeight="700" color={colors.text}>
+                        <H4 fontSize={16} fontWeight="600" color={colors.text}>
                             Active Plans
-                        </Text>
+                        </H4>
                     </XStack>
-                    <Text fontSize="$5" color="#555">
+                    <Text fontSize="$4" color="#555">
                         See what’s in progress for your child right now
                     </Text>
                 </YStack>
 
-                <YStack space="$3" mt='$3'>
-                    {loading && <Text color={colors.text}>Loading plans...</Text>}
+                <YStack space="$3" mt="$3">
+                    {/* {loading && <Text color={colors.text}>Loading plans...</Text>} */}
 
-                    {!loading && plans.length === 0 && (
-                        <Text color={colors.text}>No active plans found.</Text>
-                    )}
+                    {/* {!loading && plans.length === 0 && (
+    <Text color={colors.text}>No active plans found.</Text>
+  )} */}
 
-                    {!loading && plans.map((plan) => renderDisciplineCard(plan))}
+                    {plans.map((plan) => renderDisciplineCard(plan))}
                 </YStack>
             </ScrollView>
         </GoalBackground>

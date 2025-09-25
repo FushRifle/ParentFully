@@ -6,8 +6,8 @@ import { supabase } from "@/supabase/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, ScrollView } from "react-native";
-import { Card, H4, H5, View, XStack, YStack } from "tamagui";
-
+import { Card, H4, H5, H6, View, XStack, YStack, Button } from "tamagui";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type TemplateTask = {
     title: string;
@@ -39,7 +39,7 @@ type Child = {
     age: number;
 };
 
-const RoutineScreen: React.FC = ({ navigation }: any) => {
+const RoutineScreen = ({ navigation }: { navigation: any }) => {
     const { colors } = useTheme();
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
@@ -48,8 +48,8 @@ const RoutineScreen: React.FC = ({ navigation }: any) => {
     const [children, setChildren] = useState<Child[]>([]);
     const [selectedChild, setSelectedChild] = useState<Child | null>(null);
 
-    // Template state
     const [templates, setTemplates] = useState<RoutineTemplate[]>([]);
+
     const [activeCount, setActiveCount] = useState(0);
     const [templateCount, setTemplateCount] = useState(0);
 
@@ -138,6 +138,38 @@ const RoutineScreen: React.FC = ({ navigation }: any) => {
 
     return (
         <GoalBackground>
+            <XStack
+                mt="$8"
+                mb="$3"
+                ai="center"
+                jc="flex-start"
+                px="$5"
+                position="relative"
+            >
+                {/* Back button */}
+                <Button
+                    unstyled
+                    onPress={() => navigation.goBack()}
+                    hitSlop={24}
+                    mr="$5"
+                    accessibilityLabel="Go back"
+                >
+                    <MaterialIcons name="arrow-back" size={20} color={colors.text} />
+                </Button>
+
+                {/* Centered title */}
+                <H6
+                    fontWeight="600"
+                    position="absolute"
+                    left={0}
+                    right={0}
+                    textAlign="center"
+                    pointerEvents="none" // prevents title from blocking touches
+                >
+                    Routine
+                </H6>
+            </XStack>
+
             <ScrollView
                 style={{ flex: 1 }}
                 contentContainerStyle={{ paddingBottom: 60 }}

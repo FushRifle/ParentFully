@@ -103,11 +103,11 @@ export default function AddFamilyContactScreen() {
     }, [user?.id]);
 
     const handleSaveContact = async () => {
-        if (!user?.id || selectedChildren.length === 0) return;
+        if (!user?.id) return;
         setSaving(true);
 
         try {
-            // First insert the contact
+            // Insert the contact
             const { data: contactData, error: contactError } = await supabase
                 .from("family_contacts")
                 .insert({
@@ -127,7 +127,7 @@ export default function AddFamilyContactScreen() {
                     notify_contact: notifyContact,
                     created_at: new Date(),
                 })
-                .select('id')
+                .select("id")
                 .single();
 
             if (contactError) {
@@ -136,30 +136,32 @@ export default function AddFamilyContactScreen() {
                 return;
             }
 
-            // Then insert the relationships in the junction table
-            const junctionRecords = selectedChildren.map(childId => ({
-                family_contact_id: contactData.id,
-                child_id: childId
-            }));
+            // Insert child relationships ONLY if children are selected
+            if (selectedChildren.length > 0) {
+                const junctionRecords = selectedChildren.map((childId) => ({
+                    family_contact_id: contactData.id,
+                    child_id: childId,
+                }));
 
-            const { error: junctionError } = await supabase
-                .from("family_contact_children")
-                .insert(junctionRecords);
+                const { error: junctionError } = await supabase
+                    .from("family_contact_children")
+                    .insert(junctionRecords);
 
-            if (junctionError) {
-                console.error("Error saving child relationships:", junctionError.message);
-                Alert.alert("Error", "Contact saved but failed to link children.");
-                return;
+                if (junctionError) {
+                    console.error("Error saving child relationships:", junctionError.message);
+                    Alert.alert("Error", "Contact saved but failed to link children.");
+                    return;
+                }
             }
 
             setSaving(false);
             setShowSuccessModal(true);
-
         } catch (err) {
             console.error("Unexpected error saving contact:", err);
             Alert.alert("Error", "Unexpected error occurred.");
         }
     };
+
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -828,7 +830,6 @@ export default function AddFamilyContactScreen() {
                                 py="$3"
                                 space="$6"
                             >
-                                {/* First Switch */}
                                 <XStack ai="center" jc="space-between" mb="$2">
                                     <Text
                                         color={colors.text}
@@ -844,8 +845,8 @@ export default function AddFamilyContactScreen() {
                                         onPress={() => setNotifyMe(!notifyMe)}
                                         circleColorOff="#FFFFFF"
                                         circleColorOn="#FFFFFF"
-                                        backgroundColorOn="#28A745"
-                                        backgroundColorOff="#28A745"
+                                        backgroundColorOn="#28A745" // green when on
+                                        backgroundColorOff="#C4C4C4" // gray when off
                                         containerStyle={{
                                             width: 50,
                                             height: 28,
@@ -859,13 +860,9 @@ export default function AddFamilyContactScreen() {
                                         }}
                                         duration={200}
                                     />
-
                                 </XStack>
 
-                                <XStack ai="center"
-                                    jc="space-between"
-                                    space='$3'
-                                >
+                                <XStack ai="center" jc="space-between" space="$3">
                                     <Text
                                         color={colors.text}
                                         flexShrink={1}
@@ -874,13 +871,14 @@ export default function AddFamilyContactScreen() {
                                     >
                                         Notify this contact about updates that concern them or the child linked to them
                                     </Text>
+
                                     <SwitchToggle
                                         switchOn={notifyContact}
                                         onPress={() => setNotifyContact(!notifyContact)}
                                         circleColorOff="#FFFFFF"
                                         circleColorOn="#FFFFFF"
-                                        backgroundColorOn="#28A745"
-                                        backgroundColorOff="#28A745"
+                                        backgroundColorOn="#28A745" // green when on
+                                        backgroundColorOff="#C4C4C4" // gray when off
                                         containerStyle={{
                                             width: 50,
                                             height: 28,
@@ -895,6 +893,7 @@ export default function AddFamilyContactScreen() {
                                         duration={200}
                                     />
                                 </XStack>
+
                             </Card>
 
                         </YStack>

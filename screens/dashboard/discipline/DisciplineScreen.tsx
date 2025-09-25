@@ -9,7 +9,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useState } from "react";
 import { Dimensions, Image, PixelRatio, ScrollView } from "react-native";
-import { Card, View, XStack, YStack } from "tamagui";
+import { Card, View, XStack, YStack, H6, Button } from "tamagui";
+import { MaterialIcons } from "@expo/vector-icons";
+
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
@@ -19,7 +21,7 @@ type Child = {
     age: number;
 };
 
-const DisciplineScreen: React.FC = ({ navigation }: any) => {
+const DisciplineScreen = ({ navigation }: { navigation: any }) => {
     const { colors } = useTheme();
     const { user } = useAuth();
     const [error, setError] = useState<string | null>(null);
@@ -124,7 +126,28 @@ const DisciplineScreen: React.FC = ({ navigation }: any) => {
     return (
         <GoalBackground>
             <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: verticalScale(60) }}>
+
+                {/* Header */}
+                <XStack mt="$8" mb="$3" ai="center" jc="flex-start" position="relative" px='$5'>
+                    <Button unstyled
+                        onPress={() => navigation.goBack()}
+                        hitSlop={24} mr="$5">
+                        <MaterialIcons name="arrow-back" size={20} color={colors.text} />
+                    </Button>
+
+                    <H6
+                        fontWeight="600"
+                        position="absolute"
+                        left={0}
+                        right={0}
+                        textAlign="center"
+                    >
+                        Discipline Plan
+                    </H6>
+                </XStack>
+
                 <YStack ai="center" mt={verticalScale(16)} mb={verticalScale(20)}>
+
                     <Image
                         source={require("@/assets/onboarding/bro.png")}
                         style={{

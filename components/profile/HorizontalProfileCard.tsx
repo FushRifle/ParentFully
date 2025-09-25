@@ -37,7 +37,7 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
     children,
     onSelectChild,
 }) => {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const [modalVisible, setModalVisible] = useState(false);
     const [currentChild, setCurrentChild] = useState<ChildProfile | null>(null);
@@ -57,7 +57,8 @@ const CombinedChildProfile: React.FC<CombinedChildProfileProps> = ({
                     <Card
                         key={child.id}
                         width={CARD_WIDTH}
-                        borderRadius="$3"
+                        borderRadius="$6"
+                        mr='$2'
                         borderWidth={0.5}
                         borderColor="#C9C9C9"
                         backgroundColor={colors.card}

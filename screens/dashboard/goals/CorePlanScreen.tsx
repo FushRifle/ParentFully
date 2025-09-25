@@ -52,7 +52,7 @@ const CorePlanScreen = () => {
     const route = useRoute<any>()
     const initialAgeGroup = (route.params?.ageGroup as AgeGroupKey) || 'age3_5'
     const { getDescription } = useCoreValueAgeDescription();
-    const { colors } = useTheme()
+    const { colors, isDark } = useTheme()
     const [coreValues, setCoreValues] = useState<CoreValue[]>([])
     const [loading, setLoading] = useState(true)
     const [activeTab, setActiveTab] = useState<AgeGroupKey>(initialAgeGroup)
@@ -126,7 +126,7 @@ const CorePlanScreen = () => {
                                     space="$2.5"
                                     flexWrap="nowrap"
                                     justifyContent="space-between"
-                                    overflow="scroll" 
+                                    overflow="scroll"
                                 >
                                     {ageGroups.map((group) => {
                                         const isActive = activeTab === group.id;
@@ -137,12 +137,13 @@ const CorePlanScreen = () => {
                                                 flex={1}
                                                 flexShrink={1}
                                                 borderRadius="$9"
-                                                borderColor={colors.border as any}
                                                 backgroundColor={isActive ? colors.primary : "white"}
                                                 color={isActive ? colors.onPrimary : colors.text}
                                                 onPress={() => handleTabChange(group.id)}
                                             >
-                                                {group.label}
+                                                <Text
+                                                    color={isActive ? colors.onPrimary : colors.textSecondary}
+                                                >{group.label}</Text>
                                             </Button>
                                         );
                                     })}
@@ -162,17 +163,14 @@ const CorePlanScreen = () => {
                                     {coreValues.map((value) => (
                                         <Card
                                             key={value.id}
-                                            bordered
                                             borderRadius='$8'
                                             elevate
-                                            shadowColor="white"
-                                            borderColor={colors.border as any}
                                             size="$2"
                                             flexBasis="48%"
                                             flexGrow={1}
                                             minWidth="45%"
                                             padding="$2"
-                                            backgroundColor={value.color}
+                                            backgroundColor={isDark ? colors.card : value.color}
                                             onPress={() => handleCardPress(value)}
                                         >
                                             <YStack alignItems="center" space="$2">
@@ -191,6 +189,7 @@ const CorePlanScreen = () => {
                                                     textAlign="center"
                                                     fontWeight="600"
                                                     mt="$2"
+                                                    mb='$3'
                                                     color={colors.text}
                                                 >
                                                     {value.title}

@@ -41,7 +41,7 @@ interface ProfileData {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-    const { colors } = useTheme()
+    const { colors, isDark } = useTheme()
     const [children, setChildren] = useState<ChildData[]>([])
     const [selectedChild, setSelectedChild] = useState<ChildData | null>(null)
     const [profile, setProfile] = useState<ProfileData | null>(null)
@@ -92,11 +92,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         }
     }
 
-    const onRefresh = () => {
-        setRefreshing(true)
-        fetchData()
-    }
-
     const handleEditChild = async (updatedChild: ChildData) => {
         try {
             const { error } = await supabase
@@ -136,28 +131,28 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <ScrollView
                 flex={1}
                 contentContainerStyle={{ paddingBottom: 130 }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        tintColor={colors.primary}
-                    />
-                }
                 showsVerticalScrollIndicator={false}
             >
                 {loading ? (
-                    <YStack flex={1} bg={colors.background} mt="$9">
+                    <YStack flex={1} bg={colors.background}
+                        mt="$6">
                         <HomeSkeleton />
                     </YStack>
                 ) : (
                     <>
                         {/* Header Section */}
-                        <SafeAreaView style={{ backgroundColor: colors.primary }}>
+                        <SafeAreaView
+                            style={{
+                                backgroundColor: isDark ?
+                                    colors.primaryBackground :
+                                    colors.primary,
+                            }}
+                        >
                             <YStack
                                 space="$3"
-                                bg={colors.primary}
+                                bg={isDark ? colors.primaryBackground : colors.primary}
                                 width="100%"
-                                paddingTop="$1"
+                                paddingTop="$2"
                                 paddingBottom="$4"
                                 px="$3"
                             >
@@ -221,16 +216,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                         <YStack px='$4'>
                             <XStack ai="center" jc="space-between" w="100%" py="$5">
                                 <YStack>
-                                    <Text
-                                        fontWeight="700"
+                                    <H4
+                                        fontSize={14}
+                                        fontWeight="600"
                                         style={{
                                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
                                             WebkitBackgroundClip: 'text',
-                                            color: 'green'
+                                            color: isDark ? colors.text : 'green'
                                         }}
                                     >
                                         My Children
-                                    </Text>
+                                    </H4>
 
                                     {/* Thicker underline directly below text */}
                                     <LinearGradient
@@ -238,7 +234,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                         start={[0, 0]}
                                         end={[1, 0]}
                                         style={{
-                                            height: 4,
+                                            height: 2,
                                             borderRadius: 2,
                                             marginTop: 2,
                                             width: '100%',
@@ -250,7 +246,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                     <Button
                                         chromeless
                                         onPress={() => navigation.navigate('AddChild' as never)}
-                                        bc={colors.primary}
+                                        bc={isDark ? colors.warning : colors.primary}
                                         br={9999}
                                         size="$2"
                                         width={20}
@@ -260,7 +256,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                     >
                                         <Plus size={14} color="white" />
                                     </Button>
-                                    <Text color={colors.primary}>Add Child</Text>
+                                    <Text color={isDark ? colors.warning : colors.primary}>Add Child</Text>
                                 </XStack>
                             </XStack>
 
@@ -285,10 +281,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                 <YStack>
                                     <Text
                                         fontWeight="700"
+                                        mb='$2'
                                         style={{
                                             background: 'linear-gradient(to right, #9FCC16, #FF8C01)',
                                             WebkitBackgroundClip: 'text',
-                                            color: 'green'
+                                            color: isDark ? colors.text : 'green'
                                         }}
                                     >
                                         Parenting Tips
@@ -300,7 +297,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                         start={[0, 0]}
                                         end={[1, 0]}
                                         style={{
-                                            height: 4,
+                                            height: 2,
                                             borderRadius: 2,
                                             marginTop: 2,
                                             width: '26%',
