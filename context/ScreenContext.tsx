@@ -6,8 +6,6 @@ interface ScreenContextProps {
     height: number;
     scaleWidth: (value: number) => number;
     scaleHeight: (value: number) => number;
-    scaleFont: (value: number) => number;
-    overrideFontSize: (fontSize: number) => number; // NEW: override any font size
 }
 
 const ScreenContext = createContext<ScreenContextProps | undefined>(undefined);
@@ -20,27 +18,17 @@ export const ScreenProvider = ({ children }: { children: ReactNode }) => {
             setScreen(window);
         };
         const subscription = Dimensions.addEventListener('change', onChange);
-
-        return () => {
-            subscription.remove();
-        };
+        return () => subscription.remove();
     }, []);
 
-    // Base device to scale against (reference device)
-    const guidelineBaseWidth = 375; // e.g., iPhone 11 width
-    const guidelineBaseHeight = 812; // e.g., iPhone 11 height
+    const guidelineBaseWidth = 375; // reference device width
+    const guidelineBaseHeight = 812; // reference device height
 
     const scaleWidth = (size: number) => (screen.width / guidelineBaseWidth) * size;
     const scaleHeight = (size: number) => (screen.height / guidelineBaseHeight) * size;
-    const scaleFont = (size: number) => scaleWidth(size);
-
-    // Override any custom font size globally
-    const overrideFontSize = (fontSize: number) => {
-        return scaleFont(fontSize);
-    };
 
     return (
-        <ScreenContext.Provider value={{ width: screen.width, height: screen.height, scaleWidth, scaleHeight, scaleFont, overrideFontSize }}>
+        <ScreenContext.Provider value={{ width: screen.width, height: screen.height, scaleWidth, scaleHeight }}>
             {children}
         </ScreenContext.Provider>
     );

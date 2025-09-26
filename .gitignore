@@ -40,6 +40,10 @@ logs/
 .DS_Store
 *.pem
 *.tmp
+*.swp
+*.swo
+*.sublime-workspace
+*.xcode
 
 # === Local environment files ===
 .env.local*
