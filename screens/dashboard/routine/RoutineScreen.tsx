@@ -164,7 +164,8 @@ const RoutineScreen = ({ navigation }: { navigation: any }) => {
                     left={0}
                     right={0}
                     textAlign="center"
-                    pointerEvents="none" // prevents title from blocking touches
+                    pointerEvents="none"
+                    color={colors.text}
                 >
                     Routine
                 </H6>
@@ -192,7 +193,7 @@ const RoutineScreen = ({ navigation }: { navigation: any }) => {
                     <H5 fontWeight="600" color={colors.text}>
                         Routine
                     </H5>
-                    <Text fontWeight="500" color="#555">
+                    <Text fontWeight="500" color={colors.text}>
                         Create structured Routines that support positive behavior and growth
                     </Text>
                 </YStack>
@@ -232,7 +233,7 @@ const RoutineScreen = ({ navigation }: { navigation: any }) => {
 
                 {/* Action Cards */}
                 <YStack px="$4" space="$3">
-                    {/* Active Routine */}
+                    {/* Active Routine 
                     <Card
                         elevate
                         padding="$4"
@@ -270,6 +271,7 @@ const RoutineScreen = ({ navigation }: { navigation: any }) => {
                             />
                         </XStack>
                     </Card>
+                    */}
 
                     {/* Use Template */}
                     <Card

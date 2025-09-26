@@ -82,7 +82,7 @@ const permission = [
 type FamilyDetailsRouteProp = RouteProp<RootStackParamList, "FamilyDetails">;
 
 export default function FamilyDetailsScreen() {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const navigation = useNavigation();
     const route = useRoute<FamilyDetailsRouteProp>();
     const { id } = route.params as { id: string };
@@ -101,13 +101,10 @@ export default function FamilyDetailsScreen() {
     const [notifyMe, setNotifyMe] = useState(true);
     const [notifyContact, setNotifyContact] = useState(true);
     const [showCountryCodeDropdown, setShowCountryCodeDropdown] = useState(false);
-
     const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
     const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [pendingChange, setPendingChange] = useState<{ type: "category" | "role"; value: string } | null>(null);
-
-
     const [category, setCategory] = useState("");
     const [role, setRole] = useState("");
 
@@ -257,7 +254,7 @@ export default function FamilyDetailsScreen() {
                     {/* Header */}
                     <XStack space="$4" ai="center" mt='$7' mb='$3'>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <MaterialCommunityIcons name="arrow-left" size={24} color="black" />
+                            <MaterialCommunityIcons name="arrow-left" size={24} color={colors.text} />
                         </TouchableOpacity>
                         <H6 fontWeight="600" color={colors.text as any}>
                             {isEditing ? "Edit Contact" : "Contact Details"}
@@ -313,12 +310,14 @@ export default function FamilyDetailsScreen() {
                                     </Card>
 
                                     <XStack>
-                                        <Text fontWeight='600'>BASIC INFORMATION</Text>
+                                        <H6 fontSize={14} fontWeight='600' color={colors.text}>
+                                            BASIC INFORMATION</H6>
                                     </XStack>
 
                                     {/* Contact Name */}
-                                    <YStack space='$2'>
-                                        <Text fontWeight="bold" color={colors.text}>Contact Name:</Text>
+                                    <YStack space='$2' mt='$2ß'>
+                                        <Text fontWeight="bold" color={colors.text}>
+                                            Contact Name:</Text>
                                         <TextInput
                                             value={name}
                                             onChangeText={setName}
@@ -327,11 +326,12 @@ export default function FamilyDetailsScreen() {
                                                 borderWidth: 1,
                                                 backgroundColor: colors.card,
                                                 borderColor: colors.border as any,
+                                                color: colors.text,
                                                 borderRadius: 12,
                                                 padding: 6,
                                                 paddingVertical: 1,
                                                 marginBottom: 12,
-                                                fontSize: 16
+                                                fontSize: 14
                                             }}
                                         />
                                     </YStack>
@@ -367,10 +367,9 @@ export default function FamilyDetailsScreen() {
                                             borderColor={colors.border as any}
                                             borderRadius="$4"
                                             px="$3"
-                                            py="$1"
                                             ai="center"
                                             space="$2"
-                                            backgroundColor="white"
+                                            backgroundColor={colors.card}
                                         >
                                             <TouchableOpacity
                                                 onPress={() => setShowCountryCodeDropdown(true)}
@@ -384,7 +383,7 @@ export default function FamilyDetailsScreen() {
                                                     minWidth: 70,
                                                 }}
                                             >
-                                                <Text fontSize="$5">{countryCode}</Text>
+                                                <Text color={colors.text}>{countryCode}</Text>
                                                 <ChevronDown
                                                     size={18}
                                                     style={{ marginLeft: 6 }}
@@ -399,10 +398,11 @@ export default function FamilyDetailsScreen() {
                                                 placeholder="Phone Number"
                                                 style={{
                                                     flex: 1,
-                                                    backgroundColor: "white",
+                                                    backgroundColor: colors.card,
                                                     paddingHorizontal: 8,
                                                     paddingVertical: 1,
-                                                    fontSize: 16,
+                                                    fontSize: 14,
+                                                    color: colors.text,
                                                 }}
                                                 keyboardType="phone-pad"
                                             />
@@ -487,21 +487,24 @@ export default function FamilyDetailsScreen() {
 
                                 {/* Role/Category */}
                                 <YStack>
-                                    <XStack mb='$3'>
-                                        <Text fontWeight="600">
+                                    <XStack mb='$2'>
+                                        <H6 fontSize={14} color={colors.text} fontWeight="600">
                                             CONTACT CATEGORY AND ROLE ACCESS
-                                        </Text>
+                                        </H6>
                                     </XStack>
 
-                                    <Card bc="transparent" br={12} p="$2" space="$3">
+                                    <Card bc='transparent'
+                                        br={12} p="$2" space="$3"
+                                    >
                                         <YStack space="$3">
                                             {/* Category Dropdown */}
                                             <YStack space="$2">
-                                                <Text fontWeight="bold">Category:</Text>
+                                                <Text fontWeight="500" color={colors.text}>Category:</Text>
+
                                                 <Picker
                                                     selectedValue={category}
                                                     onValueChange={(val) => handleChange("category", val)}
-                                                    style={{ backgroundColor: "white" }}
+                                                    style={{ backgroundColor: isDark ? colors.card : 'white', color: colors.text }}
                                                 >
                                                     <Picker.Item label="Select Category" value="" />
                                                     {categories.map((c) => (
@@ -512,12 +515,11 @@ export default function FamilyDetailsScreen() {
 
                                             {/* Role Dropdown */}
                                             <YStack space="$2">
-                                                <Text fontWeight="bold">Access Role:</Text>
+                                                <Text fontWeight="500" color={colors.text}>Access Role:</Text>
                                                 <Picker
                                                     selectedValue={role}
                                                     onValueChange={(val) => handleChange("role", val)}
-                                                    style={{ backgroundColor: "white" }}
-                                                >
+                                                    style={{ backgroundColor: isDark ? colors.card : 'white', color: colors.text }}                                                >
                                                     <Picker.Item label="Select Role" value="" />
                                                     {permission.map((p) => (
                                                         <Picker.Item key={p.label} label={p.label} value={p.label} />
@@ -600,7 +602,7 @@ export default function FamilyDetailsScreen() {
                             {/* Notifications */}
                             <YStack>
                                 <XStack mb='$2'>
-                                    <Text fontWeight='600'>NOTIFICATION</Text>
+                                    <H6 fontSize={14} color={colors.text} fontWeight='600'>NOTIFICATION</H6>
                                 </XStack>
 
                                 <YStack space="$4">
@@ -670,7 +672,7 @@ export default function FamilyDetailsScreen() {
                                 )}
 
                                 <YStack space="$1" mb="$2" ai='center' jc='center'>
-                                    <Text fontWeight="500" mb="$2">
+                                    <Text fontWeight="500" mb="$2" color={colors.text}>
                                         {contact.name}
                                     </Text>
                                     <XStack space='$3'>
@@ -689,7 +691,7 @@ export default function FamilyDetailsScreen() {
                                         </View>
 
 
-                                        <Text fontWeight="500" color={colors.textSecondary}>
+                                        <Text fontWeight="500" color={colors.text}>
                                             {contact.title}
                                         </Text>
                                     </XStack>
@@ -697,7 +699,7 @@ export default function FamilyDetailsScreen() {
                                     {children.length > 0 && (
                                         <Text
                                             fontWeight="500"
-                                            color={colors.textSecondary}
+                                            color={colors.text}
                                             mb="$3"
                                         >
                                             Connected to: {children.map((c) => c.name).join(",  ")}
@@ -711,7 +713,7 @@ export default function FamilyDetailsScreen() {
                                         borderRadius={8}
                                         onPress={() => navigation.navigate("FamilyInvite" as never)}
                                     >
-                                        <Text color="white" ai='center' fontWeight="500">
+                                        <Text color={colors.text} ai='center' fontWeight="500">
                                             Invite to App
                                         </Text>
                                     </Button>
@@ -752,7 +754,7 @@ export default function FamilyDetailsScreen() {
                                                 </YStack>
 
                                                 <YStack flex={1}>
-                                                    <Text fontWeight="500">
+                                                    <Text fontWeight="500" color={colors.text}>
                                                         {fieldValue}
                                                     </Text>
                                                     <Text color={colors.textSecondary}>
@@ -794,7 +796,7 @@ export default function FamilyDetailsScreen() {
                                         }
                                     }}
                                 >
-                                    <Text fontWeight="700">Cancel</Text>
+                                    <Text fontWeight="500" color={colors.primary}>Cancel</Text>
                                 </Button>
 
                                 <Button
@@ -821,7 +823,7 @@ export default function FamilyDetailsScreen() {
                                     borderColor={colors.primary as any}
                                     onPress={() => navigation.goBack()}
                                 >
-                                    <Text fontWeight="700">Close</Text>
+                                    <Text fontWeight="500" color={colors.primary}>Close</Text>
                                 </Button>
 
                                 <Button

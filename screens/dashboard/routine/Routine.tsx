@@ -47,19 +47,6 @@ const SCREEN_DIMENSIONS = Dimensions.get('window');
 const BASE_SCREEN = { width: 390, height: 844 };
 const CHILD_NAME = "My Child";
 
-// Scaling helpers
-const useScaling = () => {
-    return useMemo(() => {
-        const scale = (size: number) => (SCREEN_DIMENSIONS.width / BASE_SCREEN.width) * size;
-        const verticalScale = (size: number) => (SCREEN_DIMENSIONS.height / BASE_SCREEN.height) * size;
-        const moderateScale = (size: number, factor = 0.5) =>
-            size + (scale(size) - size) * factor;
-        const scaleFont = (size: number) =>
-            Math.round(PixelRatio.roundToNearestPixel(scale(size)));
-
-        return { scale, verticalScale, moderateScale, scaleFont };
-    }, []);
-};
 
 // Custom hook for routine data management
 const useRoutineData = () => {
@@ -319,7 +306,6 @@ const EditRoutineModal = React.memo(({
     onSave,
     onClose,
     colors,
-    scaling
 }: {
     visible: boolean;
     routine: RoutineTemplate | null;
@@ -330,7 +316,6 @@ const EditRoutineModal = React.memo(({
     onSave: () => void;
     onClose: () => void;
     colors: any;
-    scaling: ReturnType<typeof useScaling>;
 }) => {
     if (!routine) return null;
 
@@ -349,12 +334,13 @@ const EditRoutineModal = React.memo(({
             >
                 <Card
                     backgroundColor="white"
-                    padding={scaling.moderateScale(20)}
-                    borderRadius={scaling.moderateScale(15)}
-                    width={scaling.moderateScale(320)}
-                    maxHeight={scaling.verticalScale(400)}
+                    padding={20}
+                    borderRadius={15}
+                    width={320}
+                    maxHeight={400}
                 >
-                    <YStack space={scaling.verticalScale(16)}>
+                    <YStack space={16}>
+                        {/* Header */}
                         <XStack justifyContent="space-between" alignItems="center">
                             <H6 fontWeight="600" color={colors.text}>
                                 Edit Routine
@@ -364,8 +350,9 @@ const EditRoutineModal = React.memo(({
                             </TouchableOpacity>
                         </XStack>
 
-                        <YStack space={scaling.verticalScale(12)}>
-                            <Text fontSize={scaling.scaleFont(14)} fontWeight="600" color={colors.text}>
+                        {/* Routine Name */}
+                        <YStack space={12}>
+                            <Text fontSize={14} fontWeight="600" color={colors.text}>
                                 Routine Name
                             </Text>
                             <RNTextInput
@@ -374,9 +361,9 @@ const EditRoutineModal = React.memo(({
                                 style={{
                                     borderWidth: 1,
                                     borderColor: colors.border,
-                                    borderRadius: scaling.moderateScale(8),
-                                    padding: scaling.moderateScale(12),
-                                    fontSize: scaling.scaleFont(14),
+                                    borderRadius: 8,
+                                    padding: 12,
+                                    fontSize: 14,
                                     color: colors.text,
                                 }}
                                 placeholder="Enter routine name"
@@ -384,8 +371,9 @@ const EditRoutineModal = React.memo(({
                             />
                         </YStack>
 
-                        <YStack space={scaling.verticalScale(12)}>
-                            <Text fontSize={scaling.scaleFont(14)} fontWeight="600" color={colors.text}>
+                        {/* Description */}
+                        <YStack space={12}>
+                            <Text fontSize={14} fontWeight="600" color={colors.text}>
                                 Description
                             </Text>
                             <RNTextInput
@@ -394,11 +382,11 @@ const EditRoutineModal = React.memo(({
                                 style={{
                                     borderWidth: 1,
                                     borderColor: colors.border,
-                                    borderRadius: scaling.moderateScale(8),
-                                    padding: scaling.moderateScale(12),
-                                    fontSize: scaling.scaleFont(14),
+                                    borderRadius: 8,
+                                    padding: 12,
+                                    fontSize: 14,
                                     color: colors.text,
-                                    minHeight: scaling.verticalScale(80),
+                                    minHeight: 80,
                                     textAlignVertical: 'top',
                                 }}
                                 placeholder="Enter routine description"
@@ -408,18 +396,20 @@ const EditRoutineModal = React.memo(({
                             />
                         </YStack>
 
+                        {/* Preloaded Note */}
                         {routine.is_preloaded && !routine.user_id && (
-                            <Text color={colors.primary} fontSize={scaling.scaleFont(12)} fontStyle="italic">
+                            <Text color={colors.primary} fontSize={12} fontStyle="italic">
                                 This is a predefined template. Saving will create a copy in your routines.
                             </Text>
                         )}
 
-                        <XStack space={scaling.moderateScale(12)} justifyContent="flex-end" marginTop={scaling.verticalScale(16)}>
+                        {/* Buttons */}
+                        <XStack space={12} justifyContent="flex-end" marginTop={16}>
                             <Button
                                 onPress={onClose}
                                 backgroundColor="#f0f0f0"
                                 color={colors.text}
-                                paddingHorizontal={scaling.moderateScale(20)}
+                                paddingHorizontal={20}
                             >
                                 Cancel
                             </Button>
@@ -427,7 +417,7 @@ const EditRoutineModal = React.memo(({
                                 onPress={onSave}
                                 backgroundColor={colors.primary}
                                 color="white"
-                                paddingHorizontal={scaling.moderateScale(20)}
+                                paddingHorizontal={20}
                             >
                                 Save
                             </Button>
@@ -436,6 +426,7 @@ const EditRoutineModal = React.memo(({
                 </Card>
             </View>
         </Modal>
+
     );
 });
 
@@ -449,7 +440,6 @@ const RoutineCard = React.memo(({
     onPress,
     onLongPress,
     colors,
-    scaling
 }: {
     routine: RoutineTemplate;
     isUserRoutine: boolean;
@@ -459,64 +449,57 @@ const RoutineCard = React.memo(({
     onPress: () => void;
     onLongPress: () => void;
     colors: any;
-    scaling: ReturnType<typeof useScaling>;
 }) => {
     return (
-        <TouchableOpacity
-            onPress={onPress}
-            onLongPress={onLongPress}
-        >
+        <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
             <Card
                 bordered
-                padding={scaling.moderateScale(5)}
-                borderRadius={scaling.moderateScale(10)}
-                marginBottom={scaling.verticalScale(12)}
+                padding={5}
+                borderRadius={10}
+                marginBottom={12}
                 borderWidth={2}
                 backgroundColor={isSelected ? colors.card : "white"}
                 borderColor={isSelected ? colors.primary : (colors.border as any)}
             >
+                {/* Selected Check */}
                 {isSelected && (
                     <View
                         position="absolute"
-                        top={-scaling.moderateScale(6)}
-                        right={-scaling.moderateScale(6)}
+                        top={-6}
+                        right={-6}
                         zIndex={10}
-                        width={scaling.moderateScale(28)}
-                        height={scaling.moderateScale(28)}
-                        borderRadius={scaling.moderateScale(14)}
+                        width={28}
+                        height={28}
+                        borderRadius={14}
                         backgroundColor={colors.primary}
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <MaterialCommunityIcons
-                            name="check"
-                            size={scaling.moderateScale(16)}
-                            color="white"
-                        />
+                        <MaterialCommunityIcons name="check" size={16} color="white" />
                     </View>
                 )}
 
-                <XStack ai="center" jc="space-between" mb={scaling.verticalScale(8)} flex={1}>
-                    <XStack ai="center" space={scaling.moderateScale(12)} flex={1}>
+                <XStack ai="center" jc="space-between" mb={8} flex={1}>
+                    <XStack ai="center" space={12} flex={1}>
+                        {/* Icon */}
                         <View
-                            width={scaling.moderateScale(40)}
-                            height={scaling.moderateScale(40)}
-                            borderRadius={scaling.moderateScale(20)}
+                            width={40}
+                            height={40}
+                            borderRadius={20}
                             alignItems="center"
                             justifyContent="center"
                         >
                             <MaterialCommunityIcons
                                 name={(routine.icon as any) || "calendar-check"}
-                                size={scaling.moderateScale(20)}
+                                size={20}
                                 color={colors.primary}
                             />
                         </View>
 
-                        <YStack flex={1} space={scaling.moderateScale(6)}>
-                            <XStack ai="center" jc="space-between"
-                                space={scaling.moderateScale(12)}
-                            >
-                                <H6 fontSize={scaling.scaleFont(14)} fontWeight="600">
+                        {/* Routine Info */}
+                        <YStack flex={1} space={6}>
+                            <XStack ai="center" jc="space-between" space={12}>
+                                <H6 fontSize={14} fontWeight="600">
                                     {routine.name}
                                 </H6>
 
@@ -539,35 +522,25 @@ const RoutineCard = React.memo(({
                                 </TouchableOpacity>
                             </XStack>
 
-                            <Text
-                                fontSize={scaling.scaleFont(10)}
-                                color="#555"
-                                lineHeight={scaling.verticalScale(18)}
-                                numberOfLines={2}
-                                ellipsizeMode="tail"
-                            >
+                            <Text fontSize={10} color="#555" lineHeight={18} numberOfLines={2} ellipsizeMode="tail">
                                 {routine.description || "No description available"}
                             </Text>
 
                             {isUserRoutine && routine.original_template_id && (
-                                <Text color="#888" fontSize={scaling.scaleFont(10)}>
+                                <Text color="#888" fontSize={10}>
                                     Based on a predefined template
                                 </Text>
                             )}
 
-                            <XStack mt='$3' space={scaling.moderateScale(12)} jc='space-between'>
-                                <Text fontSize={scaling.scaleFont(12)} fontWeight="600" color={colors.primary}>
+                            <XStack mt={12} space={12} jc="space-between">
+                                <Text fontSize={12} fontWeight="600" color={colors.primary}>
                                     {(routine.tasks ?? []).length} Tasks
                                 </Text>
 
                                 {isUserRoutine && (
-                                    <XStack mr='$2.5'>
+                                    <XStack mr={10}>
                                         <TouchableOpacity onPress={onDelete}>
-                                            <MaterialCommunityIcons
-                                                name="trash-can"
-                                                size={scaling.moderateScale(20)}
-                                                color="red"
-                                            />
+                                            <MaterialCommunityIcons name="trash-can" size={20} color="red" />
                                         </TouchableOpacity>
                                     </XStack>
                                 )}
@@ -577,6 +550,7 @@ const RoutineCard = React.memo(({
                 </XStack>
             </Card>
         </TouchableOpacity>
+
     );
 });
 
@@ -584,8 +558,6 @@ const RoutineCard = React.memo(({
 const RoutineScreen = () => {
     const { colors } = useTheme();
     const navigation = useNavigation<RoutineDetailsScreenNavigationProp>();
-    const scaling = useScaling();
-
     const {
         loading,
         error,
@@ -609,21 +581,18 @@ const RoutineScreen = () => {
         closeEditModal
     } = useRoutineOperations(myRoutines, predefinedRoutines);
 
-    // Focus effect for data loading
     useFocusEffect(
         useCallback(() => {
             loadAllData();
         }, [loadAllData])
     );
 
-    // Clear selection when data reloads
     useEffect(() => {
         if (!loading) {
             clearSelection();
         }
     }, [loading, clearSelection]);
 
-    // Filter out predefined routines that are already copied
     const filteredPredefined = useMemo(() =>
         predefinedRoutines.filter(
             (tpl) => !myRoutines.some((r) => r.original_template_id === tpl.id)
@@ -726,7 +695,6 @@ const RoutineScreen = () => {
                 onPress={() => handleRoutinePress(routine, isUserRoutine)}
                 onLongPress={() => handleSelectPlan(routine.id)}
                 colors={colors}
-                scaling={scaling}
             />
         );
     }, [
@@ -736,7 +704,6 @@ const RoutineScreen = () => {
         handleSelectPlan,
         handleRoutinePress,
         colors,
-        scaling,
         loadAllData
     ]);
 
@@ -764,14 +731,14 @@ const RoutineScreen = () => {
 
                 {/* Action Buttons */}
                 {selectedIds.length > 0 ? (
-                    <YStack space={scaling.moderateScale(12)} jc="center" mt={scaling.verticalScale(16)}>
+                    <YStack space={12} jc="center" mt={16}>
                         <Button
-                            size={scaling.moderateScale(40)}
+                            size={40}
                             bg={colors.primary}
                             onPress={handleDownloadPlan}
                         >
-                            <XStack ai="center" jc="center" space={scaling.moderateScale(8)}>
-                                <Feather name="download" size={scaling.moderateScale(16)} color="white" />
+                            <XStack ai="center" jc="center" space={8}>
+                                <Feather name="download" size={16} color="white" />
                                 <Text color="white">
                                     Download ({selectedIds.length})
                                 </Text>
@@ -779,12 +746,12 @@ const RoutineScreen = () => {
                         </Button>
 
                         <Button
-                            size={scaling.moderateScale(40)}
-                            bg='#9FCC16'
+                            size={40}
+                            bg="#9FCC16"
                             onPress={handlePrintSelectedPlans}
                         >
-                            <XStack ai="center" jc="center" space={scaling.moderateScale(8)}>
-                                <Feather name="printer" size={scaling.moderateScale(16)} color="white" />
+                            <XStack ai="center" jc="center" space={8}>
+                                <Feather name="printer" size={16} color="white" />
                                 <Text color="white">
                                     Print ({selectedIds.length})
                                 </Text>
@@ -792,17 +759,17 @@ const RoutineScreen = () => {
                         </Button>
                     </YStack>
                 ) : (
-                    <XStack ai="center" jc="flex-start" space={scaling.moderateScale(12)} mt={scaling.verticalScale(16)}>
+                    <XStack ai="center" jc="flex-start" space={12} mt={16}>
                         <Button
                             unstyled
-                            borderRadius={scaling.moderateScale(12)}
+                            borderRadius={12}
                             backgroundColor="#FFF0DE"
-                            paddingHorizontal={scaling.moderateScale(12)}
+                            paddingHorizontal={12}
                             onPress={handlePrintAllPlans}
                         >
-                            <XStack ai="center" space={scaling.moderateScale(12)} paddingVertical={scaling.moderateScale(8)}>
-                                <Feather name="download" size={scaling.moderateScale(18)} color={colors.primary} />
-                                <Text color={colors.primary} fontSize={scaling.scaleFont(12)}>
+                            <XStack ai="center" space={12} paddingVertical={8}>
+                                <Feather name="download" size={18} color={colors.primary} />
+                                <Text color={colors.primary} fontSize={12}>
                                     Download All
                                 </Text>
                             </XStack>
@@ -811,13 +778,13 @@ const RoutineScreen = () => {
                         <Button
                             unstyled
                             backgroundColor="#E3FFF2"
-                            paddingHorizontal={scaling.moderateScale(12)}
-                            borderRadius={scaling.moderateScale(12)}
+                            paddingHorizontal={12}
+                            borderRadius={12}
                             onPress={handlePrintAllPlans}
                         >
-                            <XStack ai="center" space={scaling.moderateScale(12)} paddingVertical={scaling.moderateScale(8)}>
-                                <Feather name="printer" size={scaling.moderateScale(18)} color={colors.secondary} />
-                                <Text color={colors.secondary} fontSize={scaling.scaleFont(12)}>
+                            <XStack ai="center" space={12} paddingVertical={8}>
+                                <Feather name="printer" size={18} color={colors.secondary} />
+                                <Text color={colors.secondary} fontSize={12}>
                                     Print All
                                 </Text>
                             </XStack>
@@ -842,18 +809,8 @@ const RoutineScreen = () => {
                 {/* Content */}
                 {!loading && !error && (
                     <YStack mt="$6" space="$2">
-                        {/* My Routines Section */}
-                        <H6 fontSize={14} fontWeight="600" color={colors.text} mb='$2'>
-                            My Routines
-                        </H6>
-                        {myRoutines.length > 0 ? (
-                            myRoutines.map((routine) => renderRoutineCard(routine, true))
-                        ) : (
-                            <Text color="#666">No personal routines yet.</Text>
-                        )}
-
                         {/* Predefined Routines Section */}
-                        <H6 fontSize={14} fontWeight="600" color={colors.text} mt="$4" mb='$2'>
+                        <H6 fontSize={14} fontWeight="600" color={colors.text} mt="$4" mb="$2">
                             Predefined Routines
                         </H6>
                         {filteredPredefined.length > 0 ? (
@@ -865,7 +822,7 @@ const RoutineScreen = () => {
                         {/* Divider */}
                         <XStack ai="center" my="$4">
                             <View flex={1} height={1} bg="gray" />
-                            <H6 fontSize={14} fontWeight='600' mx="$3" color={colors.text}>
+                            <H6 fontSize={14} fontWeight="600" mx="$3" color={colors.text}>
                                 OR
                             </H6>
                             <View flex={1} height={1} bg="gray" />
@@ -895,10 +852,10 @@ const RoutineScreen = () => {
                     onSave={handleModalSave}
                     onClose={closeEditModal}
                     colors={colors}
-                    scaling={scaling}
                 />
             </ScrollView>
         </GoalBackground>
+
     );
 };
 

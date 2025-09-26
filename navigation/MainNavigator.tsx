@@ -478,7 +478,7 @@ const MainTabs = () => {
                         case 'Goals':
                             return { lib: 'MaterialIcons', name: focused ? 'track-changes' : 'track-changes' };
                         case 'Profile':
-                            return { lib: 'Ionicons', name: focused ? 'wallet' : 'wallet-outline' };
+                            return { lib: 'MaterialCommunityIcons', name: focused ? 'account' : 'account-outline' };
                         default:
                             return { lib: 'Ionicons', name: 'help-outline' };
                     }

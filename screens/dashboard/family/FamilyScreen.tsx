@@ -175,6 +175,7 @@ export default function FamilyContactScreen() {
 
           <H6
             fontWeight="600"
+            color={colors.text}
             position="absolute"
             left={0}
             right={0}
@@ -184,9 +185,11 @@ export default function FamilyContactScreen() {
           </H6>
         </XStack>
 
-        <YStack p="$4" mt="$6" mb="$4" jc="center" ai="center">
+        <YStack p="$4" mt="$3" mb="$4" jc="center" ai="center">
           <Searchbar
             placeholder="Search"
+            placeholderTextColor={colors.text}
+            iconColor={colors.text as any}
             onChangeText={setSearchQuery}
             value={searchQuery}
             style={{
@@ -240,7 +243,7 @@ export default function FamilyContactScreen() {
                 source={require("@/assets/illustration/pana.png")}
                 style={{
                   width: width * 0.9,
-                  height: (width * 0.9 * 211) / 348, // keep aspect ratio
+                  height: (width * 0.9 * 211) / 348,
                   resizeMode: "contain",
                 }}
               />
@@ -280,7 +283,7 @@ export default function FamilyContactScreen() {
                 borderRadius={12}
                 onPress={() => navigation.navigate("AddFamily" as never)}
               >
-                Add Contacts
+                <Text color={colors.text}>Add Contacts</Text>
               </Button>
             </YStack>
           </ScrollView>
@@ -324,7 +327,7 @@ export default function FamilyContactScreen() {
 
                     <YStack flex={1} space="$2">
                       <XStack jc="space-between" ai="center">
-                        <Text fontWeight="600">
+                        <Text fontWeight="600" color={colors.text}>
                           {item.name}
                         </Text>
 

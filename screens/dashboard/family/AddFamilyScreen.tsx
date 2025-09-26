@@ -45,7 +45,7 @@ type Contact = {
 };
 
 export default function AddFamilyContactScreen() {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const { user } = useAuth();
     const navigation = useNavigation();
     const [step, setStep] = useState(1);
@@ -83,6 +83,15 @@ export default function AddFamilyContactScreen() {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const nextStep = () => setStep((s) => Math.min(s + 1, 6));
     const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+
+    const paperInputTheme = {
+        colors: {
+            primary: colors.primary,
+            background: colors.card,
+            text: colors.text,
+            placeholder: colors.textSecondary,
+        },
+    };
 
     useEffect(() => {
         const fetchChildren = async () => {
@@ -162,7 +171,6 @@ export default function AddFamilyContactScreen() {
         }
     };
 
-
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -216,7 +224,8 @@ export default function AddFamilyContactScreen() {
     const renderReview = () => (
         <YStack space="$4" mt="$1">
             <YStack space='$2' mb='$3'>
-                <H6 fontWeight="600">Review and Save</H6>
+                <H6 fontSize={14} fontWeight="600" color={colors.text}>
+                    Review and Save</H6>
                 <Text color={colors.textSecondary} fontWeight="500">
                     Here is a summary of the contact details, role, and permissions
                 </Text>
@@ -224,27 +233,28 @@ export default function AddFamilyContactScreen() {
 
             {/* Read-only Info */}
             <Card bc={colors.card} br={12} p="$4" space="$2">
-                <YStack>
-                    <Text fontWeight="700" color={colors.textSecondary}>Category:</Text>
-                    <Text fontWeight="400">{category}</Text>
-                </YStack>
+                <XStack ai='flex-start' jc='flex-start' space='$5'>
+                    <Text fontWeight="700" color={colors.text}>Category:</Text>
+                    <Text fontWeight="400" color={colors.text}>{category}</Text>
+                </XStack>
             </Card>
 
             <Card bc={colors.card} br={12} p="$4" space="$2">
-                <YStack>
-                    <Text fontWeight="600" color={colors.textSecondary}>Child Links:</Text>
-                    <Text fontWeight="400">
+                <XStack ai='flex-start' jc='flex-start' space='$5'>
+                    <Text fontWeight="600" color={colors.text}>Child Links:</Text>
+                    <Text fontWeight="400" color={colors.text}>
                         {selectedChildren.map(childId => {
                             const child = children.find(c => c.id === childId);
-                            return child ? child.name : "Unknown";
+                            return child ? child.name : "None";
                         }).join(", ")}
                     </Text>
-                </YStack>
+                </XStack>
             </Card>
 
             {/* Editable Fields */}
             <YStack space="$4">
-                <Text>PERSONAL INFORMATION</Text>
+                <H6 fontSize={14} fontWeight="600" color={colors.text}>
+                    PERSONAL INFORMATION</H6>
                 <XStack jc="flex-start" mb="$2">
                     {photo ? (
                         <Avatar.Image
@@ -268,18 +278,21 @@ export default function AddFamilyContactScreen() {
                     )}
                 </XStack>
 
-                <Card>
+                <Card bc={colors.card}
+                >
                     <TextInput
                         label="Contact Name"
                         value={name}
                         onChangeText={setName}
                         mode="outlined"
+                        theme={paperInputTheme as any}
                         outlineColor={colors.border as any}
                         activeOutlineColor="#FF8500"
+                        style={{ backgroundColor: colors.card, color: colors.text }}
                     />
                 </Card>
 
-                <Card>
+                <Card bc={colors.card}>
                     <TextInput
                         label="Email"
                         value={email}
@@ -287,10 +300,11 @@ export default function AddFamilyContactScreen() {
                         mode="outlined"
                         outlineColor={colors.border as any}
                         activeOutlineColor="#FF8500"
+                        style={{ backgroundColor: colors.card, color: colors.text }}
                     />
                 </Card>
 
-                <Card>
+                <Card bc={colors.card}>
                     <TextInput
                         label="Phone"
                         value={phone}
@@ -298,10 +312,12 @@ export default function AddFamilyContactScreen() {
                         mode="outlined"
                         outlineColor={colors.border as any}
                         activeOutlineColor="#FF8500"
+                        style={{ backgroundColor: colors.card, color: colors.text }}
+
                     />
                 </Card>
 
-                <Card>
+                <Card bc={colors.card}>
                     <TextInput
                         label="Address"
                         value={address}
@@ -309,10 +325,12 @@ export default function AddFamilyContactScreen() {
                         mode="outlined"
                         outlineColor={colors.border as any}
                         activeOutlineColor="#FF8500"
+                        style={{ backgroundColor: colors.card, color: colors.text }}
+
                     />
                 </Card>
 
-                <Card>
+                <Card bc={colors.card}>
                     <TextInput
                         label="Title / Role"
                         value={title}
@@ -320,6 +338,8 @@ export default function AddFamilyContactScreen() {
                         mode="outlined"
                         outlineColor={colors.border as any}
                         activeOutlineColor="#FF8500"
+                        style={{ backgroundColor: colors.card, color: colors.text }}
+
                     />
                 </Card>
             </YStack>
@@ -327,26 +347,16 @@ export default function AddFamilyContactScreen() {
             {/* More Read-only Info */}
             <YStack space="$4">
                 <Card bc={colors.card} br={12} p="$4" space="$2">
-                    <Text fontWeight="700" color={colors.textSecondary}>Access Role:</Text>
-                    <Text fontWeight="400">
-                        <Text fontWeight="400">{permission}</Text>
-                    </Text>
+                    <XStack ai='flex-start' jc='flex-start' space='$5'>
+                        <Text fontWeight="700" color={colors.text}>Access Role:</Text>
+                        <Text fontWeight="400" color={colors.text}>{permission}</Text>
+                    </XStack>
+
                 </Card>
 
-                {/* More Read-only Info
                 <Card bc={colors.card} br={12} p="$4" space="$2">
-                    <Text fontWeight="700" color={colors.textSecondary}>Permissions:</Text>
-                    <Text fontWeight="400">
-                        {canViewSchedule ? " View Schedule" : ""}
-                        {canEditTasks ? " Edit Tasks" : ""}
-                        {canMessage ? " Message" : ""}
-                    </Text>
-                </Card>
-                 */}
-
-                <Card bc={colors.card} br={12} p="$4" space="$2">
-                    <Text fontWeight="700" color={colors.textSecondary}>Notifications:</Text>
-                    <Text fontWeight="400">
+                    <Text fontWeight="700" color={colors.text}>Notifications:</Text>
+                    <Text fontWeight="400" color={colors.text}>
                         {notifyContact ? "Set notifications for this contact and yourself" : ""}
                         {notifyMe ? " Notify me on all actions carried out by the contact" : ""}
                     </Text>
@@ -363,9 +373,9 @@ export default function AddFamilyContactScreen() {
                         {/* Header */}
                         <XStack space="$4" ai="center">
                             <TouchableOpacity onPress={() => navigation.goBack()}>
-                                <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
+                                <MaterialCommunityIcons name="arrow-left" size={26} color={colors.text} />
                             </TouchableOpacity>
-                            <H6 fontWeight="600" color={colors.text as any}>
+                            <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                 Add Contact
                             </H6>
                         </XStack>
@@ -388,7 +398,7 @@ export default function AddFamilyContactScreen() {
                     {/* Step Content */}
                     {step === 1 && (
                         <YStack space="$3">
-                            <H6 fontWeight="600" mb='$2' mt='$3'>
+                            <H6 fontSize={14} fontWeight="600" mb='$2' color={colors.text} mt='$3'>
                                 What category is this Contact ?
                             </H6>
 
@@ -451,7 +461,7 @@ export default function AddFamilyContactScreen() {
 
                     {step === 2 && (
                         <YStack space="$3">
-                            <H6 fontWeight="600">
+                            <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                 Who is this contact for?
                             </H6>
 
@@ -543,7 +553,7 @@ export default function AddFamilyContactScreen() {
 
                     {step === 3 && (
                         <YStack space="$4" mt='$4'>
-                            <H6 fontWeight="600">
+                            <H6 fontSize={14} fontWeight="600" color={colors.text}>
                                 Contact Personal Information
                             </H6>
 
@@ -555,7 +565,6 @@ export default function AddFamilyContactScreen() {
                                     py="$8"
                                     space="$3"
                                     bc={colors.card}
-                                    borderColor={colors.border as any}
                                 >
                                     {photo ? (
                                         <Avatar.Image
@@ -565,7 +574,7 @@ export default function AddFamilyContactScreen() {
                                         />
                                     ) : (
                                         <YStack ai="center" jc="center">
-                                            <Camera />
+                                            <Camera color={colors.text as any} />
                                             <TouchableOpacity
                                                 onPress={pickImage}
                                             >
@@ -582,26 +591,27 @@ export default function AddFamilyContactScreen() {
 
                                 <YStack space='$3' mt='$3'>
                                     <YStack space="$2">
-                                        <Text>Contact Name</Text>
+                                        <Text color={colors.text}>Contact Name</Text>
                                         <TextInput
                                             label="Full Name"
+                                            placeholderTextColor={colors.text}
                                             value={name}
                                             onChangeText={setName}
                                             mode="outlined"
-                                            style={{ backgroundColor: "white" }}
+                                            style={{ backgroundColor: colors.card, color: colors.text }}
                                             outlineColor={colors.border as any}
                                             activeOutlineColor="#FF8500"
                                         />
                                     </YStack>
 
                                     <YStack space="$2">
-                                        <Text>Contact Email</Text>
+                                        <Text color={colors.text}>Contact Email</Text>
                                         <TextInput
                                             label="Email"
                                             value={email}
                                             onChangeText={setEmail}
                                             mode="outlined"
-                                            style={{ backgroundColor: "white" }}
+                                            style={{ backgroundColor: colors.card }}
                                             outlineColor={colors.border as any}
                                             activeOutlineColor="#FF8500"
                                         />
@@ -620,7 +630,7 @@ export default function AddFamilyContactScreen() {
                                             py="$2"
                                             ai="center"
                                             space="$2"
-                                            backgroundColor="white"
+                                            backgroundColor={colors.card}
                                         >
                                             <TouchableOpacity
                                                 onPress={() => setShowCountryCodeDropdown(true)}
@@ -633,7 +643,7 @@ export default function AddFamilyContactScreen() {
                                                     minWidth: 70,
                                                 }}
                                             >
-                                                <Text>{countryCode}</Text>
+                                                <Text color={colors.text}>{countryCode}</Text>
                                                 <ChevronDown
                                                     size={18}
                                                     style={{ marginLeft: 6 }}
@@ -646,11 +656,13 @@ export default function AddFamilyContactScreen() {
                                                 onChangeText={setPhone}
                                                 outlineColor={colors.border as any}
                                                 placeholder="Phone Number"
+                                                placeholderTextColor={colors.text}
                                                 style={{
                                                     flex: 1,
-                                                    backgroundColor: "white",
+                                                    backgroundColor: colors.card,
                                                     paddingHorizontal: 8,
                                                     fontSize: 14,
+                                                    color: colors.text
                                                 }}
                                                 keyboardType="phone-pad"
                                             />
@@ -713,26 +725,26 @@ export default function AddFamilyContactScreen() {
                                     </YStack>
 
                                     <YStack space="$2">
-                                        <Text>Address</Text>
+                                        <Text color={colors.text}>Address</Text>
                                         <TextInput
                                             label="Address"
                                             value={address}
                                             onChangeText={setAddress}
                                             mode="outlined"
-                                            style={{ backgroundColor: "white" }}
+                                            style={{ backgroundColor: colors.card }}
                                             outlineColor={colors.border as any}
                                             activeOutlineColor="#FF8500"
                                         />
                                     </YStack>
 
                                     <YStack space="$2">
-                                        <Text>Title</Text>
+                                        <Text color={colors.text}>Title</Text>
                                         <TextInput
                                             label="Title / Role"
                                             value={title}
                                             onChangeText={setTitle}
                                             mode="outlined"
-                                            style={{ backgroundColor: "white" }}
+                                            style={{ backgroundColor: colors.card }}
                                             outlineColor={colors.border as any}
                                             activeOutlineColor="#FF8500"
                                         />
@@ -744,7 +756,7 @@ export default function AddFamilyContactScreen() {
 
                     {step === 4 && (
                         <YStack space="$3">
-                            <H6 fontWeight="600" mb="$3" mt="$3">
+                            <H6 fontSize={14} color={colors.text} fontWeight="600" mb="$3" mt="$3">
                                 Set Access and Permissions
                             </H6>
 
@@ -810,10 +822,10 @@ export default function AddFamilyContactScreen() {
                     {step === 5 && (
                         <YStack space="$3" mt='$5'>
                             <YStack space='$3' mb='$3'>
-                                <H6 fontWeight="600">
+                                <H6 fontSize={14} color={colors.text} fontWeight="600">
                                     Notifications
                                 </H6>
-                                <Text color={colors.textSecondary} fontWeight="600">
+                                <Text color={colors.textSecondary} fontWeight="500">
                                     Set notifications for this contact and yourself
                                 </Text>
                             </YStack>
@@ -901,8 +913,7 @@ export default function AddFamilyContactScreen() {
 
                     {step === 6 ? renderReview() : null}
 
-                    {/* Navigation Buttons */}
-                    <XStack mt="$6" jc="space-between">
+                    <XStack mt="$6" jc="space-between" mb='$8'>
                         {step > 1 ? (
                             <Button
                                 size="$4"
@@ -929,7 +940,7 @@ export default function AddFamilyContactScreen() {
                                 borderRadius={8}
                                 onPress={nextStep}
                             >
-                                Next
+                                <Text color={colors.text}>Next</Text>
                             </Button>
                         ) : (
                             <Button
@@ -944,7 +955,7 @@ export default function AddFamilyContactScreen() {
                                 {saving ? (
                                     <ActivityIndicator size="small" color="#fff" />
                                 ) : (
-                                    "Save"
+                                    <Text color="#fff">Save</Text>
                                 )}
                             </Button>
                         )}

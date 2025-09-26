@@ -137,6 +137,7 @@ const DisciplineScreen = ({ navigation }: { navigation: any }) => {
 
                     <H6
                         fontWeight="600"
+                        color={colors.text}
                         position="absolute"
                         left={0}
                         right={0}

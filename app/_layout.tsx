@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TamaguiProvider } from "tamagui";
+import { LogBox } from 'react-native';
 
 export default function RootLayout() {
   return (
@@ -41,6 +42,10 @@ export default function RootLayout() {
     </TamaguiProvider>
   );
 }
+
+LogBox.ignoreLogs([
+  'Error While updating fontSize of a view managed by RCText'
+]);
 
 function RootLayoutNav() {
   const { user, isLoading } = useAuth();
