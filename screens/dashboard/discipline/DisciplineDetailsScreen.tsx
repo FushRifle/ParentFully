@@ -15,6 +15,8 @@ import {
     Card,
     Fieldset,
     H4,
+    H5,
+    H6,
     Input,
     Label,
     Sheet,
@@ -214,9 +216,9 @@ export default function DisciplineDetailsScreen({ navigation }: Props) {
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
                         </TouchableOpacity>
-                        <Text fontSize="$5" fontWeight="700" color={colors.text}>
+                        <H5 fontWeight="600" color={colors.text}>
                             {isEditing ? "Edit Plan" : name}
-                        </Text>
+                        </H5>
                     </XStack>
                     <Text fontSize="$4" color="#555">
                         {isEditing ? "Edit your plan details" : "Review and Customise"}

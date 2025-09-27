@@ -1,9 +1,9 @@
-import { Text } from '@/context/GlobalText';
 import { supabase } from "@/supabase/client";
 import { Activity, Baby, BookOpen, Shirt, StepForward, Stethoscope, Utensils, Wallet2 } from "@tamagui/lucide-icons";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
-import { Card, XStack, YStack } from "tamagui";
+import { Card, XStack, YStack, Text } from "tamagui";
+import { useTheme } from "@/styles/ThemeContext";
 
 type ExpenseType = {
     expenseId: string;
@@ -31,6 +31,7 @@ const CATEGORIES = [
 ];
 
 export const ExpensesByCategory = () => {
+    const { colors } = useTheme();
     const [expenses, setExpenses] = useState<ExpenseType[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -91,7 +92,7 @@ export const ExpensesByCategory = () => {
         return (
             <YStack ai="center" jc="center" mt="$6">
                 <Card
-                    backgroundColor="#fff8e1"
+                    backgroundColor={colors.card}
                     padding="$6"
                     borderRadius={16}
                     elevation={3}
@@ -142,7 +143,7 @@ export const ExpensesByCategory = () => {
                             padding="$4"
                             borderRadius={12}
                             elevation={2}
-                            backgroundColor="#fff"
+                            backgroundColor={colors.card}
                         >
                             <XStack justifyContent="space-between" alignItems="center">
                                 <XStack alignItems="center" space="$3">
@@ -156,15 +157,15 @@ export const ExpensesByCategory = () => {
                                     >
                                         <c.icon size={20} color="#fff" />
                                     </YStack>
-                                    <Text fontWeight="600">
+                                    <Text fontWeight="600" color={colors.text}>
                                         {c.name}
                                     </Text>
                                 </XStack>
                                 <YStack ai="flex-end">
-                                    <Text fontWeight="700">
+                                    <Text fontWeight="700" color={colors.text}>
                                         {c.currency} {c.total.toFixed(2)}
                                     </Text>
-                                    <Text color="#888">
+                                    <Text color={colors.text}>
                                         {percent.toFixed(0)}%
                                     </Text>
                                 </YStack>

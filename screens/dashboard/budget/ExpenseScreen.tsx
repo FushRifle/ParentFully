@@ -185,20 +185,6 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
         setExpenses(prev => [expense, ...prev]);
     }, []);
 
-    const StatusChip = useCallback(({ status }: { status: ExpenseStatus }) => (
-        <YStack
-            paddingVertical={4}
-            paddingHorizontal={8}
-            borderRadius={8}
-            backgroundColor={STATUS_COLORS[status]}
-            alignSelf="flex-start"
-        >
-            <Text color="white" fontWeight="600">
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-            </Text>
-        </YStack>
-    ), []);
-
     const navigateToDetail = useCallback((expense: Expense) => {
         navigation.navigate('ExpenseDetail', { expense });
     }, [navigation]);
@@ -221,11 +207,19 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
             <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
                 <YStack flex={1}>
                     {/* Header */}
-                    <XStack padding="$2" paddingTop="$7"
+
+                    <XStack padding="$4" paddingTop="$7"
                         justifyContent="center"
                         alignItems="center"
                     >
-                        <H6 color={colors.text} fontWeight="600"
+                        <Button
+                            unstyled
+                            circular
+                            pressStyle={{ opacity: 0.6 }}
+                            onPress={navigation.goBack}
+                            icon={<Feather name="chevron-left" size={24} color={colors.text} />}
+                        />
+                        <H6 color={colors.text} fontWeight={600}
                             textAlign="center"
                             flex={1} marginHorizontal="$2">
                             Budget Overview
@@ -273,9 +267,11 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
                             {/* Category Dropdown */}
                             <YStack space="$1">
                                 <Picker
-                                    style={{ backgroundColor: "white" }}
+                                    style={{ backgroundColor: colors.card, color: colors.text }}
                                 >
-                                    <Picker.Item label="Last 3 Months" value="" />
+                                    <Picker.Item label="Last 3 Months" value=""
+                                        style={{ color: colors.text }}
+                                    />
                                 </Picker>
                             </YStack>
                         </YStack>
@@ -342,7 +338,7 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
 
                     <YStack jc="flex-start" space="$1" mt="$5">
                         <H6
-                            fontWeight="700"
+                            fontWeight={600}
                             color={colors.text}
                             px="$3"
                         >
@@ -353,7 +349,7 @@ export const ExpenseScreen = ({ navigation }: { navigation: StackNavigationProp<
 
                     <YStack jc="flex-start" space="$1" mt="$5">
                         <H6
-                            fontWeight="700"
+                            fontWeight={600}
                             color={colors.text}
                             px="$3"
                         >
@@ -411,7 +407,7 @@ const SummaryCard = ({ label, value, colors, icon, iconBg, IconColor }: SummaryC
                 <Text color={colors.text}>
                     {label}
                 </Text>
-                <Text fontWeight="bold" marginTop={4}>
+                <Text fontWeight={600} marginTop={4} color={colors.text}>
                     ${value.toFixed(2)}
                 </Text>
             </YStack>
@@ -516,7 +512,7 @@ export const ActionModal = ({
                                 </View>
 
                                 <YStack>
-                                    <Text fontWeight="600">
+                                    <Text fontWeight={600}>
                                         {opt.title}
                                     </Text>
                                     <Text color='gray'>
@@ -531,7 +527,7 @@ export const ActionModal = ({
                     <Button
                         size="$4"
                         onPress={onClose}
-                        fontWeight="600"
+                        fontWeight={600}
                         variant="outlined"
                         color="red"
                         borderWidth={1}

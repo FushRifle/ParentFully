@@ -1,12 +1,11 @@
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
-import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, ScrollView } from "react-native";
-import { Card, H4, H5, H6, View, XStack, YStack, Button } from "tamagui";
+import { Card, H4, H5, H6, View, XStack, YStack, Button, Text } from "tamagui";
 import { MaterialIcons } from "@expo/vector-icons";
 
 type TemplateTask = {

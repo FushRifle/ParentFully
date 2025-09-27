@@ -4,7 +4,6 @@ import { RoutineScreen } from '@/components/child/RoutineScreen';
 import { CompletedGoalsSheet } from '@/components/goals/CompletedGoalsModal';
 import ChildOptionsModal from '@/components/profile/EditChildModal';
 import { GoalBackground } from '@/constants/GoalBackground';
-import { Text } from '@/context/GlobalText';
 import useImageUpload from '@/hooks/image/cloudinary/cloudinary';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
@@ -14,7 +13,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Pressable, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import { TabBar, TabView } from 'react-native-tab-view';
-import { Card, H6, ScrollView, View, XStack, YStack } from 'tamagui';
+import { Card, H6, ScrollView, View, XStack, YStack, Text } from 'tamagui';
 
 type RootStackParamList = {
     ChildProfile: { child: ChildProfile };

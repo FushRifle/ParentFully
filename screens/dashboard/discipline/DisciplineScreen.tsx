@@ -8,8 +8,8 @@ import { DisciplinePlan, DisciplineTemplate } from "@/types/discipline";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useState } from "react";
-import { Dimensions, Image, PixelRatio, ScrollView } from "react-native";
-import { Card, View, XStack, YStack, H6, Button } from "tamagui";
+import { Dimensions, Image, PixelRatio, ScrollView, TouchableOpacity } from "react-native";
+import { Card, View, XStack, YStack, H6, Button, H5 } from "tamagui";
 import { MaterialIcons } from "@expo/vector-icons";
 
 
@@ -22,7 +22,7 @@ type Child = {
 };
 
 const DisciplineScreen = ({ navigation }: { navigation: any }) => {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const { user } = useAuth();
     const [error, setError] = useState<string | null>(null);
 
@@ -129,22 +129,23 @@ const DisciplineScreen = ({ navigation }: { navigation: any }) => {
 
                 {/* Header */}
                 <XStack mt="$8" mb="$3" ai="center" jc="flex-start" position="relative" px='$5'>
-                    <Button unstyled
+
+                    <Button
+                        unstyled
                         onPress={() => navigation.goBack()}
-                        hitSlop={24} mr="$5">
+                        hitSlop={24}>
                         <MaterialIcons name="arrow-back" size={20} color={colors.text} />
                     </Button>
 
-                    <H6
-                        fontWeight="600"
+                    <H5
                         color={colors.text}
                         position="absolute"
                         left={0}
                         right={0}
                         textAlign="center"
                     >
-                        Discipline Plan
-                    </H6>
+                        Discipline Plans
+                    </H5>
                 </XStack>
 
                 <YStack ai="center" mt={verticalScale(16)} mb={verticalScale(20)}>
@@ -161,9 +162,6 @@ const DisciplineScreen = ({ navigation }: { navigation: any }) => {
                 </YStack>
 
                 <YStack px={moderateScale(16)} mb={verticalScale(20)} mt={verticalScale(20)}>
-                    <Text fontSize={scaleFont(16)} fontWeight="700" color={colors.text}>
-                        Discipline Plans
-                    </Text>
                     <Text fontSize={scaleFont(12)} color={colors.textSecondary}>
                         Create structured Disciplines that support positive behavior and growth
                     </Text>
@@ -187,26 +185,6 @@ const DisciplineScreen = ({ navigation }: { navigation: any }) => {
                 </XStack>
 
                 <YStack px={moderateScale(16)} space={moderateScale(19)}>
-                    <Card
-                        elevate
-                        padding={moderateScale(12)}
-                        borderRadius={moderateScale(10)}
-                        backgroundColor="white"
-                        pressStyle={{ opacity: 0.8 }}
-                        onPress={() => navigation.navigate("ActiveDiscipline")}
-                    >
-                        <XStack ai="center" jc="space-between">
-                            <XStack ai="center" space={moderateScale(12)}>
-                                <MaterialCommunityIcons name="star" size={moderateScale(20)} color={colors.secondary} />
-                                <YStack >
-                                    <Text fontWeight="700" color={colors.text}>Active Discipline Plans</Text>
-                                    <Text fontSize={12} color="#666">Your kid’s current discipline plans at a glance</Text>
-                                </YStack>
-                            </XStack>
-                            <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="#999" />
-                        </XStack>
-                    </Card>
-
                     <Card
                         elevate
                         padding={moderateScale(12)}
@@ -252,8 +230,9 @@ const DisciplineScreen = ({ navigation }: { navigation: any }) => {
                                     <MaterialCommunityIcons name="plus-circle-outline" size={moderateScale(20)} color={colors.primary} />
                                 </View>
                                 <YStack space='$1'>
-                                    <Text fontWeight="700" color={colors.text}>Create custom Discipline Plan</Text>
-                                    <Text fontSize={12} color="#666">Build from scratch</Text>
+                                    <Text fontWeight={700} color={isDark ? 'black' : colors.text}
+                                    >Create custom Discipline Plan</Text>
+                                    <Text fontSize={12} color={isDark ? 'black' : colors.text}>Build from scratch</Text>
                                 </YStack>
                             </XStack>
                             <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="#999" />

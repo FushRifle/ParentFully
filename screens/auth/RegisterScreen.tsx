@@ -12,6 +12,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {
     Button,
     H2,
+    Checkbox,
+    H4,
     Image,
     Input,
     Separator,
@@ -41,6 +43,7 @@ export const RegisterScreen = () => {
     const router = useRouter()
 
     const [email, setEmail] = useState('')
+    const [terms, setterms] = useState(false);
     const [phone, setPhone] = useState('')
     const [referralCode, setReferralCode] = useState('')
     const [password, setPassword] = useState('')
@@ -48,6 +51,8 @@ export const RegisterScreen = () => {
     const [name, setName] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [Terms, setTerms] = useState(false)
+
     const [error, setError] = useState('')
     const [errors, setErrors] = useState<FormErrors>({})
     const { googleSignIn } = useAuth()
@@ -148,8 +153,7 @@ export const RegisterScreen = () => {
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: colors.background }}>
-            <YStack flex={1} p="$6" space="$4" maw={600} alignSelf="center" w="100%" mt="$2">
-
+            <YStack flex={1} p="$4" space="$4" maw={600} alignSelf="center" w="100%" mt="$2">
                 {/* Logo & Header */}
                 <YStack ai="center" space="$3">
                     <Image
@@ -158,13 +162,14 @@ export const RegisterScreen = () => {
                         resizeMode="contain"
                     />
                     <YStack jc='center' alignItems='center' mb='$3' mt='$2'>
-                        <H2 fontWeight="700" fontSize="$8" color={colors.text}>
+                        <H4 fontWeight="600" fontSize="$6" color={colors.text}>
                             Create Account
-                        </H2>
+                        </H4>
                         <Text
-                            theme="alt2"
-                            fontSize="$5"
+                            mt="$3"
+                            fontSize="$4"
                             fontWeight="500"
+                            color={colors.textSecondary}
                             textAlign="center"
                             flexShrink={1}
                             flexWrap="wrap"
@@ -203,50 +208,53 @@ export const RegisterScreen = () => {
                 {/* Divider */}
                 <XStack jc="center" ai="center" space="$3" my="$1">
                     <Separator />
-                    <Text color={colors.text} fontSize="$6" fontWeight="500">
+                    <Text color={colors.text}>
                         OR
                     </Text>
                     <Separator />
                 </XStack>
 
-                <KeyboardAwareScrollView enableOnAndroid extraScrollHeight={5} keyboardOpeningTime={0}>
+                <KeyboardAwareScrollView
+                    enableOnAndroid
+                    extraScrollHeight={15}
+                    keyboardOpeningTime={0}
+                    contentContainerStyle={{ paddingBottom: 50 }}>
+
                     <YStack space="$4">
                         {/* Error */}
                         {error ? <Text color="red">{error}</Text> : null}
 
                         {/* Full Name */}
                         <YStack space="$1">
-                            <Text fontSize="$5" color={colors.text} fontWeight="700">
+                            <Text color={colors.text} fontWeight="600">
                                 Full Name
                             </Text>
                             <XStack
-                                borderWidth={1}
-                                borderColor={colors.border as any}
                                 borderRadius="$4"
                                 px="$3"
                                 py="$2"
                                 ai="center"
                                 space="$2"
-                                backgroundColor="$background"
+                                backgroundColor={colors.card}
                             >
                                 <User size={18} color="$colorHover" />
                                 <Input
                                     placeholder="Enter your full name"
-                                    placeholderTextColor="$colorPlaceholder"
+                                    placeholderTextColor={colors.text}
                                     value={name}
                                     onChangeText={setName}
                                     flex={1}
                                     borderWidth={0}
                                     p={0}
                                     fontSize="$4"
-                                    backgroundColor="white"
+                                    backgroundColor={colors.card}
                                 />
                             </XStack>
                         </YStack>
 
                         {/* Email */}
                         <YStack space="$1">
-                            <Text fontSize="$5" color={colors.text} fontWeight="700">
+                            <Text color={colors.text} fontWeight="600">
                                 Email Address
                             </Text>
                             <XStack
@@ -257,7 +265,7 @@ export const RegisterScreen = () => {
                                 py="$2"
                                 ai="center"
                                 space="$2"
-                                backgroundColor="$background"
+                                backgroundColor={colors.card}
                             >
                                 <Mail size={18} color="$colorHover" />
                                 <Input
@@ -271,19 +279,17 @@ export const RegisterScreen = () => {
                                     borderWidth={0}
                                     p={0}
                                     fontSize="$4"
-                                    backgroundColor="white"
+                                    backgroundColor={colors.card}
                                 />
                             </XStack>
                         </YStack>
 
                         {/* Phone Number */}
                         <YStack space="$1">
-                            <Text fontSize="$5" color={colors.text} fontWeight="700">
+                            <Text color={colors.text} fontWeight="600">
                                 Phone Number
                             </Text>
                             <XStack
-                                borderWidth={1}
-                                borderColor={colors.border as any}
                                 borderRadius="$4"
                                 px="$3"
                                 py="$2"
@@ -302,19 +308,17 @@ export const RegisterScreen = () => {
                                     borderWidth={0}
                                     p={0}
                                     fontSize="$4"
-                                    backgroundColor="white"
+                                    backgroundColor={colors.card}
                                 />
                             </XStack>
                         </YStack>
 
                         {/* Referral Code */}
                         <YStack space="$1">
-                            <Text fontSize="$5" color={colors.text} fontWeight="700">
+                            <Text color={colors.text} fontWeight="600">
                                 Referral Code (optional)
                             </Text>
                             <XStack
-                                borderWidth={1}
-                                borderColor={colors.border as any}
                                 borderRadius="$4"
                                 px="$3"
                                 py="$2"
@@ -333,14 +337,14 @@ export const RegisterScreen = () => {
                                     borderWidth={0}
                                     p={0}
                                     fontSize="$4"
-                                    backgroundColor="white"
+                                    backgroundColor={colors.card}
                                 />
                             </XStack>
                         </YStack>
 
                         {/* Password */}
                         <YStack space="$1">
-                            <Text fontSize="$5" color={colors.text} fontWeight="700">
+                            <Text color={colors.text} fontWeight="600">
                                 Password
                             </Text>
                             <XStack
@@ -351,7 +355,7 @@ export const RegisterScreen = () => {
                                 py="$2"
                                 ai="center"
                                 space="$2"
-                                backgroundColor="$background"
+                                backgroundColor={colors.card}
                             >
                                 <Lock size={18} color="$colorHover" />
                                 <Input
@@ -364,7 +368,7 @@ export const RegisterScreen = () => {
                                     borderWidth={0}
                                     p={0}
                                     fontSize="$4"
-                                    backgroundColor="white"
+                                    backgroundColor={colors.card}
                                 />
                                 <Button unstyled onPress={() => setShowPassword(!showPassword)} padding="$2">
                                     {showPassword ? (
@@ -378,7 +382,7 @@ export const RegisterScreen = () => {
 
                         {/* Confirm Password */}
                         <YStack space="$1" mt="$3">
-                            <Text fontSize="$5" color={colors.text} fontWeight="700">
+                            <Text color={colors.text} fontWeight="600">
                                 Confirm Password
                             </Text>
                             <XStack
@@ -402,7 +406,7 @@ export const RegisterScreen = () => {
                                     borderWidth={0}
                                     p={0}
                                     fontSize="$4"
-                                    backgroundColor="white"
+                                    backgroundColor={colors.card}
                                 />
                                 <Button unstyled onPress={() => setShowConfirmPassword(!showConfirmPassword)} padding="$2">
                                     {showConfirmPassword ? (
@@ -452,6 +456,44 @@ export const RegisterScreen = () => {
                             </YStack>
                         )}
 
+                        {/* Terms */}
+                        <XStack mt="$2" ai="center" space="$3">
+                            <Checkbox
+                                size="$4"
+                                id="remember"
+                                checked={Terms}
+                                onCheckedChange={(val) => setTerms(!!val)}
+                                borderColor={colors.text}
+                                backgroundColor="transparent"
+                            >
+                                <Checkbox.Indicator backgroundColor={colors.primary} />
+                            </Checkbox>
+
+
+                            <Text
+                                color={colors.text}
+                                flexShrink={1}
+                                flexWrap="wrap"
+                            >
+                                By signing up, you agree to our{' '}
+                                <Text
+                                    color={colors.primary}
+                                    fontWeight="600"
+                                    onPress={() => router.push('/terms' as never)}
+                                >
+                                    Terms of Service
+                                </Text>{' '}
+                                and{' '}
+                                <Text
+                                    color={colors.primary}
+                                    fontWeight="600"
+                                    onPress={() => router.push('/privacy' as never)}
+                                >
+                                    Privacy Policy
+                                </Text>
+                            </Text>
+                        </XStack>
+
                         {/* Signup Button */}
                         <Button
                             size="$5"
@@ -486,34 +528,6 @@ export const RegisterScreen = () => {
                                 </Text>
                             </Text>
                         </XStack>
-
-                        {/* Terms */}
-                        <YStack mt="$2" px="$2" jc="center" ai="center">
-                            <Text
-                                fontSize="$4"
-                                color={colors.text}
-                                textAlign="center"
-                                flexShrink={1}
-                                flexWrap="wrap"
-                            >
-                                By signing up, you agree to our{' '}
-                                <Text
-                                    color={colors.primary}
-                                    fontWeight="600"
-                                    onPress={() => router.push('/terms' as never)}
-                                >
-                                    Terms of Service
-                                </Text>{' '}
-                                and{' '}
-                                <Text
-                                    color={colors.primary}
-                                    fontWeight="600"
-                                    onPress={() => router.push('/privacy' as never)}
-                                >
-                                    Privacy Policy
-                                </Text>
-                            </Text>
-                        </YStack>
                     </YStack>
                 </KeyboardAwareScrollView>
             </YStack>

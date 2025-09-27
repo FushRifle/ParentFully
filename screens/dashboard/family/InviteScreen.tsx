@@ -312,7 +312,6 @@ export default function InviteScreen() {
                             <YStack width="100%" space="$4" marginTop="$4">
                                 <Paragraph
                                     size="$3"
-                                    theme="alt2"
                                     textAlign="center"
                                     marginBottom="$1"
                                     color={colors.textSecondary}

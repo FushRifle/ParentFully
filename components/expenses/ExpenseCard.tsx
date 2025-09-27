@@ -43,9 +43,9 @@ const ExpenseCard = ({
                 w='100%'
                 height={160}
                 mb='$3'
+                bc={colors.card}
                 borderTopColor="#f97316"
                 borderTopWidth={8}
-                bg="white"
             >
                 <YStack space="$2" f={1}>
                     <XStack jc="space-between" ai="center">

@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {
     Button,
     Card,
+    H6,
     Input,
     ScrollView,
     Text,
@@ -217,8 +218,8 @@ const CreateCustomRoutineScreen = () => {
                     ai="center"
                     jc="flex-start"
                     width="100%"
-                    paddingTop="$4"
-                    paddingBottom="$4"
+                    paddingTop="$2"
+                    paddingBottom="$1"
                     px="$3"
                     space='$3'
                 >
@@ -231,7 +232,7 @@ const CreateCustomRoutineScreen = () => {
                             color="white"
                         />
                     </TouchableOpacity>
-                    <Text color={colors.onPrimary} fontSize='$7'>Create Custom Routine</Text>
+                    <H6 color={colors.onPrimary} fontSize='$5'>Create Custom Routine</H6>
                 </XStack>
             </SafeAreaView>
 
@@ -239,11 +240,11 @@ const CreateCustomRoutineScreen = () => {
 
                 {/* Routine Name */}
                 <YStack marginBottom='$4' mt='$2'>
-                    <Text color={colors.text} fontSize='$6' fontWeight="600" mb='$4'>
+                    <Text color={colors.text} fontSize='$4' fontWeight="600" mb='$4'>
                         Build a structured day for your child
                     </Text>
                     <YStack>
-                        <Text color={colors.text} fontSize='$5' fontWeight="900" mb='$2'>
+                        <Text color={colors.text} fontSize='$4' fontWeight="600" mb='$2'>
                             Routine Name
                         </Text>
                         <Card
@@ -270,7 +271,7 @@ const CreateCustomRoutineScreen = () => {
                     </YStack>
 
                     <YStack mt='$3'>
-                        <Text color={colors.text} fontSize='$5' fontWeight="900" mb='$2'>
+                        <Text color={colors.text} fontSize='$4' fontWeight="600" mb='$2'>
                             Routine Description
                         </Text>
                         <Card
@@ -302,7 +303,7 @@ const CreateCustomRoutineScreen = () => {
                 >
                     {/* Add Task */}
                     <YStack>
-                        <Text color={colors.text} fontSize="$5" fontWeight="900" mb='$2'>
+                        <Text color={colors.text} fontSize="$4" fontWeight="600" mb='$2'>
                             Add Tasks
                         </Text>
 
@@ -336,7 +337,7 @@ const CreateCustomRoutineScreen = () => {
                                     padding="$2"
                                     borderRadius="$2"
                                     height={56}
-                                    backgroundColor="white"
+                                    backgroundColor={colors.card}
                                     width={161}
                                 >
                                     <XStack alignItems="center" justifyContent="center" space="$2" flex={1}>

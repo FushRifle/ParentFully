@@ -20,6 +20,7 @@ import {
 } from "tamagui";
 
 type ExpenseDetailRouteProp = RouteProp<RootStackParamList, "ExpenseDetails">;
+type ExpenseStatus = "Pending Approval" | "Approved" | "Rejected" | "Reimburser" | "Pending";
 
 const ExpenseDetailScreen = () => {
     const { colors } = useTheme();
@@ -56,6 +57,15 @@ const ExpenseDetailScreen = () => {
 
         fetchExpense();
     }, [route.params.expenseId]);
+
+    const statusColors: Record<string, string> = {
+        "Pending Approval": "#FFF0D5",
+        "Approved": "#4ade80",
+        "Rejected": "#f87171",
+        "Paid": "#4ade80",
+        "Pending": "#FFF0D5",
+        "Reimburser": "#3b82f6",
+    };
 
     const handleActionPress = (action: "now" | "later" | "reject") => {
         setModalAction(action);
@@ -116,8 +126,15 @@ const ExpenseDetailScreen = () => {
                 </XStack>
 
                 {/* Main Card */}
-                <Card br="$6" p="$5" bg="white" borderWidth={1} borderColor={colors.border as any}>
-                    <YStack ai="center" jc="center" mb="$4">
+                <Card
+                    br="$7"
+                    px="$5"
+                    bg={colors.card}
+                    borderTopWidth={45}
+                    borderColor={colors.border as any}
+                    borderTopColor={colors.primary}
+                >
+                    <YStack ai="center" jc="center" mb="$4" mt='$3'>
                         <Text bg="#FFFBEB" color="black" px="$3" py="$1.5" br="$6" fontWeight="600">
                             {expense.status?.toUpperCase() || "PENDING"}
                         </Text>
@@ -129,54 +146,68 @@ const ExpenseDetailScreen = () => {
                         </Text>
                     </YStack>
 
-                    <YStack space="$5" bg="#F9F8F8" px="$2" py="$3" br="$4">
-                        <YStack>
-                            <Text color={colors.text} fontWeight="600" mb="$2">Category</Text>
-                            <Text fontSize="$6" fontWeight="700" color="#f97316">{expense.category}</Text>
-                        </YStack>
+                    <YStack space="$4" bg={colors.card} px="$2" br="$4">
+                        {/* Category Card */}
+                        <Card bc={colors.textSecondary} px="$3" py="$2" br="$4">
+                            <YStack>
+                                <Text color={colors.text} mb="$2">Category</Text>
+                                <Text color={colors.text}>{expense.category}</Text>
+                            </YStack>
+                        </Card>
 
-                        <YStack>
-                            <Text color={colors.text} fontWeight="600" mb="$2">Child</Text>
-                            <Text fontSize="$5" fontWeight="600" color="$gray12">{expense.children?.name}</Text>
-                        </YStack>
+                        {/* Child Card */}
+                        <Card bc={colors.textSecondary} px="$3" py="$2" br="$4">
+                            <YStack>
+                                <Text color={colors.text} fontWeight="600" mb="$2">Child</Text>
+                                <Text color={colors.text}>{expense.children?.name}</Text>
+                            </YStack>
+                        </Card>
 
-                        <YStack>
-                            <Text color={colors.text} fontWeight="600" mb="$2">Receipt</Text>
-                            <Card bg="$gray3" br="$4" p="$3">
-                                <XStack space="$3">
-                                    <Paperclip color={colors.text as any} />
-                                    <Text fontSize="$5" fontWeight="600" color="$gray12">{expense.title}</Text>
-                                </XStack>
-                            </Card>
-                        </YStack>
+                        {/* Receipt Card */}
+                        <Card bc={colors.textSecondary} px="$3" py="$2" br="$4">
+                            <YStack>
+                                <Text color={colors.text} fontWeight="600" mb="$2">Receipt</Text>
+                                <Card bg={colors.textSecondary} br="$4" p="$3">
+                                    <XStack space="$3" ai="center">
+                                        <Paperclip color={colors.text as any} />
+                                        <Text fontWeight="600" color={colors.text}>{expense.title}</Text>
+                                    </XStack>
+                                </Card>
+                            </YStack>
+                        </Card>
 
-                        <YStack>
-                            <Text color={colors.text} fontWeight="600" mb="$2">Reimbursed by</Text>
-                            <Text fontSize="$5" fontWeight="600" color="$gray12">
-                                {expense.reimburser || "—"}
-                            </Text>
-                        </YStack>
+                        {/* Reimbursed By Card */}
+                        <Card bc={colors.textSecondary} px="$3" py="$2" br="$4">
+                            <YStack>
+                                <Text color={colors.text} mb="$2">Reimbursed by</Text>
+                                <Text color={colors.text}>
+                                    {expense.reimburser || "—"}
+                                </Text>
+                            </YStack>
+                        </Card>
 
-                        <YStack>
-                            <Text color={colors.text} fontWeight="600" mb="$2">Created on</Text>
-                            <Text fontSize="$5" fontWeight="600" color="$gray12">
-                                {new Date(expense.date).toLocaleDateString()}
-                            </Text>
-                        </YStack>
-
-                        <XStack height={1} bg="$gray5" my="$2" />
+                        {/* Created On Card */}
+                        <Card bc={colors.textSecondary} px="$3" py="$2" br="$4">
+                            <YStack>
+                                <Text color={colors.text} fontWeight="600" mb="$2">Created on</Text>
+                                <Text fontSize="$5" fontWeight="600" color={colors.text}>
+                                    {new Date(expense.date).toLocaleDateString()}
+                                </Text>
+                            </YStack>
+                        </Card>
                     </YStack>
+
 
                     {/* Cost Sharing */}
                     <YStack mt="$4">
                         <H5 color={colors.text} fontWeight="600" mb="$3">Cost Sharing</H5>
-                        <Card bg="#F4FFF8" width="100%">
+                        <Card bg={colors.textSecondary} width="100%">
                             <YStack space="$3">
                                 <XStack ai="center" jc="space-between" p="$2">
                                     <XStack ai="center" space="$3">
                                         <Avatar size="$6" br="$10">
                                             <Avatar.Fallback>
-                                                <Text fontSize="$10" fontWeight="700" color="white" textAlign="center"
+                                                <Text fontSize="$7" fontWeight="700" color="white" textAlign="center"
                                                     style={{
                                                         backgroundColor: "#FF8C01",
                                                         width: "100%",
@@ -189,15 +220,15 @@ const ExpenseDetailScreen = () => {
                                             </Avatar.Fallback>
                                         </Avatar>
                                         <YStack>
-                                            <Text fontSize="$4" fontWeight="400" color="$gray12">
+                                            <Text color={colors.text}>
                                                 You
                                             </Text>
-                                            <Text fontSize="$4" fontWeight="700" color={colors.textSecondary}>
+                                            <Text color={colors.text}>
                                                 {expense.your_percentage || 50}% share
                                             </Text>
                                         </YStack>
                                     </XStack>
-                                    <Text fontSize="$5" fontWeight="700" color={colors.secondary}>
+                                    <Text color={colors.secondary}>
                                         {expense.currency}{yourShare.toFixed(2)}
                                     </Text>
                                 </XStack>
@@ -206,7 +237,7 @@ const ExpenseDetailScreen = () => {
                                     <XStack ai="center" space="$3">
                                         <Avatar size="$6" br="$10">
                                             <Avatar.Fallback>
-                                                <Text fontSize="$10" fontWeight="700" color="white" textAlign="center"
+                                                <Text fontSize="$7" fontWeight="700" color="white" textAlign="center"
                                                     style={{
                                                         backgroundColor: "#FF8C01",
                                                         width: "100%",
@@ -219,10 +250,10 @@ const ExpenseDetailScreen = () => {
                                             </Avatar.Fallback>
                                         </Avatar>
                                         <YStack>
-                                            <Text fontSize="$4" fontWeight="400" color="$gray12">
+                                            <Text color={colors.text}>
                                                 {expense.reimburser || "—"}
                                             </Text>
-                                            <Text fontSize="$4" fontWeight="700" color={colors.textSecondary}>
+                                            <Text color={colors.text}>
                                                 {expense.co_parent_percentage || 50}% share
                                             </Text>
                                         </YStack>

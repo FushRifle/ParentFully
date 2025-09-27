@@ -29,7 +29,6 @@ const DailyTipCard: React.FC = () => {
     const renderCard = (tip: string, bgColor: string) => (
         <Card
             key={tip}
-            elevate
             width="100%"
             borderRadius="$4"
             padding="$3"

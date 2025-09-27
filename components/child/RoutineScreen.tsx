@@ -1,7 +1,6 @@
 import { CelebrationModal } from '@/components/CelebrateModal';
 import { GoalBackground } from '@/constants/GoalBackground';
 import { useAuth } from '@/context/AuthContext';
-import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -10,7 +9,7 @@ import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-n
 import { Bell, Pen } from '@tamagui/lucide-icons';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, RefreshControl } from 'react-native';
-import { Button, Card, ScrollView, View, XStack, YStack } from 'tamagui';
+import { Button, Card, ScrollView, View, XStack, YStack, Text } from 'tamagui';
 
 type RootStackParamList = {
     ChildProfile: { child: ChildProfile };
@@ -393,16 +392,6 @@ export const RoutineScreen = ({ childId: initialChildId }: { childId: string }) 
                             <Text color={colors.textSecondary} fontSize='$4'>
                                 No routine tasks for today
                                 Add some to get started!</Text>
-                            <Button
-                                size='$5'
-                                onPress={() =>
-                                    navigation.navigate('Routine')}
-                                backgroundColor={colors.secondary}
-                                color={colors.onPrimary}
-                                marginTop="$4"
-                            >
-                                Add New Routine
-                            </Button>
                         </YStack>
                     ) : (
                         groupedRoutines.map(group => {
@@ -410,17 +399,30 @@ export const RoutineScreen = ({ childId: initialChildId }: { childId: string }) 
                             const template = templates.find(t => t.id === group.template_id);
 
                             return (
-                                <GroupCard
-                                    key={group.key}
-                                    group={group}
-                                    template={template}
-                                    isExpanded={isExpanded}
-                                    onToggleGroup={toggleGroup}
-                                    selectedTasks={selectedTasks}
-                                    setSelectedTasks={setSelectedTasks}
-                                    setCelebratingTask={setCelebratingTask}
-                                    colors={colors}
-                                />
+                                <YStack>
+                                    <GroupCard
+                                        key={group.key}
+                                        group={group}
+                                        template={template}
+                                        isExpanded={isExpanded}
+                                        onToggleGroup={toggleGroup}
+                                        selectedTasks={selectedTasks}
+                                        setSelectedTasks={setSelectedTasks}
+                                        setCelebratingTask={setCelebratingTask}
+                                        colors={colors}
+                                    />
+
+                                    <Button
+                                        size='$5'
+                                        onPress={() =>
+                                            navigation.navigate('Routine')}
+                                        backgroundColor={colors.secondary}
+                                        color={colors.onPrimary}
+                                        marginTop="$4"
+                                    >
+                                        Add New Routine
+                                    </Button>
+                                </YStack>
                             );
                         })
                     )}

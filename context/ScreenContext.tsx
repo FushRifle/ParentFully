@@ -21,8 +21,9 @@ export const ScreenProvider = ({ children }: { children: ReactNode }) => {
         return () => subscription.remove();
     }, []);
 
-    const guidelineBaseWidth = 375; // reference device width
-    const guidelineBaseHeight = 812; // reference device height
+    // Base device to scale against (reference device)
+    const guidelineBaseWidth = 375;
+    const guidelineBaseHeight = 812;
 
     const scaleWidth = (size: number) => (screen.width / guidelineBaseWidth) * size;
     const scaleHeight = (size: number) => (screen.height / guidelineBaseHeight) * size;

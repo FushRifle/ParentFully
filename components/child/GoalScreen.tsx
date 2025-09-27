@@ -2,7 +2,6 @@ import { CelebrationModal } from '@/components/CelebrateModal';
 import { GoalSettingsModal } from '@/components/goals/GoalSettingsModal';
 import { GoalBackground } from '@/constants/GoalBackground';
 import { useAuth } from '@/context/AuthContext';
-import { Text } from '@/context/GlobalText';
 import { updateSelectedGoal } from '@/hooks/goals/useGoal';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
@@ -17,6 +16,7 @@ import {
     ScrollView,
     Spinner,
     View,
+    Text,
     YStack
 } from 'tamagui';
 import GoalCard from './GoalCard';

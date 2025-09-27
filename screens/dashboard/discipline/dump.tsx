@@ -15,6 +15,28 @@ import { Modal, Pressable, RefreshControl } from 'react-native';
 import { Button, Card, H4, ScrollView, Text, View, XStack, YStack } from 'tamagui';
 import { v4 as uuidv4 } from 'uuid';
 
+
+
+<Card
+    elevate
+    padding={moderateScale(12)}
+    borderRadius={moderateScale(10)}
+    backgroundColor="white"
+    pressStyle={{ opacity: 0.8 }}
+    onPress={() => navigation.navigate("ActiveDiscipline")}
+>
+    <XStack ai="center" jc="space-between">
+        <XStack ai="center" space={moderateScale(12)}>
+            <MaterialCommunityIcons name="star" size={moderateScale(20)} color={colors.secondary} />
+            <YStack >
+                <Text fontWeight="700" color={colors.text}>Active Discipline Plans</Text>
+                <Text fontSize={12} color="#666">Your kid’s current discipline plans at a glance</Text>
+            </YStack>
+        </XStack>
+        <MaterialCommunityIcons name="chevron-right" size={moderateScale(20)} color="#999" />
+    </XStack>
+</Card>
+
 export default function DisciplineTemplateScreen() {
     const { colors, isDark } = useTheme();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

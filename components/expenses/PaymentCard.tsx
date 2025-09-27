@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { Card, Text, XStack, YStack } from "tamagui";
+import { useTheme } from "@/styles/ThemeContext";
 
 const PaymentCard = ({
     expenseId,
@@ -18,6 +19,7 @@ const PaymentCard = ({
     reimbursedBy,
     paymentData,
 }: PaymentCardProps) => {
+    const { colors } = useTheme();
     const navigation = useNavigation<NavigationProp>();
 
     const statusColors: Record<string, string> = {
@@ -41,6 +43,8 @@ const PaymentCard = ({
                     date,
                     status,
                     children: { name: childName },
+                    payer_id: "",
+                    creator_name: ""
                 },
                 payment: paymentData,
             });
@@ -57,9 +61,9 @@ const PaymentCard = ({
                 bw={1}
                 height={176}
                 borderColor="$gray5"
+                bc={colors.card}
                 borderTopColor="#3b82f6"
                 borderTopWidth={8}
-                bg="white"
             >
                 <YStack space="$3" f={1}>
                     <XStack jc="space-between" ai="center">

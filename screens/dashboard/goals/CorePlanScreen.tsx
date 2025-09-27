@@ -1,5 +1,4 @@
 import { GoalBackground } from '@/constants/GoalBackground'
-import { Text } from '@/context/GlobalText'
 import { ageGroupDescriptions, type AgeGroupKey } from '@/hooks/goals/useAgeGroupComment'
 import { useCoreValueAgeDescription } from '@/hooks/goals/useCoreValueAgeDescription'
 import { useTheme } from '@/styles/ThemeContext'
@@ -11,6 +10,7 @@ import {
     Button,
     Card,
     H6,
+    Text,
     Spinner,
     ScrollView as TScrollView,
     XStack,
@@ -164,7 +164,6 @@ const CorePlanScreen = () => {
                                         <Card
                                             key={value.id}
                                             borderRadius='$8'
-                                            elevate
                                             size="$2"
                                             flexBasis="48%"
                                             flexGrow={1}

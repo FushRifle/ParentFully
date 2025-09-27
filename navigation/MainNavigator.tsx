@@ -526,7 +526,7 @@ const MainTabs = () => {
                         bottom: Platform.OS === 'ios' ? insets.bottom : 0,
                         left: 20,
                         right: 20,
-                        height: 95,
+                        height: 105,
                         alignSelf: 'center',
                         paddingHorizontal: 16,
                         backgroundColor: colors.background,

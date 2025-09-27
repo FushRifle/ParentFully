@@ -1,6 +1,5 @@
 import { GoalBackground } from '@/constants/GoalBackground'
 import { useAuth } from '@/context/AuthContext'
-import { Text } from '@/context/GlobalText'
 import { useTheme } from '@/styles/ThemeContext'
 import { supabase } from '@/supabase/client'
 import { RootStackParamList } from '@/types'
@@ -20,6 +19,7 @@ import {
     Button,
     H4,
     H6,
+    Text,
     Image,
     Input,
     Label,
@@ -337,7 +337,7 @@ const GoalDetailsScreen = () => {
     };
 
     const renderEditableSection = (title: string, field: keyof Goal, multiline = false) => (
-        <YStack mb="$4">
+        <YStack mb="$4" mt="$1">
             <Text color={colors.text} fontWeight="600" mb="$2">
                 {title}
             </Text>
@@ -346,7 +346,7 @@ const GoalDetailsScreen = () => {
                     value={editedGoal ? (editedGoal[field] as string) || '' : ''}
                     onChangeText={(text) => handleChange(field, text)}
                     placeholder={`Enter ${title.toLowerCase()}`}
-                    borderColor={colors.border as any}
+                    borderColor='transparent'
                     backgroundColor={isDark ? colors.card : 'white'}
                     borderRadius="$5"
                     padding="$3"
@@ -356,7 +356,7 @@ const GoalDetailsScreen = () => {
                 />
             ) : (
                 <Paragraph
-                    color={editedGoal && editedGoal[field] ? colors.text : colors.textSecondary}
+                    color={editedGoal && editedGoal[field] ? colors.text : colors.text}
                     backgroundColor={isDark ? colors.card : 'white'}
                     padding="$3"
                     borderRadius="$3"
@@ -412,6 +412,7 @@ const GoalDetailsScreen = () => {
                                     keyboardType="numeric"
                                     width={80}
                                     borderWidth={1}
+                                    bc={colors.card}
                                     borderColor={colors.border as any}
                                     value={frequencyCount.toString()}
                                     onChangeText={(text) => setFrequencyCount(Number(text))}
@@ -420,6 +421,7 @@ const GoalDetailsScreen = () => {
                                 <Input
                                     keyboardType="numeric"
                                     width={60}
+                                    bc={colors.card}
                                     borderWidth={1}
                                     borderColor={colors.border as any}
                                     value={frequencyDuration.toString()}
@@ -435,7 +437,7 @@ const GoalDetailsScreen = () => {
                                     <Picker
                                         selectedValue={frequencyUnit}
                                         onValueChange={(val: string) => setFrequencyUnit(val)}
-                                        style={{ height: 50 }} // reduce font size
+                                        style={{ height: 48 }} // reduce font size
                                     >
                                         <Picker.Item label="Days" value="days" />
                                         <Picker.Item label="Weeks" value="weeks" />
@@ -456,7 +458,7 @@ const GoalDetailsScreen = () => {
                 </YStack>
 
                 {/* Assign To */}
-                <YStack>
+                <YStack mt='$1'>
                     {isEditing && (
                         <YStack>
                             <H6 color={colors.text} fontWeight="600" mb="$1">
@@ -523,7 +525,7 @@ const GoalDetailsScreen = () => {
                 {/* Reward System */}
                 {isEditing && (
                     <YStack mb="$2">
-                        <H6 mb="$4" fontWeight='600'>Reward System</H6>
+                        <H6 mb="$4" color={colors.text} fontWeight='600'>Reward System</H6>
 
                         <YStack space='$2'>
                             <YStack space='$2'>
@@ -532,7 +534,7 @@ const GoalDetailsScreen = () => {
                                     value={reward.name}
                                     onChangeText={(text) => updateRewardField('name', text)}
                                     placeholder="Name of the reward"
-                                    backgroundColor='white'
+                                    backgroundColor={colors.card}
                                     borderColor={colors.border as any}
                                 />
                             </YStack>
@@ -545,7 +547,7 @@ const GoalDetailsScreen = () => {
                                     multiline
                                     numberOfLines={4}
                                     placeholder="Additional Notes..."
-                                    backgroundColor='white'
+                                    backgroundColor={colors.card}
                                     borderColor={colors.border as any}
                                     paddingVertical="$3"
                                     textAlignVertical="top"
@@ -561,7 +563,7 @@ const GoalDetailsScreen = () => {
                         <H6 color={colors.text} fontWeight="600">
                             Reminder
                         </H6>
-                        <Text>When should we remind you about your goal?</Text>
+                        <Text color={colors.text}>When should we remind you about your goal?</Text>
 
                         {reminders && reminders.length > 0 ? (
                             <XStack
@@ -596,7 +598,6 @@ const GoalDetailsScreen = () => {
                             // Show set reminder card if no reminder exists
                             <Button
                                 width="100%"
-                                borderColor={colors.border as any}
                                 mt="$3"
                                 onPress={navigateToReminder}
                                 icon={<Bell size={16} />}

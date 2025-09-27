@@ -37,6 +37,7 @@ export const AddExpenseScreen = () => {
 
     // data from db
     const [children, setChildren] = useState<Child[]>([])
+    const [selectedChildren, setSelectedChildren] = useState<Child[]>([]);
     const [contacts, setContacts] = useState<Contact[]>([])
 
     // form state
@@ -277,26 +278,37 @@ export const AddExpenseScreen = () => {
                 </XStack>
 
                 {/* Select Child */}
-                <YStack mt="$4" mb='$3'>
+                <YStack mt="$4" mb="$3">
                     <H6 mb="$2">Select Child Concerned</H6>
                     <Card bc="white" p="$3" br="$4">
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {children.map((child) => {
-                                const active = selectedChild === child.id
-                                const initials = child.name?.[0]?.toUpperCase() || "?"
+                                const isSelected = selectedChildren.some((c) => c.id === child.id);
+
+                                const initials = child.name?.[0]?.toUpperCase() || "?";
 
                                 return (
                                     <TouchableOpacity
                                         key={child.id}
-                                        onPress={() => setSelectedChild(child.id)}
+                                        onPress={() => {
+                                            if (isSelected) {
+                                                // unselect
+                                                setSelectedChildren((prev) =>
+                                                    prev.filter((c) => c.id !== child.id)
+                                                );
+                                            } else {
+                                                // select
+                                                setSelectedChildren((prev) => [...prev, child]);
+                                            }
+                                        }}
                                         style={{
                                             alignItems: "center",
                                             marginRight: 16,
                                             padding: 14,
                                             borderRadius: 12,
-                                            borderWidth: active ? 2 : 1,
-                                            borderColor: active ? "#FF8C01" : colors.border as any,
-                                            backgroundColor: active ? "#FEF4EC" : "transparent",
+                                            borderWidth: isSelected ? 2 : 1,
+                                            borderColor: isSelected ? "#FF8C01" : colors.border as any,
+                                            backgroundColor: isSelected ? "#FEF4EC" : "transparent",
                                         }}
                                     >
                                         <Avatar size="$6" br="$10">
@@ -318,17 +330,18 @@ export const AddExpenseScreen = () => {
                                         <Text
                                             mt="$2"
                                             fontSize="$4"
-                                            fontWeight={active ? "700" : "400"}
+                                            fontWeight={isSelected ? "700" : "400"}
                                             color={colors.text}
                                         >
                                             {child.name}
                                         </Text>
                                     </TouchableOpacity>
-                                )
+                                );
                             })}
                         </ScrollView>
                     </Card>
                 </YStack>
+
 
                 {/* Description */}
                 <YStack mb="$3">

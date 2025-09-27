@@ -1,5 +1,4 @@
 import { GoalBackground } from "@/constants/GoalBackground";
-import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -8,7 +7,6 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Bell, ChevronRight, Menu } from "@tamagui/lucide-icons";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-
 import {
     Modal,
     RefreshControl,
@@ -21,11 +19,13 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { Avatar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TextInput } from "react-native";
 import {
     Button,
     Fieldset,
     H4,
     H6,
+    Text,
     Label,
     Sheet,
     Spinner,
@@ -117,13 +117,15 @@ const RoutineDetailsScreen = () => {
     const [mode, setMode] = useState<Mode>("view");
     const [tasks, setTasks] = useState<Task[]>([]);
 
-    const predefinedRoutines: RoutineTemplate[] = [];
     const [children, setChildren] = useState<Child[]>([]);
     const [childrenLoading, setChildrenLoading] = useState(false);
     const [childrenError, setChildrenError] = useState<string | null>(null);
     const [selectedChildren, setSelectedChildren] = useState<Child[]>([]);
     const [assignSheetOpen, setAssignSheetOpen] = useState(false);
     const [showAssignmentSuccess, setShowAssignmentSuccess] = useState(false);
+
+    const [editing, setEditing] = useState(false);
+    const [name, setName] = useState(routine?.name || "");
 
     const fetchRoutine = useCallback(async () => {
         try {
@@ -410,45 +412,6 @@ const RoutineDetailsScreen = () => {
         []
     );
 
-    const renderReorderItem = useCallback(
-        ({ item, drag, isActive, getIndex }: RenderItemParams<Task>) => {
-            const index = getIndex();
-            return (
-                <ScaleDecorator>
-                    <XStack
-                        bg="white"
-                        p="$3"
-                        br="$3"
-                        space="$5"
-                        height={76}
-                        ai="center"
-                        mb="$3"
-                        jc="space-between"
-                        borderWidth={1}
-                        borderColor={colors.border as any}
-                        opacity={isActive ? 0.8 : 1}
-                    >
-                        {/* Drag Handle */}
-                        <TouchableOpacity onLongPress={drag} disabled={isActive}>
-                            <Menu size={20} color={colors.text as string} />
-                        </TouchableOpacity>
-
-                        {/* Task Title */}
-                        <Text flex={1} color="#333" numberOfLines={1}>
-                            {item.title || `Task ${typeof index === "number" ? index + 1 : ""}`}
-                        </Text>
-
-                        {/* Task Details */}
-                        <Text color={colors.text} fontSize={12}>
-                            {item.time_slot || "—"} | {item.duration_minutes || "—"} mins
-                        </Text>
-                    </XStack>
-                </ScaleDecorator>
-            );
-        },
-        [colors.border, colors.text]
-    );
-
     const renderViewItem = useCallback(
         ({ item: task, drag, isActive, getIndex }: RenderItemParams<Task>) => {
             const index = typeof getIndex === "function" ? getIndex() : undefined;
@@ -577,17 +540,8 @@ const RoutineDetailsScreen = () => {
     const Header = useMemo(
         () => (
             <SafeAreaView style={{ backgroundColor: colors.secondary }}>
-                <XStack
-                    ai="center"
-                    jc="space-between"
-                    width="100%"
-                    paddingTop="$2"
-                    paddingBottom="$2"
-                    px="$3"
-                >
-                    <TouchableOpacity
-                        onPress={() => (mode === "view" ? navigation.goBack() : handleCancel())}
-                    >
+                <XStack ai="center" jc="space-between" width="100%" paddingTop="$2" paddingBottom="$2" px="$3">
+                    <TouchableOpacity onPress={() => (mode === "view" ? navigation.goBack() : handleCancel())}>
                         <MaterialCommunityIcons
                             name={mode === "view" ? "arrow-left" : "close"}
                             size={20}
@@ -599,40 +553,59 @@ const RoutineDetailsScreen = () => {
                         <View w={50} h={50} br={25} ai="center" jc="center" bg="#005A31">
                             <MaterialCommunityIcons name={routine?.icon as any || "calendar"} size={24} color="yellow" />
                         </View>
-                        <H4 fontWeight="600" color="white">
-                            {routine?.name || "Routine"}
-                        </H4>
+
+                        {editing ? (
+                            <TextInput
+                                value={name}
+                                onChangeText={setName}
+                                style={{
+                                    color: "white",
+                                    fontWeight: "600",
+                                    fontSize: 18,
+                                    borderBottomWidth: 1,
+                                    borderColor: "white",
+                                }}
+                                autoFocus
+                                onBlur={() => setEditing(false)}
+                            />
+                        ) : (
+                            <H4 fontWeight="600" color="white">
+                                {name || "Routine"}
+                            </H4>
+                        )}
                     </XStack>
 
                     <XStack>
                         {mode === "view" ? (
-                            <TouchableOpacity onPress={handleReorder}>
-                                <MaterialCommunityIcons
-                                    name='dots-vertical'
-                                    size={22}
-                                    color="white"
-                                />
+                            <TouchableOpacity onPress={() => setEditing(true)}>
+                                <MaterialCommunityIcons name="dots-vertical" size={22} color="white" />
                             </TouchableOpacity>
                         ) : (
                             <TouchableOpacity onPress={handleSaveReorder}>
-                                <MaterialCommunityIcons
-                                    name="check"
-                                    size={20}
-                                    color="white"
-                                />
+                                <MaterialCommunityIcons name="check" size={20} color="white" />
                             </TouchableOpacity>
                         )}
                     </XStack>
                 </XStack>
 
-                <XStack px='$3' mb='$2'>
+                <XStack px="$3" mb="$2">
                     <Text fontSize={13} fontWeight="700" color="white">
                         {routine?.description || "Routine"}
                     </Text>
                 </XStack>
             </SafeAreaView>
         ),
-        [colors.secondary, handleCancel, handleReorder, handleSaveReorder, mode, navigation, routine]
+        [
+            colors.secondary,
+            handleCancel,
+            handleReorder,
+            handleSaveReorder,
+            mode,
+            navigation,
+            routine,
+            editing,
+            name,
+        ]
     );
 
     const Content = useMemo(() => {

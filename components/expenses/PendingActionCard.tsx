@@ -1,10 +1,9 @@
-import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { Calendar, Wallet2 } from "@tamagui/lucide-icons";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import { Button, Card, View, XStack, YStack } from "tamagui";
+import { Button, Card, View, XStack, YStack, Text } from "tamagui";
 
 export type RequestType = {
     id: string;
@@ -93,7 +92,7 @@ export const PaymentRequestCard = () => {
                 requests.map((req) => (
                     <Card
                         key={req.id}
-                        backgroundColor="#fff"
+                        backgroundColor={colors.card}
                         borderRadius={12}
                         padding={16}
                         marginBottom={12}
@@ -119,19 +118,19 @@ export const PaymentRequestCard = () => {
                                     </Text>
                                 </View>
 
-                                <Text fontWeight="600">
+                                <Text fontWeight="600" color={colors.text}>
                                     {req.currency}{req.amount}.00
                                 </Text>
                             </XStack>
 
                             <YStack space='$2'>
-                                <Text fontWeight="700">{req.title}</Text>
-                                <Text>Requested From: {req.requestedFromName}</Text>
+                                <Text fontWeight="700" color={colors.text}>{req.title}</Text>
+                                <Text color={colors.text}>Requested From: {req.requestedFromName}</Text>
                             </YStack>
 
                             <XStack justifyContent="space-between" alignItems="center">
-                                <Text color="#555">
-                                    <Calendar size={12} />  {req.due_date}
+                                <Text color={colors.text}>
+                                    <Calendar size={12} color={colors.text as any} />  {req.due_date}
                                 </Text>
                                 <View
                                     style={{
@@ -160,7 +159,7 @@ export const PaymentRequestCard = () => {
                                 br={8}
                                 py={8}
                             >
-                                Take Action
+                                <Text color={colors.text}>Take Action</Text>
                             </Button>
                         </YStack>
                     </Card>

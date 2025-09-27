@@ -1,6 +1,5 @@
 import ConfirmModal from '@/components/settings/ConfirmModal';
 import { GoalBackground } from '@/constants/GoalBackground';
-import { Text } from '@/context/GlobalText';
 import { handleDeleteAccount } from '@/hooks/auth/useDeleteAccount';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
@@ -23,6 +22,7 @@ import {
     Avatar,
     Button,
     Card,
+    Text,
     H4,
     H6,
     Image,
@@ -100,7 +100,7 @@ const SettingItem: React.FC<SettingItemProps> = memo(
                         color={iconColor || colors.primary}
                     />
                 </View>
-                <Text fontSize={13} color={textColor || colors.text}>
+                <Text fontSize={13} color={colors.text}>
                     {name}
                 </Text>
             </XStack>
@@ -127,68 +127,70 @@ const UserProfileCard = memo(
         colors: any;
         onEditProfile: () => void;
     }) => (
-        <YStack
-            borderRadius="$9"
-            backgroundColor={colors.secondary}
-            padding="$4"
-            space="$4"
-            ai="center"
-            jc="center"
-        >
-            <Stack position="relative" ai="center">
-                <Avatar circular size={AVATAR_SIZE}>
-                    {user.avatar_url ? (
-                        <Avatar.Image
-                            source={
-                                typeof user.avatar_url === 'string'
-                                    ? { uri: user.avatar_url }
-                                    : user.avatar_url
-                            }
-                        />
-                    ) : (
-                        <Avatar.Fallback
-                            backgroundColor="#AAFFAA33"
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            <Text fontWeight="700" color="white" textAlign="center">
-                                {getInitials(user.name)}
-                            </Text>
-                        </Avatar.Fallback>
-                    )}
-                </Avatar>
+        <GoalBackground>
+            <YStack
+                borderRadius="$9"
+                backgroundColor={colors.secondary}
+                padding="$4"
+                space="$4"
+                ai="center"
+                jc="center"
+            >
+                <Stack position="relative" ai="center">
+                    <Avatar circular size={AVATAR_SIZE}>
+                        {user.avatar_url ? (
+                            <Avatar.Image
+                                source={
+                                    typeof user.avatar_url === 'string'
+                                        ? { uri: user.avatar_url }
+                                        : user.avatar_url
+                                }
+                            />
+                        ) : (
+                            <Avatar.Fallback
+                                backgroundColor="#AAFFAA33"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Text fontWeight="700" color="white" textAlign="center">
+                                    {getInitials(user.name)}
+                                </Text>
+                            </Avatar.Fallback>
+                        )}
+                    </Avatar>
+
+                    <Button
+                        position="absolute"
+                        bottom={0}
+                        right={0}
+                        circular
+                        size="$2.5"
+                        backgroundColor="$primary"
+                        icon={<MaterialCommunityIcons name="pen" size={14} color="white" />}
+                        onPress={onEditProfile}
+                        pressStyle={{ opacity: 0.9 }}
+                    />
+                </Stack>
+
+                <YStack ai="center" space="$1">
+                    <Text color="white" fontWeight="700">
+                        {user.name}
+                    </Text>
+                    <Text color="white" fontWeight="500">
+                        @{user.username}
+                    </Text>
+                </YStack>
 
                 <Button
-                    position="absolute"
-                    bottom={0}
-                    right={0}
-                    circular
-                    size="$2.5"
-                    backgroundColor="$primary"
-                    icon={<MaterialCommunityIcons name="pen" size={14} color="white" />}
+                    backgroundColor={colors.card}
+                    color="$background"
+                    icon={<MaterialIcons name="edit" size={12} color="white" />}
                     onPress={onEditProfile}
-                    pressStyle={{ opacity: 0.9 }}
-                />
-            </Stack>
-
-            <YStack ai="center" space="$1">
-                <Text color="white" fontWeight="700">
-                    {user.name}
-                </Text>
-                <Text color="white" fontWeight="500">
-                    @{user.username}
-                </Text>
+                >
+                    <Text color={colors.text}>Edit Profile</Text>
+                </Button>
             </YStack>
-
-            <Button
-                backgroundColor="#AAFFAA33"
-                color="$background"
-                icon={<MaterialIcons name="edit" size={12} color="white" />}
-                onPress={onEditProfile}
-            >
-                Edit Profile
-            </Button>
-        </YStack>
+        </GoalBackground>
     )
 );
 
@@ -201,12 +203,9 @@ export function UserProfileScreen() {
     const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
 
     // State
-    const [qrModalOpen, setQrModalOpen] = useState<boolean>(false);
     const [refreshing, setRefreshing] = useState<boolean>(false);
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [user, setUser] = useState<UserProfile | null>(null);
     const [coParents, setCoParents] = useState<FamilyMember[]>([]);
-    const [childrenDropdownOpen, setChildrenDropdownOpen] = useState(false);
     const [openChildId, setOpenChildId] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -323,7 +322,7 @@ export function UserProfileScreen() {
             const formattedChildren: Child[] = (data || []).map((child) => ({
                 id: child.id,
                 name: child.name,
-                dob: child.age || undefined,
+                age: child.age,
                 avatar: child.photo ? { uri: child.photo } : undefined,
                 parent_id: child.parent_id,
                 developmentstage: child.developmentstage
@@ -488,13 +487,16 @@ export function UserProfileScreen() {
                                                         </Text>
                                                     </Avatar.Fallback>
                                                 </Avatar>
+                                                <YStack space='$2'>
+                                                    <H6 fontSize={13} color={colors.text} flex={1} fontWeight='600'>
+                                                        {child.name}
+                                                    </H6>
 
-                                                <H6 fontSize={14} color={colors.text} flex={1} fontWeight='600'>
-                                                    {child.name}
-                                                </H6>
-                                                <Text>
-                                                    Age: {child.age ?? 'N/A'}
-                                                </Text>
+                                                    <Text color={colors.text}>
+                                                        Age: {child.age ?? 'N/A'} y/o
+                                                    </Text>
+                                                </YStack>
+
                                                 <XStack flex={1} jc="flex-end" ai="center">
                                                     <ChevronRight color={colors.textSecondary} />
                                                 </XStack>
@@ -553,7 +555,7 @@ export function UserProfileScreen() {
                                             padding="$3"
                                             alignItems="center"
                                             space="$3"
-                                            backgroundColor="#F5F8FA"
+                                            backgroundColor={colors.card}
                                         >
                                             <Image
                                                 source={parent.avatar || AVATAR_DEFAULT}
@@ -643,13 +645,11 @@ export function UserProfileScreen() {
                         <H4 fontWeight="700" color={colors.text}>Profile</H4>
                     </XStack>
 
-                    <GoalBackground>
-                        <UserProfileCard
-                            user={user}
-                            colors={colors}
-                            onEditProfile={handleEditProfile}
-                        />
-                    </GoalBackground>
+                    <UserProfileCard
+                        user={user}
+                        colors={colors}
+                        onEditProfile={handleEditProfile}
+                    />
 
                     <YStack space="$3" marginTop="$1" marginBottom="$2">
                         <TouchableOpacity onPress={() => navigation.navigate('GiftRefer' as never)}>
@@ -878,12 +878,12 @@ export function UserProfileScreen() {
                                 <Button
                                     size="$4"
                                     br='$6'
-                                    color="white"
                                     backgroundColor="red"
                                     onPress={() => setConfirmModal({ visible: true, type: 'deleteAccount' })}
                                     pressStyle={{ backgroundColor: '$red2' }}
                                 >
-                                    Delete Account
+                                    <Text color="white"
+                                    >Delete Account</Text>
                                 </Button>
                             </XStack>
                         </Card>

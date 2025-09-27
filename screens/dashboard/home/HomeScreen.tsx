@@ -228,7 +228,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                         My Children
                                     </H4>
 
-                                    {/* Thicker underline directly below text */}
                                     <LinearGradient
                                         colors={['#9FCC16', '#FF8C01']}
                                         start={[0, 0]}

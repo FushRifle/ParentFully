@@ -1,7 +1,6 @@
 import LoadingScreen from "@/components/LoadingScreen";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { copyDefaultGoalsToUser } from "@/hooks/goals/useOnSignUP";
-
 import AuthNavigator from "@/navigation/AuthNavigator";
 import MainNavigator from "@/navigation/MainNavigator";
 import AddChildScreen from "@/screens/auth/AddChildScreen";
@@ -29,23 +28,17 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <AuthProvider>
           <GoalProvider>
-            <ResponsiveTextProvider>
-              <ScreenProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <RootLayoutNav />
-                </GestureHandlerRootView>
-              </ScreenProvider>
-            </ResponsiveTextProvider>
+            <ScreenProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <RootLayoutNav />
+              </GestureHandlerRootView>
+            </ScreenProvider>
           </GoalProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </TamaguiProvider>
   );
 }
-
-LogBox.ignoreLogs([
-  'Error While updating fontSize of a view managed by RCText'
-]);
 
 function RootLayoutNav() {
   const { user, isLoading } = useAuth();
@@ -215,10 +208,4 @@ function RootLayoutNav() {
       <Stack.Screen name="(tabs)" />
     </Stack>
   );
-}
-
-function NavigatorSwitcher() {
-  const { user, isLoading } = useAuth();
-  if (isLoading) return null;
-  return user ? <MainNavigator /> : <AuthNavigator />;
 }

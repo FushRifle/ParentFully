@@ -1,10 +1,10 @@
 import { GoalBackground } from "@/constants/GoalBackground";
-import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Plus } from "@tamagui/lucide-icons";
 import { useEffect, useState } from "react";
 import { Modal, ScrollView, TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -14,6 +14,7 @@ import {
     Card,
     Fieldset,
     H4,
+    Text,
     Input,
     Label,
     Sheet,
@@ -24,13 +25,11 @@ import {
 } from "tamagui";
 
 type Props = NativeStackScreenProps<RootStackParamList, "AddDiscipline">;
-
 type RuleSet = {
     rule: string;
     consequence: string;
     notes: string;
 };
-
 type Child = {
     id: string;
     name: string;
@@ -40,7 +39,6 @@ type Child = {
 
 export default function AddDisciplineScreen({ navigation }: Props) {
     const { colors } = useTheme();
-
     // Local state
     const [planName, setPlanName] = useState("");
     const [description, setDescription] = useState("");
@@ -174,11 +172,11 @@ export default function AddDisciplineScreen({ navigation }: Props) {
                     <YStack space="$4" mt="$7">
                         <XStack space="$4" ai="center">
                             <TouchableOpacity onPress={() => navigation.goBack()}>
-                                <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
+                                <MaterialCommunityIcons name="arrow-left" size={26} color={colors.text as any} />
                             </TouchableOpacity>
-                            <Text fontSize="$7" fontWeight="700" color={colors.text}>
+                            <H4 fontSize="$5" fontWeight="600" color={colors.text}>
                                 Add Discipline Plan
-                            </Text>
+                            </H4>
                         </XStack>
                     </YStack>
 
@@ -188,23 +186,27 @@ export default function AddDisciplineScreen({ navigation }: Props) {
                     >
                         {/* Plan Fields */}
                         <YStack>
-                            <Text fontSize="$5" mt="$3" mb="$1" color="#444">
+                            <Text mt="$3" mb="$2" color={colors.text}>
                                 Plan Name
                             </Text>
                             <Input
                                 size="$5"
                                 value={planName}
-                                backgroundColor="white"
+                                placeholderTextColor={colors.text}
+                                backgroundColor={colors.card}
                                 onChangeText={setPlanName}
                                 editable={isEditing}
+                                borderColor='transparent'
+
                             />
 
-                            <Text fontSize="$5" mt="$3" mb="$1" color="#444">
+                            <Text mt="$3" mb="$1" color={colors.text}>
                                 Description
                             </Text>
                             <Input
+                                borderColor='transparent'
                                 size="$5"
-                                backgroundColor="white"
+                                backgroundColor={colors.card}
                                 value={description}
                                 onChangeText={setDescription}
                                 editable={isEditing}
@@ -213,12 +215,13 @@ export default function AddDisciplineScreen({ navigation }: Props) {
 
                         {/* Rules */}
                         <XStack ai="center" jc="space-between" mt="$5" mb="$1">
-                            <Text fontSize="$6" fontWeight="600" color="#444">
+                            <Text color={colors.text}>
                                 Rules Set
                             </Text>
-                            <Button size="$3" bg="#FFE6C8" borderRadius={9999} onPress={addRuleSet}>
-                                <Text color={colors.primary} fontWeight="700">
-                                    + Add Rule
+                            <Button size="$3" bg="#FFE6C8"
+                                borderRadius={9999} onPress={addRuleSet}>
+                                <Text color={colors.primary}>
+                                    <Plus size={12} color={colors.primary as any} /> Add Rule
                                 </Text>
                             </Button>
                         </XStack>
@@ -229,18 +232,17 @@ export default function AddDisciplineScreen({ navigation }: Props) {
                                 p="$4"
                                 mb="$4"
                                 borderRadius="$6"
-                                bordered
-                                backgroundColor="white"
+                                bc={colors.card}
                             >
                                 <YStack space="$3">
                                     <View space="$2">
-                                        <Text color="green" fontSize="$5" fontWeight="700">
+                                        <Text color="green" fontWeight="600">
                                             Rules
                                         </Text>
                                         <Input
-                                            borderWidth={1}
-                                            borderColor={colors.border as any}
                                             value={ruleItem.rule}
+                                            backgroundColor={colors.textSecondary}
+                                            borderColor='transparent'
                                             editable={isEditing}
                                             onChangeText={(text) =>
                                                 handleUpdateRuleSet(index, "rule", text)
@@ -249,13 +251,13 @@ export default function AddDisciplineScreen({ navigation }: Props) {
                                     </View>
 
                                     <View space="$2">
-                                        <Text color="red" fontSize="$5" fontWeight="700">
+                                        <Text color="red" fontWeight="600">
                                             Consequences
                                         </Text>
                                         <Input
-                                            borderWidth={1}
-                                            borderColor={colors.border as any}
                                             value={ruleItem.consequence}
+                                            backgroundColor={colors.textSecondary}
+                                            borderColor='transparent'
                                             editable={isEditing}
                                             onChangeText={(text) =>
                                                 handleUpdateRuleSet(index, "consequence", text)
@@ -264,13 +266,13 @@ export default function AddDisciplineScreen({ navigation }: Props) {
                                     </View>
 
                                     <View space="$2">
-                                        <Text color="blue" fontSize="$5" fontWeight="700">
+                                        <Text color="blue" fontWeight="600">
                                             Parent Notes
                                         </Text>
                                         <Input
-                                            borderWidth={1}
-                                            borderColor={colors.border as any}
                                             value={ruleItem.notes}
+                                            backgroundColor={colors.textSecondary}
+                                            borderColor='transparent'
                                             editable={isEditing}
                                             numberOfLines={4}
                                             height={90}

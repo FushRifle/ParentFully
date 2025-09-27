@@ -1,6 +1,5 @@
 import { GoalBackground } from "@/constants/GoalBackground";
 import { useAuth } from "@/context/AuthContext";
-import { Text } from '@/context/GlobalText';
 import { RootStackParamList } from "@/navigation/MainNavigator";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
@@ -8,8 +7,8 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Dimensions, Modal, PixelRatio, TextInput as RNTextInput, ScrollView, TouchableOpacity } from "react-native";
-import { Button, Card, H6, Spinner, View, XStack, YStack } from "tamagui";
+import { Alert, Dimensions, Modal, TextInput, ScrollView, TouchableOpacity } from "react-native";
+import { Button, Card, H6, Spinner, View, XStack, YStack, Text, H5 } from "tamagui";
 
 // Types
 type RoutineDetailsScreenNavigationProp = NativeStackNavigationProp<
@@ -295,7 +294,6 @@ const useRoutineOperations = (myRoutines: RoutineTemplate[], predefinedRoutines:
     };
 };
 
-// Edit Modal Component
 const EditRoutineModal = React.memo(({
     visible,
     routine,
@@ -342,7 +340,7 @@ const EditRoutineModal = React.memo(({
                     <YStack space={16}>
                         {/* Header */}
                         <XStack justifyContent="space-between" alignItems="center">
-                            <H6 fontWeight="600" color={colors.text}>
+                            <H6 fontWeight="bold" color={colors.text}>
                                 Edit Routine
                             </H6>
                             <TouchableOpacity onPress={onClose}>
@@ -352,10 +350,10 @@ const EditRoutineModal = React.memo(({
 
                         {/* Routine Name */}
                         <YStack space={12}>
-                            <Text fontSize={14} fontWeight="600" color={colors.text}>
+                            <Text fontWeight="bold" color={colors.text}>
                                 Routine Name
                             </Text>
-                            <RNTextInput
+                            <TextInput
                                 value={name}
                                 onChangeText={onNameChange}
                                 style={{
@@ -373,10 +371,10 @@ const EditRoutineModal = React.memo(({
 
                         {/* Description */}
                         <YStack space={12}>
-                            <Text fontSize={14} fontWeight="600" color={colors.text}>
+                            <Text fontWeight="bold" color={colors.text}>
                                 Description
                             </Text>
-                            <RNTextInput
+                            <TextInput
                                 value={description}
                                 onChangeText={onDescriptionChange}
                                 style={{
@@ -398,7 +396,7 @@ const EditRoutineModal = React.memo(({
 
                         {/* Preloaded Note */}
                         {routine.is_preloaded && !routine.user_id && (
-                            <Text color={colors.primary} fontSize={12} fontStyle="italic">
+                            <Text color={colors.primary} fontStyle="italic">
                                 This is a predefined template. Saving will create a copy in your routines.
                             </Text>
                         )}
@@ -430,7 +428,6 @@ const EditRoutineModal = React.memo(({
     );
 });
 
-// Routine Card Component
 const RoutineCard = React.memo(({
     routine,
     isUserRoutine,
@@ -499,7 +496,7 @@ const RoutineCard = React.memo(({
                         {/* Routine Info */}
                         <YStack flex={1} space={6}>
                             <XStack ai="center" jc="space-between" space={12}>
-                                <H6 fontSize={14} fontWeight="600">
+                                <H6 fontSize={14} fontWeight="bold">
                                     {routine.name}
                                 </H6>
 
@@ -522,7 +519,7 @@ const RoutineCard = React.memo(({
                                 </TouchableOpacity>
                             </XStack>
 
-                            <Text fontSize={10} color="#555" lineHeight={18} numberOfLines={2} ellipsizeMode="tail">
+                            <Text fontSize="$3" color="#555" lineHeight={18} numberOfLines={2} ellipsizeMode="tail">
                                 {routine.description || "No description available"}
                             </Text>
 
@@ -533,17 +530,15 @@ const RoutineCard = React.memo(({
                             )}
 
                             <XStack mt={12} space={12} jc="space-between">
-                                <Text fontSize={12} fontWeight="600" color={colors.primary}>
+                                <Text fontSize='$3' fontWeight="bold" color={colors.primary}>
                                     {(routine.tasks ?? []).length} Tasks
                                 </Text>
 
-                                {isUserRoutine && (
-                                    <XStack mr={10}>
-                                        <TouchableOpacity onPress={onDelete}>
-                                            <MaterialCommunityIcons name="trash-can" size={20} color="red" />
-                                        </TouchableOpacity>
-                                    </XStack>
-                                )}
+                                <XStack mr={10}>
+                                    <TouchableOpacity onPress={onDelete}>
+                                        <MaterialCommunityIcons name="trash-can" size={20} color="red" />
+                                    </TouchableOpacity>
+                                </XStack>
                             </XStack>
                         </YStack>
                     </XStack>
@@ -554,7 +549,6 @@ const RoutineCard = React.memo(({
     );
 });
 
-// Main Component
 const RoutineScreen = () => {
     const { colors } = useTheme();
     const navigation = useNavigation<RoutineDetailsScreenNavigationProp>();
@@ -719,9 +713,9 @@ const RoutineScreen = () => {
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
                         </TouchableOpacity>
-                        <H6 fontWeight="600" color={colors.text}>
+                        <H5 fontWeight="bold" color={colors.text}>
                             Routine
-                        </H6>
+                        </H5>
                     </XStack>
 
                     <Text color={colors.textSecondary}>
@@ -769,7 +763,7 @@ const RoutineScreen = () => {
                         >
                             <XStack ai="center" space={12} paddingVertical={8}>
                                 <Feather name="download" size={18} color={colors.primary} />
-                                <Text color={colors.primary} fontSize={12}>
+                                <Text color={colors.primary} fontSize='$3'>
                                     Download All
                                 </Text>
                             </XStack>
@@ -784,7 +778,7 @@ const RoutineScreen = () => {
                         >
                             <XStack ai="center" space={12} paddingVertical={8}>
                                 <Feather name="printer" size={18} color={colors.secondary} />
-                                <Text color={colors.secondary} fontSize={12}>
+                                <Text color={colors.secondary} fontSize='$3'>
                                     Print All
                                 </Text>
                             </XStack>
@@ -801,20 +795,24 @@ const RoutineScreen = () => {
 
                 {/* Error State */}
                 {error && (
-                    <Text color="red" fontSize="$3" mt="$4">
+                    <Text color="red" fontSize='$3' mt="$4">
                         {error}
                     </Text>
                 )}
 
                 {/* Content */}
                 {!loading && !error && (
-                    <YStack mt="$6" space="$2">
+                    <YStack mt="$3" space="$2">
                         {/* Predefined Routines Section */}
-                        <H6 fontSize={14} fontWeight="600" color={colors.text} mt="$4" mb="$2">
-                            Predefined Routines
+                        <H6 fontSize='$5' fontWeight="bold" color={colors.text} mt="$4" mb="$2">
+                            Available Routines
                         </H6>
-                        {filteredPredefined.length > 0 ? (
-                            filteredPredefined.map((routine) => renderRoutineCard(routine, false))
+
+                        {(filteredPredefined.length > 0 || myRoutines.length > 0) ? (
+                            <>
+                                {filteredPredefined.map((routine) => renderRoutineCard(routine, false))}
+                                {myRoutines.map((routine) => renderRoutineCard(routine, true))}
+                            </>
                         ) : (
                             <Text color="#666">No templates available.</Text>
                         )}
@@ -822,7 +820,7 @@ const RoutineScreen = () => {
                         {/* Divider */}
                         <XStack ai="center" my="$4">
                             <View flex={1} height={1} bg="gray" />
-                            <H6 fontSize={14} fontWeight="600" mx="$3" color={colors.text}>
+                            <H6 fontSize={14} fontWeight="bold" mx="$3" color={colors.text}>
                                 OR
                             </H6>
                             <View flex={1} height={1} bg="gray" />

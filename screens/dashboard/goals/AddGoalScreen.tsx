@@ -1,6 +1,5 @@
 import { GoalBackground } from '@/constants/GoalBackground';
 import { useAuth } from '@/context/AuthContext';
-import { Text } from '@/context/GlobalText';
 import { useTheme } from '@/styles/ThemeContext';
 import { supabase } from '@/supabase/client';
 import { RootStackParamList } from '@/types';
@@ -18,6 +17,7 @@ import {
     Button,
     H4,
     H6,
+    Text,
     Image,
     Input,
     Paragraph,

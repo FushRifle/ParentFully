@@ -1,4 +1,3 @@
-import { Text } from '@/context/GlobalText';
 import { useGoalsContext } from '@/context/GoalContext';
 import { supabase } from '@/supabase/client';
 import { useNavigation } from '@react-navigation/native';
@@ -6,9 +5,8 @@ import { Award, Edit3, Trash2 } from '@tamagui/lucide-icons';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Modal } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { Button, H3, H6, XStack, YStack } from 'tamagui';
+import { Button, H3, H6, XStack, YStack, Text } from 'tamagui';
 import CelebrationModal from './CelebrationModal';
-
 
 const statusStyles: Record<string, { bg: string; text: string }> = {
     Mastered: { bg: '#D1FAE5', text: '#059669' },

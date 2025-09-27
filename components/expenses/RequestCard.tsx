@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { Card, Text, XStack, YStack } from "tamagui";
+import { useTheme } from "@/styles/ThemeContext";
 
 const RequestCard = ({
     expenseId,
@@ -18,6 +19,7 @@ const RequestCard = ({
     reimbursedBy,
     requestData,
 }: RequestCardProps) => {
+    const { colors } = useTheme();
     const navigation = useNavigation<NavigationProp>();
 
     const statusColors: Record<string, string> = {
@@ -57,10 +59,9 @@ const RequestCard = ({
                 p="$4"
                 bw={1}
                 height={176}
-                borderColor="$gray5"
+                bc={colors.card}
                 borderTopColor="#8b5cf6"
                 borderTopWidth={8}
-                bg="white"
             >
                 <YStack space="$3" f={1}>
                     <XStack jc="space-between" ai="center">

@@ -9,7 +9,7 @@ const ResponsiveTextContext = createContext<ResponsiveTextContextProps | undefin
 
 export const ResponsiveTextProvider = ({ children }: { children: ReactNode }) => {
     const { width } = Dimensions.get('window');
-    const guidelineBaseWidth = 375; // reference width
+    const guidelineBaseWidth = 375;
 
     const scaleFont = (size: number) => (width / guidelineBaseWidth) * size;
 

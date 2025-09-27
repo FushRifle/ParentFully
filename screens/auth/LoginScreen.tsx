@@ -17,6 +17,7 @@ import {
     Button,
     Checkbox,
     H2,
+    H4,
     Image,
     Input,
     Label,
@@ -27,7 +28,7 @@ import {
 } from 'tamagui'
 
 export default function LoginScreen() {
-    const { colors } = useTheme()
+    const { colors, isDark } = useTheme()
     const navigation = useNavigation();
     const { setUser } = useAuth();
 
@@ -102,7 +103,7 @@ export default function LoginScreen() {
                     contentContainerStyle={{ flexGrow: 1 }}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <YStack flex={1} p="$5" space="$4" maw={600} alignSelf="center" w="100%" mt="$8">
+                    <YStack flex={1} p="$4" space="$4" maw={600} alignSelf="center" w="100%" mt="$8">
 
                         {/* Logo & Header */}
                         <YStack ai="center" space="$3" mb="$2">
@@ -112,9 +113,9 @@ export default function LoginScreen() {
                                 resizeMode="contain"
                             />
                             <YStack jc='center' alignItems='center' mb='$3' mt='$2'>
-                                <H2 fontWeight="700" fontFamily='interBold' fontSize="$8" color={colors.text}>
+                                <H4 fontWeight="600" fontSize="$6" color={colors.text}>
                                     Welcome back
-                                </H2>
+                                </H4>
                                 <Text color={colors.text} fontSize="$4" fontWeight="500">
                                     Log In to continue grooming your child
                                 </Text>
@@ -137,7 +138,7 @@ export default function LoginScreen() {
                                     }
                                     space="$4"
                                 >
-                                    <Text color={colors.text} fontWeight="700" fontFamily='interBold'>
+                                    <Text color={colors.text} fontWeight="600">
                                         Continue with Google
                                     </Text>
                                 </Button>
@@ -147,7 +148,7 @@ export default function LoginScreen() {
                         {/* Divider */}
                         <XStack jc="center" ai="center" space="$3" my="$1">
                             <Separator />
-                            <Text color={colors.text} fontSize="$6" fontWeight="500">OR</Text>
+                            <Text color={colors.text} fontSize="$5" fontWeight="500">OR</Text>
                             <Separator />
                         </XStack>
 
@@ -220,7 +221,8 @@ export default function LoginScreen() {
                                     <Checkbox size="$4" id="remember" checked={rememberMe} onCheckedChange={(val) => setRememberMe(!!val)} backgroundColor="white">
                                         <Checkbox.Indicator backgroundColor={colors.primary} />
                                     </Checkbox>
-                                    <Label htmlFor="remember" fontSize="$3" color={colors.text}>
+                                    <Label htmlFor="remember" fontWeight='$600' fontSize="$3"
+                                        color={colors.text}>
                                         Remember me
                                     </Label>
                                 </XStack>
@@ -248,9 +250,9 @@ export default function LoginScreen() {
                         <XStack jc="center" mt="$3">
                             <Text fontSize="$5" color="$color">
                                 Don't have an account?{' '}
-                                <Text textDecorationLine="underline" color={colors.primary} fontWeight="700" onPress={() => navigation.navigate("Register" as never)}>
+                                <H4 fontSize='$5' textDecorationLine="underline" color={colors.primary} fontWeight="600" onPress={() => navigation.navigate("Register" as never)}>
                                     Sign Up
-                                </Text>
+                                </H4>
                             </Text>
                         </XStack>
 

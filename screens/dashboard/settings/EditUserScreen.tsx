@@ -1,3 +1,4 @@
+import { GoalBackground } from '@/constants/GoalBackground'
 import { useTheme } from '@/styles/ThemeContext'
 import { supabase } from '@/supabase/client'
 import { Feather } from '@expo/vector-icons'
@@ -9,6 +10,7 @@ import {
     Button,
     Form,
     H4,
+    H6,
     Input,
     Label,
     Spinner,
@@ -177,128 +179,133 @@ export default function EditUserScreen() {
     }
 
     return (
-        <YStack f={1} bg={colors.background} p="$4" space="$4">
-            <XStack justifyContent="flex-start" mt="$6" space="$4">
-                <Button
-                    unstyled
-                    onPress={() => navigation.goBack()}
-                    icon={<Feather name="chevron-left" size={23} color={colors.text} />}
-                    pressStyle={{ opacity: 0.8 }}
-                />
-                <H4 fontWeight="700" color={colors.text}> Edit Profile</H4>
-            </XStack>
+        <GoalBackground>
+            <YStack f={1} p="$4" space="$4">
+                <XStack justifyContent="flex-start" mt="$6" space="$4">
+                    <Button
+                        unstyled
+                        onPress={() => navigation.goBack()}
+                        icon={<Feather name="chevron-left" size={23} color={colors.text} />}
+                        pressStyle={{ opacity: 0.8 }}
+                    />
+                    <H6 fontWeight="700" color={colors.text}> Edit Profile</H6>
+                </XStack>
 
-            <Form onSubmit={handleSubmit}>
-                <YStack space="$4" mt="$2" ai="center">
+                <Form onSubmit={handleSubmit}>
+                    <YStack space="$4" mt="$2" ai="center">
+                        {/* Avatar Section */}
+                        <YStack ai="center" space="$2">
+                            <View position="relative">
+                                <Avatar circular size={AVATAR_SIZE}>
+                                    {formData.avatar ? (
+                                        <Avatar.Image
+                                            source={
+                                                typeof formData.avatar === 'string'
+                                                    ? { uri: formData.avatar }
+                                                    : formData.avatar
+                                            }
+                                        />
+                                    ) : (
+                                        <Avatar.Fallback
+                                            backgroundColor={colors.card}
+                                            borderWidth={1}
+                                            delayMs={600}
+                                            justifyContent="center"
+                                            alignItems="center"
+                                        >
+                                            <Text fontWeight="700" fontSize={32} color={colors.text} textAlign="center">
+                                                {getInitials(formData.name)}
+                                            </Text>
+                                        </Avatar.Fallback>
+                                    )}
+                                </Avatar>
+                            </View>
 
-                    {/* Avatar Section */}
-                    <YStack ai="center" space="$2">
-                        <View position="relative">
-                            <Avatar circular size={AVATAR_SIZE}>
-                                {formData.avatar ? (
-                                    <Avatar.Image
-                                        source={
-                                            typeof formData.avatar === 'string'
-                                                ? { uri: formData.avatar }
-                                                : formData.avatar
-                                        }
-                                    />
-                                ) : (
-                                    <Avatar.Fallback
-                                        backgroundColor="$gray5"
-                                        delayMs={600}
-                                        justifyContent="center"
-                                        alignItems="center"
-                                    >
-                                        <Text fontWeight="700" fontSize={32} color={colors.text} textAlign="center">
-                                            {getInitials(formData.name)}
-                                        </Text>
-                                    </Avatar.Fallback>
-                                )}
-                            </Avatar>
-                        </View>
-
-                        <XStack space="$2">
-                            <Button
-                                size="$2"
-                                onPress={handleImagePick}
-                                disabled={isLoading}
-                                theme="alt1"
-                            >
-                                {formData.avatar ? 'Change' : 'Add Photo'}
-                            </Button>
-                            {formData.avatar && (
+                            <XStack space="$2">
                                 <Button
                                     size="$2"
-                                    onPress={handleRemoveAvatar}
+                                    onPress={handleImagePick}
                                     disabled={isLoading}
-                                    theme="red"
                                 >
-                                    Remove
+                                    {formData.avatar ? 'Change' : 'Add Photo'}
                                 </Button>
-                            )}
-                        </XStack>
-                    </YStack>
+                                {formData.avatar && (
+                                    <Button
+                                        size="$2"
+                                        onPress={handleRemoveAvatar}
+                                        disabled={isLoading}
+                                    >
+                                        Remove
+                                    </Button>
+                                )}
+                            </XStack>
+                        </YStack>
 
-                    {/* Name */}
-                    <YStack space="$2" w="100%">
-                        <Label htmlFor="name">Full Name</Label>
-                        <Input
-                            id="name"
-                            value={formData.name}
-                            onChangeText={text => setFormData(prev => ({ ...prev, name: text }))}
-                            placeholder="Enter your name"
-                            borderWidth={1}
-                            borderColor={colors.border as any}
-                            disabled={isLoading}
-                        />
-                    </YStack>
-
-                    {/* Email */}
-                    <YStack space="$2" w="100%">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            value={formData.email}
-                            onChangeText={text => setFormData(prev => ({ ...prev, email: text }))}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            borderWidth={1}
-                            borderColor={colors.border as any}
-                            placeholder="Enter your email"
-                            disabled={isLoading}
-                        />
-                    </YStack>
-
-                    {error && (
-                        <Text color="$red10" textAlign="center">
-                            {error}
-                        </Text>
-                    )}
-
-                    <XStack space="$2" w="100%" mt="$4">
-                        <Button
-                            flex={1}
-                            onPress={() => navigation.goBack()}
-                            disabled={isLoading}
-                            theme="gray"
+                        {/* Name */}
+                        <YStack space="$2" w="100%"
                         >
-                            Cancel
-                        </Button>
-                        <Form.Trigger asChild>
+                            <Text color={colors.text} htmlFor="name">Full Name</Text>
+                            <Input
+                                id="name"
+                                value={formData.name}
+                                style={{ color: colors.text }}
+                                onChangeText={text => setFormData(prev => ({ ...prev, name: text }))}
+                                placeholder="Enter your name"
+                                placeholderTextColor={colors.text}
+                                backgroundColor={colors.card}
+                                disabled={isLoading}
+                            />
+                        </YStack>
+
+                        {/* Email */}
+                        <YStack space="$2" w="100%">
+                            <Label color={colors.text} htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                value={formData.email}
+                                style={{ color: colors.text }}
+                                onChangeText={text => setFormData(prev => ({ ...prev, email: text }))}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                placeholder="Enter your email"
+                                placeholderTextColor={colors.text}
+                                backgroundColor={colors.card}
+                                disabled={isLoading}
+                            />
+                        </YStack>
+
+                        {error && (
+                            <Text color="$red10" textAlign="center">
+                                {error}
+                            </Text>
+                        )}
+
+                        <XStack space="$2" w="100%" mt="$7">
                             <Button
                                 flex={1}
-                                bg={colors.primary}
-                                color={colors.onPrimary}
-                                icon={isLoading ? <Spinner /> : <Feather name="save" size={SAVE_ICON_SIZE} />}
+                                outline=''
+                                borderWidth={1}
+                                borderColor={colors.primary}
+                                onPress={() => navigation.goBack()}
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Saving...' : 'Save Changes'}
+                                Cancel
                             </Button>
-                        </Form.Trigger>
-                    </XStack>
-                </YStack>
-            </Form>
-        </YStack>
+                            <Form.Trigger asChild>
+                                <Button
+                                    flex={1}
+                                    bg={colors.primary}
+                                    color={colors.onPrimary}
+                                    icon={isLoading ? <Spinner /> : <Feather name="save" size={SAVE_ICON_SIZE} />}
+                                    disabled={isLoading}
+                                >
+                                    <Text color={colors.text}>{isLoading ? 'Saving...' : 'Save Changes'}</Text>
+                                </Button>
+                            </Form.Trigger>
+                        </XStack>
+                    </YStack>
+                </Form>
+            </YStack>
+        </GoalBackground>
     )
 }

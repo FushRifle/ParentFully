@@ -1,5 +1,4 @@
 import { GoalBackground } from "@/constants/GoalBackground";
-import { Text } from '@/context/GlobalText';
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from '@/supabase/client';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -10,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Card, H4, Input, XStack, YStack } from 'tamagui';
+import { Button, Card, H4, Input, XStack, Text, YStack } from 'tamagui';
 
 type Task = {
     id?: string;

@@ -1,3 +1,4 @@
+import { GoalBackground } from "@/constants/GoalBackground";
 import { useTheme } from "@/styles/ThemeContext";
 import { supabase } from "@/supabase/client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -13,6 +14,7 @@ import {
     Button,
     Card,
     H3,
+    H6,
     Input,
     Paragraph,
     ScrollView,
@@ -103,7 +105,7 @@ export default function GiftInviteScreen() {
                     const code = `${user.id.slice(0, 8)}-${Math.random()
                         .toString(36)
                         .substring(2, 8)}`;
-                    const link = `https://yourapp.com/join-family?code=${code}`;
+                    const link = `https://parentfully.app/join-family?code=${code}`;
                     setQrCodeValue(link);
                     setInviteLink(link);
 
@@ -221,178 +223,180 @@ export default function GiftInviteScreen() {
 
     return (
         <>
-            <Stack.Screen options={{ headerShown: false }} />
-
-            <ScrollView
-                f={1}
-                bg={colors.background}
-                p="$4"
-                showsVerticalScrollIndicator={false}
-            >
-                {/* Header */}
-                <XStack space="$4" ai="center" mt='$7' mb='$3'>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <MaterialCommunityIcons name="arrow-left" size={26} color="black" />
-                    </TouchableOpacity>
-                    <Text fontSize="$6" fontWeight="700" color={colors.text as any}>
-                        Refer a Friend
-                    </Text>
-                </XStack>
-
-                <YStack space="$4" mt="$4">
-                    <YStack space='$3'>
-                        <H3 ta="left">
-                            Invite Co-parent or Third party
-                        </H3>
-                        <Text>
-                            Share this code to start colaboarting in your parenting journey together
+            <GoalBackground>
+                <ScrollView
+                    f={1}
+                    p="$4"
+                    showsVerticalScrollIndicator={false}
+                >
+                    {/* Header */}
+                    <XStack space="$4" ai="center" mt='$7' mb='$3'>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <MaterialCommunityIcons name="arrow-left" size={26} color={colors.text} />
+                        </TouchableOpacity>
+                        <Text fontSize="$6" fontWeight="700" color={colors.text as any}>
+                            Refer a Friend
                         </Text>
-                    </YStack>
+                    </XStack>
+
+                    <YStack space="$4" mt="$4">
+                        <YStack space='$3'>
+                            <H6 ta="left" color={colors.text}>
+                                Invite Co-parent or Third party
+                            </H6>
+                            <Text color={colors.text}>
+                                Share this code to start colaboarting in your parenting journey together
+                            </Text>
+                        </YStack>
 
 
-                    {/* QR Section */}
-                    <Card p="$4" br="$4" bg='transparent'>
-                        <YStack ai="center" space="$3">
+                        {/* QR Section */}
+                        <Card p="$4" br="$4" bg='transparent'>
+                            <YStack ai="center" space="$3">
 
-                            <Gift size='$9' />
-
-                            <XStack
-                                width="90%"
-                                height={72}
-                                alignItems="center"
-                                space="$2"
-                            >
-                                <Input flex={1} value={inviteLink}
-                                    editable={false}
-                                    selectTextOnFocus
-                                    fontSize="$7"
-                                    borderWidth={1}
-                                    borderColor={colors.primary}
-                                />
-                                <Button
-                                    onPress={copyToClipboard}
-                                    bc={copied ? "green" : colors.primary}
-                                    color="white"
-                                    width="$7"
-                                >
-                                    <XStack ai="center" space="$2">
-                                        {copied ? (
-                                            <SocialIcon name="check" size={16} color="white" />
-                                        ) : (
-                                            <SocialIcon name="content-copy" size={16} color="white" />
-                                        )}
-                                        <Text color="white">{copied ? "Copied" : "Copy"}</Text>
-                                    </XStack>
-                                </Button>
-
-                            </XStack>
-
-                            <YStack width="100%" space="$4" marginTop="$4">
-                                <Paragraph
-                                    size="$3"
-                                    theme="alt2"
-                                    textAlign="center"
-                                    marginBottom="$1"
-                                    color={colors.textSecondary}
-                                >
-                                    OR Share via:
-                                </Paragraph>
-
-                                <Separator alignSelf="center" w={100} />
+                                <Gift size='$15' color={colors.primary as any} />
 
                                 <XStack
-                                    space="$1"
-                                    flexWrap="wrap"
-                                    justifyContent="space-between"
+                                    width="90%"
+                                    height={72}
                                     alignItems="center"
+                                    space="$2"
                                 >
-                                    {/* WhatsApp */}
+                                    <Input flex={1} value={inviteLink}
+                                        editable={false}
+                                        selectTextOnFocus
+                                        fontSize="$7"
+                                        borderWidth={1}
+                                        borderColor={colors.primary}
+                                    />
                                     <Button
-                                        size="$5"
-                                        width='48%'
-                                        onPress={socialLinks.whatsapp}
-                                        backgroundColor="#25D366"
-                                        color={colors.onPrimary}
-                                        icon={<SocialIcon name="whatsapp" size={18} color="white" />}
-                                        hoverStyle={{ opacity: 0.9, backgroundColor: "#1EBE53" }}
-                                        pressStyle={{ scale: 0.97 }}
-                                        borderRadius="$10"
+                                        onPress={copyToClipboard}
+                                        bc={copied ? "green" : colors.primary}
+                                        color="white"
+                                        width="$7"
                                     >
-                                        WhatsApp
+                                        <XStack ai="center" space="$2">
+                                            {copied ? (
+                                                <SocialIcon name="check" size={16} color="white" />
+                                            ) : (
+                                                <SocialIcon name="content-copy" size={16} color="white" />
+                                            )}
+                                            <Text color="white">{copied ? "Copied" : "Copy"}</Text>
+                                        </XStack>
                                     </Button>
 
-                                    {/* SMS */}
-                                    <Button
-                                        size="$5"
-                                        width='48%'
-                                        onPress={socialLinks.sms}
-                                        backgroundColor="#34B7F1"
-                                        color={colors.onPrimary}
-                                        icon={<SocialIcon name="email-outline" size={18} color="white" />}
-                                        hoverStyle={{ opacity: 0.9, backgroundColor: "#1DA8E6" }}
-                                        pressStyle={{ scale: 0.97 }}
-                                        borderRadius="$10"
-                                    >
-                                        SMS
-                                    </Button>
                                 </XStack>
+
+                                <YStack width="100%" space="$4" marginTop="$4">
+                                    <Paragraph
+                                        size="$3"
+                                        textAlign="center"
+                                        marginBottom="$1"
+                                        color={colors.textSecondary}
+                                    >
+                                        OR Share via:
+                                    </Paragraph>
+
+                                    <Separator alignSelf="center" w={100} />
+
+                                    <XStack
+                                        space="$1"
+                                        flexWrap="wrap"
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                    >
+                                        {/* WhatsApp */}
+                                        <Button
+                                            size="$5"
+                                            width='48%'
+                                            onPress={socialLinks.whatsapp}
+                                            backgroundColor="#25D366"
+                                            color={colors.onPrimary}
+                                            icon={<SocialIcon name="whatsapp" size={18} color="white" />}
+                                            hoverStyle={{ opacity: 0.9, backgroundColor: "#1EBE53" }}
+                                            pressStyle={{ scale: 0.97 }}
+                                            borderRadius="$10"
+                                        >
+                                            <Text color={colors.text}>WhatsApp</Text>
+                                        </Button>
+
+                                        {/* SMS */}
+                                        <Button
+                                            size="$5"
+                                            width='48%'
+                                            onPress={socialLinks.sms}
+                                            backgroundColor="#34B7F1"
+                                            color={colors.onPrimary}
+                                            icon={<SocialIcon name="email-outline" size={18} color="white" />}
+                                            hoverStyle={{ opacity: 0.9, backgroundColor: "#1DA8E6" }}
+                                            pressStyle={{ scale: 0.97 }}
+                                            borderRadius="$10"
+                                        >
+                                            <Text color={colors.text}>SMS</Text>
+                                        </Button>
+                                    </XStack>
+                                </YStack>
                             </YStack>
-                        </YStack>
-                    </Card>
+                        </Card>
 
-                    <Button
-                        onPress={handleInvite}
-                        disabled={loading}
-                        bg='transparent'
-                        color={colors.primary}
-                        borderColor={colors.primary}
-                    >
-                        {loading ? (
-                            <Spinner color="white" />
-                        ) : form.email ? (
-                            "Send Invitation"
-                        ) : (
-                            "Invite Friends"
-                        )}
-                    </Button>
-                </YStack>
-            </ScrollView>
+                        <Button
+                            onPress={handleInvite}
+                            disabled={loading}
+                            bg='transparent'
+                            color={colors.primary}
+                            borderColor={colors.primary}
+                        >
+                            <Text color={colors.text}>
+                                {loading ? (
+                                    <Spinner color="white" />
+                                ) : form.email ? (
+                                    "Send Invitation"
+                                ) : (
+                                    "Invite Friends"
+                                )}
+                            </Text>
 
-            {/* QR Code Sheet */}
-            <Adapt when="sm" platform="touch">
-                <Sheet open={showQrSheet} onOpenChange={setShowQrSheet}>
-                    <Sheet.Frame ai="center" jc="center" p="$4">
-                        <Text fontWeight="700" mb="$3">
-                            Scan to Join Family
-                        </Text>
-                        {qrCodeValue ? (
-                            <QRCode
-                                value={qrCodeValue}
-                                size={200}
-                                color={colors.text as any}
-                                backgroundColor="transparent"
-                            />
-                        ) : (
-                            <Spinner size="large" color={colors.primary as any} />
-                        )}
-                        <SizableText mt="$3" numberOfLines={1} ellipsizeMode="middle">
-                            {inviteLink || "Generating link..."}
-                        </SizableText>
-                        <XStack space="$3" mt="$4">
-                            <Button flex={1} onPress={copyInviteLink}>
-                                Copy
-                            </Button>
-                            <Button
-                                flex={1}
-                                variant="outlined"
-                                onPress={() => setShowQrSheet(false)}
-                            >
-                                Close
-                            </Button>
-                        </XStack>
-                    </Sheet.Frame>
-                </Sheet>
-            </Adapt>
+                        </Button>
+                    </YStack>
+                </ScrollView>
+
+                {/* QR Code Sheet */}
+                <Adapt when="sm" platform="touch">
+                    <Sheet open={showQrSheet} onOpenChange={setShowQrSheet}>
+                        <Sheet.Frame ai="center" jc="center" p="$4">
+                            <Text fontWeight="700" mb="$3">
+                                Scan to Join Family
+                            </Text>
+                            {qrCodeValue ? (
+                                <QRCode
+                                    value={qrCodeValue}
+                                    size={200}
+                                    color={colors.text as any}
+                                    backgroundColor="transparent"
+                                />
+                            ) : (
+                                <Spinner size="large" color={colors.primary as any} />
+                            )}
+                            <SizableText mt="$3" numberOfLines={1} ellipsizeMode="middle">
+                                {inviteLink || "Generating link..."}
+                            </SizableText>
+                            <XStack space="$3" mt="$4">
+                                <Button flex={1} onPress={copyInviteLink}>
+                                    Copy
+                                </Button>
+                                <Button
+                                    flex={1}
+                                    variant="outlined"
+                                    onPress={() => setShowQrSheet(false)}
+                                >
+                                    Close
+                                </Button>
+                            </XStack>
+                        </Sheet.Frame>
+                    </Sheet>
+                </Adapt>
+            </GoalBackground>
+
         </>
     );
 }

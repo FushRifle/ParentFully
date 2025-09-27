@@ -1,5 +1,5 @@
 export const currencyOptions = [
-    "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "INR", "BRL",
+    "USD", "NGN", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "INR", "BRL",
     "RUB", "KRW", "MXN", "IDR", "TRY", "SAR", "ZAR", "SEK", "NOK", "DKK",
     "PLN", "THB", "MYR", "NGN", "ARS", "CLP", "COP", "EGP", "HKD", "ILS",
     "NZD", "PHP", "SGD", "TWD", "VND", "BDT", "DZD", "MAD", "IQD", "KWD",
